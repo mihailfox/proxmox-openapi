@@ -1,0 +1,1253 @@
+{
+  "counts": {
+    "official": 429,
+    "scraped": 628,
+    "shared": 428,
+    "officialOnly": 1,
+    "scrapedOnly": 200
+  },
+  "methods": {
+    "official": {
+      "GET": 232,
+      "POST": 95,
+      "PUT": 52,
+      "DELETE": 50
+    },
+    "scraped": {
+      "GET": 314,
+      "PUT": 79,
+      "POST": 161,
+      "DELETE": 74
+    }
+  },
+  "topLevel": {
+    "official": {
+      "cluster": 190,
+      "nodes": 198,
+      "storage": 5,
+      "access": 27,
+      "pools": 7,
+      "/": 1,
+      "version": 1
+    },
+    "scraped": {
+      "access": 44,
+      "cluster": 226,
+      "nodes": 345,
+      "pools": 7,
+      "storage": 5,
+      "version": 1
+    }
+  },
+  "missingModules": [],
+  "officialOnly": [
+    {
+      "path": "/",
+      "method": "GET",
+      "module": "PVE::API2",
+      "name": "index"
+    }
+  ],
+  "scrapedOnly": [
+    {
+      "path": "/access/password",
+      "method": "PUT",
+      "groupId": "access-password",
+      "groupPath": "/access/password"
+    },
+    {
+      "path": "/access/permissions",
+      "method": "GET",
+      "groupId": "access-permissions",
+      "groupPath": "/access/permissions"
+    },
+    {
+      "path": "/access/tfa",
+      "method": "GET",
+      "groupId": "access-tfa",
+      "groupPath": "/access/tfa"
+    },
+    {
+      "path": "/access/tfa/{userid}",
+      "method": "GET",
+      "groupId": "access-tfa-userid",
+      "groupPath": "/access/tfa/{userid}"
+    },
+    {
+      "path": "/access/tfa/{userid}",
+      "method": "POST",
+      "groupId": "access-tfa-userid",
+      "groupPath": "/access/tfa/{userid}"
+    },
+    {
+      "path": "/access/tfa/{userid}/{id}",
+      "method": "DELETE",
+      "groupId": "access-tfa-userid-id",
+      "groupPath": "/access/tfa/{userid}/{id}"
+    },
+    {
+      "path": "/access/tfa/{userid}/{id}",
+      "method": "GET",
+      "groupId": "access-tfa-userid-id",
+      "groupPath": "/access/tfa/{userid}/{id}"
+    },
+    {
+      "path": "/access/tfa/{userid}/{id}",
+      "method": "PUT",
+      "groupId": "access-tfa-userid-id",
+      "groupPath": "/access/tfa/{userid}/{id}"
+    },
+    {
+      "path": "/access/ticket",
+      "method": "POST",
+      "groupId": "access-ticket",
+      "groupPath": "/access/ticket"
+    },
+    {
+      "path": "/access/users/{userid}",
+      "method": "DELETE",
+      "groupId": "access-users-userid",
+      "groupPath": "/access/users/{userid}"
+    },
+    {
+      "path": "/access/users/{userid}/tfa",
+      "method": "GET",
+      "groupId": "access-users-userid-tfa",
+      "groupPath": "/access/users/{userid}/tfa"
+    },
+    {
+      "path": "/access/users/{userid}/token",
+      "method": "GET",
+      "groupId": "access-users-userid-token",
+      "groupPath": "/access/users/{userid}/token"
+    },
+    {
+      "path": "/access/users/{userid}/token/{tokenid}",
+      "method": "DELETE",
+      "groupId": "access-users-userid-token-tokenid",
+      "groupPath": "/access/users/{userid}/token/{tokenid}"
+    },
+    {
+      "path": "/access/users/{userid}/token/{tokenid}",
+      "method": "GET",
+      "groupId": "access-users-userid-token-tokenid",
+      "groupPath": "/access/users/{userid}/token/{tokenid}"
+    },
+    {
+      "path": "/access/users/{userid}/token/{tokenid}",
+      "method": "POST",
+      "groupId": "access-users-userid-token-tokenid",
+      "groupPath": "/access/users/{userid}/token/{tokenid}"
+    },
+    {
+      "path": "/access/users/{userid}/token/{tokenid}",
+      "method": "PUT",
+      "groupId": "access-users-userid-token-tokenid",
+      "groupPath": "/access/users/{userid}/token/{tokenid}"
+    },
+    {
+      "path": "/access/users/{userid}/unlock-tfa",
+      "method": "PUT",
+      "groupId": "access-users-userid-unlock-tfa",
+      "groupPath": "/access/users/{userid}/unlock-tfa"
+    },
+    {
+      "path": "/cluster/firewall/aliases",
+      "method": "GET",
+      "groupId": "cluster-firewall-aliases",
+      "groupPath": "/cluster/firewall/aliases"
+    },
+    {
+      "path": "/cluster/firewall/aliases",
+      "method": "POST",
+      "groupId": "cluster-firewall-aliases",
+      "groupPath": "/cluster/firewall/aliases"
+    },
+    {
+      "path": "/cluster/firewall/aliases/{name}",
+      "method": "DELETE",
+      "groupId": "cluster-firewall-aliases-name",
+      "groupPath": "/cluster/firewall/aliases/{name}"
+    },
+    {
+      "path": "/cluster/firewall/aliases/{name}",
+      "method": "GET",
+      "groupId": "cluster-firewall-aliases-name",
+      "groupPath": "/cluster/firewall/aliases/{name}"
+    },
+    {
+      "path": "/cluster/firewall/aliases/{name}",
+      "method": "PUT",
+      "groupId": "cluster-firewall-aliases-name",
+      "groupPath": "/cluster/firewall/aliases/{name}"
+    },
+    {
+      "path": "/cluster/firewall/groups",
+      "method": "POST",
+      "groupId": "cluster-firewall-groups",
+      "groupPath": "/cluster/firewall/groups"
+    },
+    {
+      "path": "/cluster/firewall/groups/{group}",
+      "method": "DELETE",
+      "groupId": "cluster-firewall-groups-group",
+      "groupPath": "/cluster/firewall/groups/{group}"
+    },
+    {
+      "path": "/cluster/firewall/groups/{group}",
+      "method": "GET",
+      "groupId": "cluster-firewall-groups-group",
+      "groupPath": "/cluster/firewall/groups/{group}"
+    },
+    {
+      "path": "/cluster/firewall/groups/{group}",
+      "method": "POST",
+      "groupId": "cluster-firewall-groups-group",
+      "groupPath": "/cluster/firewall/groups/{group}"
+    },
+    {
+      "path": "/cluster/firewall/groups/{group}/{pos}",
+      "method": "DELETE",
+      "groupId": "cluster-firewall-groups-group-pos",
+      "groupPath": "/cluster/firewall/groups/{group}/{pos}"
+    },
+    {
+      "path": "/cluster/firewall/groups/{group}/{pos}",
+      "method": "GET",
+      "groupId": "cluster-firewall-groups-group-pos",
+      "groupPath": "/cluster/firewall/groups/{group}/{pos}"
+    },
+    {
+      "path": "/cluster/firewall/groups/{group}/{pos}",
+      "method": "PUT",
+      "groupId": "cluster-firewall-groups-group-pos",
+      "groupPath": "/cluster/firewall/groups/{group}/{pos}"
+    },
+    {
+      "path": "/cluster/firewall/ipset",
+      "method": "GET",
+      "groupId": "cluster-firewall-ipset",
+      "groupPath": "/cluster/firewall/ipset"
+    },
+    {
+      "path": "/cluster/firewall/ipset",
+      "method": "POST",
+      "groupId": "cluster-firewall-ipset",
+      "groupPath": "/cluster/firewall/ipset"
+    },
+    {
+      "path": "/cluster/firewall/ipset/{name}",
+      "method": "DELETE",
+      "groupId": "cluster-firewall-ipset-name",
+      "groupPath": "/cluster/firewall/ipset/{name}"
+    },
+    {
+      "path": "/cluster/firewall/ipset/{name}",
+      "method": "GET",
+      "groupId": "cluster-firewall-ipset-name",
+      "groupPath": "/cluster/firewall/ipset/{name}"
+    },
+    {
+      "path": "/cluster/firewall/ipset/{name}",
+      "method": "POST",
+      "groupId": "cluster-firewall-ipset-name",
+      "groupPath": "/cluster/firewall/ipset/{name}"
+    },
+    {
+      "path": "/cluster/firewall/ipset/{name}/{cidr}",
+      "method": "DELETE",
+      "groupId": "cluster-firewall-ipset-name-cidr",
+      "groupPath": "/cluster/firewall/ipset/{name}/{cidr}"
+    },
+    {
+      "path": "/cluster/firewall/ipset/{name}/{cidr}",
+      "method": "GET",
+      "groupId": "cluster-firewall-ipset-name-cidr",
+      "groupPath": "/cluster/firewall/ipset/{name}/{cidr}"
+    },
+    {
+      "path": "/cluster/firewall/ipset/{name}/{cidr}",
+      "method": "PUT",
+      "groupId": "cluster-firewall-ipset-name-cidr",
+      "groupPath": "/cluster/firewall/ipset/{name}/{cidr}"
+    },
+    {
+      "path": "/cluster/firewall/rules",
+      "method": "GET",
+      "groupId": "cluster-firewall-rules",
+      "groupPath": "/cluster/firewall/rules"
+    },
+    {
+      "path": "/cluster/firewall/rules",
+      "method": "POST",
+      "groupId": "cluster-firewall-rules",
+      "groupPath": "/cluster/firewall/rules"
+    },
+    {
+      "path": "/cluster/firewall/rules/{pos}",
+      "method": "DELETE",
+      "groupId": "cluster-firewall-rules-pos",
+      "groupPath": "/cluster/firewall/rules/{pos}"
+    },
+    {
+      "path": "/cluster/firewall/rules/{pos}",
+      "method": "GET",
+      "groupId": "cluster-firewall-rules-pos",
+      "groupPath": "/cluster/firewall/rules/{pos}"
+    },
+    {
+      "path": "/cluster/firewall/rules/{pos}",
+      "method": "PUT",
+      "groupId": "cluster-firewall-rules-pos",
+      "groupPath": "/cluster/firewall/rules/{pos}"
+    },
+    {
+      "path": "/cluster/ha/status/current",
+      "method": "GET",
+      "groupId": "cluster-ha-status-current",
+      "groupPath": "/cluster/ha/status/current"
+    },
+    {
+      "path": "/cluster/ha/status/manager_status",
+      "method": "GET",
+      "groupId": "cluster-ha-status-manager-status",
+      "groupPath": "/cluster/ha/status/manager_status"
+    },
+    {
+      "path": "/cluster/sdn",
+      "method": "PUT",
+      "groupId": "cluster-sdn",
+      "groupPath": "/cluster/sdn"
+    },
+    {
+      "path": "/cluster/sdn/rollback",
+      "method": "POST",
+      "groupId": "cluster-sdn-rollback",
+      "groupPath": "/cluster/sdn/rollback"
+    },
+    {
+      "path": "/cluster/sdn/vnets/{vnet}/firewall/rules",
+      "method": "GET",
+      "groupId": "cluster-sdn-vnets-vnet-firewall-rules",
+      "groupPath": "/cluster/sdn/vnets/{vnet}/firewall/rules"
+    },
+    {
+      "path": "/cluster/sdn/vnets/{vnet}/firewall/rules",
+      "method": "POST",
+      "groupId": "cluster-sdn-vnets-vnet-firewall-rules",
+      "groupPath": "/cluster/sdn/vnets/{vnet}/firewall/rules"
+    },
+    {
+      "path": "/cluster/sdn/vnets/{vnet}/firewall/rules/{pos}",
+      "method": "DELETE",
+      "groupId": "cluster-sdn-vnets-vnet-firewall-rules-pos",
+      "groupPath": "/cluster/sdn/vnets/{vnet}/firewall/rules/{pos}"
+    },
+    {
+      "path": "/cluster/sdn/vnets/{vnet}/firewall/rules/{pos}",
+      "method": "GET",
+      "groupId": "cluster-sdn-vnets-vnet-firewall-rules-pos",
+      "groupPath": "/cluster/sdn/vnets/{vnet}/firewall/rules/{pos}"
+    },
+    {
+      "path": "/cluster/sdn/vnets/{vnet}/firewall/rules/{pos}",
+      "method": "PUT",
+      "groupId": "cluster-sdn-vnets-vnet-firewall-rules-pos",
+      "groupPath": "/cluster/sdn/vnets/{vnet}/firewall/rules/{pos}"
+    },
+    {
+      "path": "/cluster/sdn/zones/{zone}",
+      "method": "DELETE",
+      "groupId": "cluster-sdn-zones-zone",
+      "groupPath": "/cluster/sdn/zones/{zone}"
+    },
+    {
+      "path": "/cluster/sdn/zones/{zone}",
+      "method": "PUT",
+      "groupId": "cluster-sdn-zones-zone",
+      "groupPath": "/cluster/sdn/zones/{zone}"
+    },
+    {
+      "path": "/nodes/{node}/ceph/mds/{name}",
+      "method": "DELETE",
+      "groupId": "nodes-node-ceph-mds-name",
+      "groupPath": "/nodes/{node}/ceph/mds/{name}"
+    },
+    {
+      "path": "/nodes/{node}/ceph/mds/{name}",
+      "method": "POST",
+      "groupId": "nodes-node-ceph-mds-name",
+      "groupPath": "/nodes/{node}/ceph/mds/{name}"
+    },
+    {
+      "path": "/nodes/{node}/ceph/osd",
+      "method": "POST",
+      "groupId": "nodes-node-ceph-osd",
+      "groupPath": "/nodes/{node}/ceph/osd"
+    },
+    {
+      "path": "/nodes/{node}/ceph/osd/{osdid}",
+      "method": "DELETE",
+      "groupId": "nodes-node-ceph-osd-osdid",
+      "groupPath": "/nodes/{node}/ceph/osd/{osdid}"
+    },
+    {
+      "path": "/nodes/{node}/ceph/osd/{osdid}",
+      "method": "GET",
+      "groupId": "nodes-node-ceph-osd-osdid",
+      "groupPath": "/nodes/{node}/ceph/osd/{osdid}"
+    },
+    {
+      "path": "/nodes/{node}/ceph/osd/{osdid}/in",
+      "method": "POST",
+      "groupId": "nodes-node-ceph-osd-osdid-in",
+      "groupPath": "/nodes/{node}/ceph/osd/{osdid}/in"
+    },
+    {
+      "path": "/nodes/{node}/ceph/osd/{osdid}/lv-info",
+      "method": "GET",
+      "groupId": "nodes-node-ceph-osd-osdid-lv-info",
+      "groupPath": "/nodes/{node}/ceph/osd/{osdid}/lv-info"
+    },
+    {
+      "path": "/nodes/{node}/ceph/osd/{osdid}/metadata",
+      "method": "GET",
+      "groupId": "nodes-node-ceph-osd-osdid-metadata",
+      "groupPath": "/nodes/{node}/ceph/osd/{osdid}/metadata"
+    },
+    {
+      "path": "/nodes/{node}/ceph/osd/{osdid}/out",
+      "method": "POST",
+      "groupId": "nodes-node-ceph-osd-osdid-out",
+      "groupPath": "/nodes/{node}/ceph/osd/{osdid}/out"
+    },
+    {
+      "path": "/nodes/{node}/ceph/osd/{osdid}/scrub",
+      "method": "POST",
+      "groupId": "nodes-node-ceph-osd-osdid-scrub",
+      "groupPath": "/nodes/{node}/ceph/osd/{osdid}/scrub"
+    },
+    {
+      "path": "/nodes/{node}/firewall/rules",
+      "method": "GET",
+      "groupId": "nodes-node-firewall-rules",
+      "groupPath": "/nodes/{node}/firewall/rules"
+    },
+    {
+      "path": "/nodes/{node}/firewall/rules",
+      "method": "POST",
+      "groupId": "nodes-node-firewall-rules",
+      "groupPath": "/nodes/{node}/firewall/rules"
+    },
+    {
+      "path": "/nodes/{node}/firewall/rules/{pos}",
+      "method": "DELETE",
+      "groupId": "nodes-node-firewall-rules-pos",
+      "groupPath": "/nodes/{node}/firewall/rules/{pos}"
+    },
+    {
+      "path": "/nodes/{node}/firewall/rules/{pos}",
+      "method": "GET",
+      "groupId": "nodes-node-firewall-rules-pos",
+      "groupPath": "/nodes/{node}/firewall/rules/{pos}"
+    },
+    {
+      "path": "/nodes/{node}/firewall/rules/{pos}",
+      "method": "PUT",
+      "groupId": "nodes-node-firewall-rules-pos",
+      "groupPath": "/nodes/{node}/firewall/rules/{pos}"
+    },
+    {
+      "path": "/nodes/{node}/hosts",
+      "method": "GET",
+      "groupId": "nodes-node-hosts",
+      "groupPath": "/nodes/{node}/hosts"
+    },
+    {
+      "path": "/nodes/{node}/hosts",
+      "method": "POST",
+      "groupId": "nodes-node-hosts",
+      "groupPath": "/nodes/{node}/hosts"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/config",
+      "method": "PUT",
+      "groupId": "nodes-node-lxc-vmid-config",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/config"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall",
+      "method": "GET",
+      "groupId": "nodes-node-lxc-vmid-firewall",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/aliases",
+      "method": "GET",
+      "groupId": "nodes-node-lxc-vmid-firewall-aliases",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/aliases"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/aliases",
+      "method": "POST",
+      "groupId": "nodes-node-lxc-vmid-firewall-aliases",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/aliases"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/aliases/{name}",
+      "method": "DELETE",
+      "groupId": "nodes-node-lxc-vmid-firewall-aliases-name",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/aliases/{name}"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/aliases/{name}",
+      "method": "GET",
+      "groupId": "nodes-node-lxc-vmid-firewall-aliases-name",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/aliases/{name}"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/aliases/{name}",
+      "method": "PUT",
+      "groupId": "nodes-node-lxc-vmid-firewall-aliases-name",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/aliases/{name}"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/ipset",
+      "method": "GET",
+      "groupId": "nodes-node-lxc-vmid-firewall-ipset",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/ipset"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/ipset",
+      "method": "POST",
+      "groupId": "nodes-node-lxc-vmid-firewall-ipset",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/ipset"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/ipset/{name}",
+      "method": "DELETE",
+      "groupId": "nodes-node-lxc-vmid-firewall-ipset-name",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/ipset/{name}"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/ipset/{name}",
+      "method": "GET",
+      "groupId": "nodes-node-lxc-vmid-firewall-ipset-name",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/ipset/{name}"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/ipset/{name}",
+      "method": "POST",
+      "groupId": "nodes-node-lxc-vmid-firewall-ipset-name",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/ipset/{name}"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/ipset/{name}/{cidr}",
+      "method": "DELETE",
+      "groupId": "nodes-node-lxc-vmid-firewall-ipset-name-cidr",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/ipset/{name}/{cidr}"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/ipset/{name}/{cidr}",
+      "method": "GET",
+      "groupId": "nodes-node-lxc-vmid-firewall-ipset-name-cidr",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/ipset/{name}/{cidr}"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/ipset/{name}/{cidr}",
+      "method": "PUT",
+      "groupId": "nodes-node-lxc-vmid-firewall-ipset-name-cidr",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/ipset/{name}/{cidr}"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/log",
+      "method": "GET",
+      "groupId": "nodes-node-lxc-vmid-firewall-log",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/log"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/options",
+      "method": "GET",
+      "groupId": "nodes-node-lxc-vmid-firewall-options",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/options"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/options",
+      "method": "PUT",
+      "groupId": "nodes-node-lxc-vmid-firewall-options",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/options"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/refs",
+      "method": "GET",
+      "groupId": "nodes-node-lxc-vmid-firewall-refs",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/refs"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/rules",
+      "method": "GET",
+      "groupId": "nodes-node-lxc-vmid-firewall-rules",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/rules"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/rules",
+      "method": "POST",
+      "groupId": "nodes-node-lxc-vmid-firewall-rules",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/rules"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/rules/{pos}",
+      "method": "DELETE",
+      "groupId": "nodes-node-lxc-vmid-firewall-rules-pos",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/rules/{pos}"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/rules/{pos}",
+      "method": "GET",
+      "groupId": "nodes-node-lxc-vmid-firewall-rules-pos",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/rules/{pos}"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/firewall/rules/{pos}",
+      "method": "PUT",
+      "groupId": "nodes-node-lxc-vmid-firewall-rules-pos",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/firewall/rules/{pos}"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/mtunnel",
+      "method": "POST",
+      "groupId": "nodes-node-lxc-vmid-mtunnel",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/mtunnel"
+    },
+    {
+      "path": "/nodes/{node}/lxc/{vmid}/mtunnelwebsocket",
+      "method": "GET",
+      "groupId": "nodes-node-lxc-vmid-mtunnelwebsocket",
+      "groupPath": "/nodes/{node}/lxc/{vmid}/mtunnelwebsocket"
+    },
+    {
+      "path": "/nodes/{node}/migrateall",
+      "method": "POST",
+      "groupId": "nodes-node-migrateall",
+      "groupPath": "/nodes/{node}/migrateall"
+    },
+    {
+      "path": "/nodes/{node}/qemu",
+      "method": "POST",
+      "groupId": "nodes-node-qemu",
+      "groupPath": "/nodes/{node}/qemu"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}",
+      "method": "DELETE",
+      "groupId": "nodes-node-qemu-vmid",
+      "groupPath": "/nodes/{node}/qemu/{vmid}"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid",
+      "groupPath": "/nodes/{node}/qemu/{vmid}"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-agent",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-agent",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/exec",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-agent-exec",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/exec"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/exec-status",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-agent-exec-status",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/exec-status"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/file-read",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-agent-file-read",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/file-read"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/file-write",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-agent-file-write",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/file-write"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/fsfreeze-freeze",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-agent-fsfreeze-freeze",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/fsfreeze-freeze"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/fsfreeze-status",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-agent-fsfreeze-status",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/fsfreeze-status"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/fsfreeze-thaw",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-agent-fsfreeze-thaw",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/fsfreeze-thaw"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/fstrim",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-agent-fstrim",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/fstrim"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/get-fsinfo",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-agent-get-fsinfo",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/get-fsinfo"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/get-host-name",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-agent-get-host-name",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/get-host-name"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/get-memory-block-info",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-agent-get-memory-block-info",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/get-memory-block-info"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/get-memory-blocks",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-agent-get-memory-blocks",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/get-memory-blocks"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/get-osinfo",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-agent-get-osinfo",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/get-osinfo"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/get-time",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-agent-get-time",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/get-time"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/get-timezone",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-agent-get-timezone",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/get-timezone"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/get-users",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-agent-get-users",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/get-users"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/get-vcpus",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-agent-get-vcpus",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/get-vcpus"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/info",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-agent-info",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/info"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/network-get-interfaces",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-agent-network-get-interfaces",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/network-get-interfaces"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/ping",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-agent-ping",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/ping"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/set-user-password",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-agent-set-user-password",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/set-user-password"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/shutdown",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-agent-shutdown",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/shutdown"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/suspend-disk",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-agent-suspend-disk",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/suspend-disk"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/suspend-hybrid",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-agent-suspend-hybrid",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/suspend-hybrid"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/agent/suspend-ram",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-agent-suspend-ram",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/agent/suspend-ram"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/clone",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-clone",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/clone"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/cloudinit",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-cloudinit",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/cloudinit"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/cloudinit",
+      "method": "PUT",
+      "groupId": "nodes-node-qemu-vmid-cloudinit",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/cloudinit"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/cloudinit/dump",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-cloudinit-dump",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/cloudinit/dump"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/config",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-config",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/config"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/config",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-config",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/config"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/config",
+      "method": "PUT",
+      "groupId": "nodes-node-qemu-vmid-config",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/config"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/dbus-vmstate",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-dbus-vmstate",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/dbus-vmstate"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/feature",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-feature",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/feature"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-firewall",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/aliases",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-firewall-aliases",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/aliases"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/aliases",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-firewall-aliases",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/aliases"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/aliases/{name}",
+      "method": "DELETE",
+      "groupId": "nodes-node-qemu-vmid-firewall-aliases-name",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/aliases/{name}"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/aliases/{name}",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-firewall-aliases-name",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/aliases/{name}"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/aliases/{name}",
+      "method": "PUT",
+      "groupId": "nodes-node-qemu-vmid-firewall-aliases-name",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/aliases/{name}"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/ipset",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-firewall-ipset",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/ipset"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/ipset",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-firewall-ipset",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/ipset"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/ipset/{name}",
+      "method": "DELETE",
+      "groupId": "nodes-node-qemu-vmid-firewall-ipset-name",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/ipset/{name}"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/ipset/{name}",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-firewall-ipset-name",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/ipset/{name}"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/ipset/{name}",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-firewall-ipset-name",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/ipset/{name}"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/ipset/{name}/{cidr}",
+      "method": "DELETE",
+      "groupId": "nodes-node-qemu-vmid-firewall-ipset-name-cidr",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/ipset/{name}/{cidr}"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/ipset/{name}/{cidr}",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-firewall-ipset-name-cidr",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/ipset/{name}/{cidr}"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/ipset/{name}/{cidr}",
+      "method": "PUT",
+      "groupId": "nodes-node-qemu-vmid-firewall-ipset-name-cidr",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/ipset/{name}/{cidr}"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/log",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-firewall-log",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/log"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/options",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-firewall-options",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/options"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/options",
+      "method": "PUT",
+      "groupId": "nodes-node-qemu-vmid-firewall-options",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/options"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/refs",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-firewall-refs",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/refs"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/rules",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-firewall-rules",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/rules"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/rules",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-firewall-rules",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/rules"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/rules/{pos}",
+      "method": "DELETE",
+      "groupId": "nodes-node-qemu-vmid-firewall-rules-pos",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/rules/{pos}"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/rules/{pos}",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-firewall-rules-pos",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/rules/{pos}"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/firewall/rules/{pos}",
+      "method": "PUT",
+      "groupId": "nodes-node-qemu-vmid-firewall-rules-pos",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/firewall/rules/{pos}"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/migrate",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-migrate",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/migrate"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/migrate",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-migrate",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/migrate"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/monitor",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-monitor",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/monitor"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/move_disk",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-move-disk",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/move_disk"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/mtunnel",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-mtunnel",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/mtunnel"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/mtunnelwebsocket",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-mtunnelwebsocket",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/mtunnelwebsocket"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/pending",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-pending",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/pending"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/remote_migrate",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-remote-migrate",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/remote_migrate"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/resize",
+      "method": "PUT",
+      "groupId": "nodes-node-qemu-vmid-resize",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/resize"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/rrd",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-rrd",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/rrd"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/rrddata",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-rrddata",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/rrddata"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/sendkey",
+      "method": "PUT",
+      "groupId": "nodes-node-qemu-vmid-sendkey",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/sendkey"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/snapshot",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-snapshot",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/snapshot"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/snapshot",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-snapshot",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/snapshot"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/snapshot/{snapname}",
+      "method": "DELETE",
+      "groupId": "nodes-node-qemu-vmid-snapshot-snapname",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/snapshot/{snapname}"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/snapshot/{snapname}",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-snapshot-snapname",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/snapshot/{snapname}"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/snapshot/{snapname}/config",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-snapshot-snapname-config",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/snapshot/{snapname}/config"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/snapshot/{snapname}/config",
+      "method": "PUT",
+      "groupId": "nodes-node-qemu-vmid-snapshot-snapname-config",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/snapshot/{snapname}/config"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/snapshot/{snapname}/rollback",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-snapshot-snapname-rollback",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/snapshot/{snapname}/rollback"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/spiceproxy",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-spiceproxy",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/spiceproxy"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/status",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-status",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/status"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/status/current",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-status-current",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/status/current"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/status/reboot",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-status-reboot",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/status/reboot"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/status/reset",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-status-reset",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/status/reset"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/status/resume",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-status-resume",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/status/resume"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/status/shutdown",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-status-shutdown",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/status/shutdown"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/status/start",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-status-start",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/status/start"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/status/stop",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-status-stop",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/status/stop"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/status/suspend",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-status-suspend",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/status/suspend"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/template",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-template",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/template"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/termproxy",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-termproxy",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/termproxy"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/unlink",
+      "method": "PUT",
+      "groupId": "nodes-node-qemu-vmid-unlink",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/unlink"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/vncproxy",
+      "method": "POST",
+      "groupId": "nodes-node-qemu-vmid-vncproxy",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/vncproxy"
+    },
+    {
+      "path": "/nodes/{node}/qemu/{vmid}/vncwebsocket",
+      "method": "GET",
+      "groupId": "nodes-node-qemu-vmid-vncwebsocket",
+      "groupPath": "/nodes/{node}/qemu/{vmid}/vncwebsocket"
+    },
+    {
+      "path": "/nodes/{node}/query-url-metadata",
+      "method": "GET",
+      "groupId": "nodes-node-query-url-metadata",
+      "groupPath": "/nodes/{node}/query-url-metadata"
+    },
+    {
+      "path": "/nodes/{node}/report",
+      "method": "GET",
+      "groupId": "nodes-node-report",
+      "groupPath": "/nodes/{node}/report"
+    },
+    {
+      "path": "/nodes/{node}/startall",
+      "method": "POST",
+      "groupId": "nodes-node-startall",
+      "groupPath": "/nodes/{node}/startall"
+    },
+    {
+      "path": "/nodes/{node}/stopall",
+      "method": "POST",
+      "groupId": "nodes-node-stopall",
+      "groupPath": "/nodes/{node}/stopall"
+    },
+    {
+      "path": "/nodes/{node}/suspendall",
+      "method": "POST",
+      "groupId": "nodes-node-suspendall",
+      "groupPath": "/nodes/{node}/suspendall"
+    },
+    {
+      "path": "/nodes/{node}/vzdump/defaults",
+      "method": "GET",
+      "groupId": "nodes-node-vzdump-defaults",
+      "groupPath": "/nodes/{node}/vzdump/defaults"
+    },
+    {
+      "path": "/nodes/{node}/vzdump/extractconfig",
+      "method": "GET",
+      "groupId": "nodes-node-vzdump-extractconfig",
+      "groupPath": "/nodes/{node}/vzdump/extractconfig"
+    }
+  ]
+}

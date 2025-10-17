@@ -1,0 +1,22 @@
+{
+  "name": "proxmox-openapi-artifacts-action",
+  "version": "0.1.0",
+  "private": true,
+  "description": "GitHub Action that runs the Proxmox OpenAPI automation pipeline.",
+  "type": "module",
+  "scripts": {
+    "lint": "biome lint src",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "build": "tsup"
+  },
+  "dependencies": {
+    "@proxmox-openapi/automation": "0.1.0",
+    "@actions/core": "^1.11.1",
+    "@actions/exec": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.0"
+  }
+}

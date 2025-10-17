@@ -1,0 +1,71 @@
+name: 'Proxmox OpenAPI artifacts'
+description: 'Generate Proxmox OpenAPI outputs via the automation pipeline.'
+author: 'Proxmox API maintainers'
+inputs:
+  mode:
+    description: 'Execution mode to pass to the automation pipeline (ci|full).'
+    required: false
+    default: 'ci'
+  base-url:
+    description: 'Override base URL for the Proxmox API viewer scrape.'
+    required: false
+  raw-snapshot-path:
+    description: 'Location for the persisted raw snapshot JSON.'
+    required: false
+  ir-output-path:
+    description: 'Destination path for the normalized intermediate representation.'
+    required: false
+  openapi-dir:
+    description: 'Directory to write OpenAPI artifacts.'
+    required: false
+  openapi-basename:
+    description: 'Basename for generated OpenAPI files.'
+    required: false
+  fallback-to-cache:
+    description: 'Allow the pipeline to reuse cached snapshots when scrapes fail (CI default).'
+    required: false
+    default: 'true'
+  offline:
+    description: 'Force offline mode (skip live scrape).'
+    required: false
+    default: 'false'
+  install-command:
+    description: 'Command used to install dependencies before running the pipeline.'
+    required: false
+    default: 'npm ci'
+  working-directory:
+    description: 'Repository subdirectory that contains package.json and automation sources.'
+    required: false
+    default: '.'
+  install-playwright-browsers:
+    description: 'Install Playwright browser dependencies before running the pipeline.'
+    required: false
+    default: 'true'
+  report-path:
+    description: 'Optional path to write the pipeline summary JSON.'
+    required: false
+  extra-cli-args:
+    description: 'Deprecated. The TypeScript action ignores this input.'
+    required: false
+  node-version:
+    description: 'Deprecated. Configure Node via actions/setup-node in the workflow.'
+    required: false
+outputs:
+  raw-snapshot:
+    description: 'Absolute path to the raw snapshot JSON used by the pipeline.'
+  normalized-document:
+    description: 'Absolute path to the normalized IR document.'
+  openapi-json:
+    description: 'Absolute path to the generated OpenAPI JSON file.'
+  openapi-yaml:
+    description: 'Absolute path to the generated OpenAPI YAML file.'
+  from-cache:
+    description: 'Whether the pipeline reused an existing cached snapshot.'
+  summary-path:
+    description: 'Path to the JSON summary describing the pipeline run.'
+runs:
+  using: 'node24'
+  main: 'dist/index.cjs'
+branding:
+  icon: 'server'
+  color: 'green'

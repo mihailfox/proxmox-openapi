@@ -1,0 +1,90 @@
+{
+  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
+  "name": "Proxmox OpenAPI",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:24-bookworm",
+  "runArgs": ["--name", "${localWorkspaceFolderBasename}_devcontainer"],
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers-extra/features/fzf:1": {},
+    "ghcr.io/devcontainers-extra/features/shellcheck:1": {},
+    // "ghcr.io/devcontainers-extra/features/uv:1": {},
+    "ghcr.io/eitsupi/devcontainer-features/jq-likes:2": {},
+    "ghcr.io/devcontainers-extra/features/devcontainers-cli:1": {},
+    "ghcr.io/facebook/devcontainers/features/dotslash:latest": {}
+  },
+  "forwardPorts": [5173, 4173],
+  "onCreateCommand": ".devcontainer/scripts/on-create.sh",
+  "updateContentCommand": ".devcontainer/scripts/update-content.sh",
+  "postCreateCommand": ".devcontainer/scripts/post-create.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "biomejs.biome",
+        "christian-kohler.npm-intellisense",
+        "donjayamanne.githistory",
+        "github.vscode-github-actions",
+        "ms-playwright.playwright",
+        "redhat.vscode-yaml",
+        "vitest.explorer",
+        "vivaxy.vscode-conventional-commits"
+      ],
+      "settings": {
+        "biome.requireConfiguration": true,
+        "editor.acceptSuggestionOnEnter": "smart",
+        "editor.autoIndentOnPaste": true,
+        "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+        "editor.columnSelection": false,
+        "editor.cursorBlinking": "phase",
+        "editor.cursorSmoothCaretAnimation": "on",
+        "editor.cursorStyle": "block-outline",
+        "editor.fontFamily": "'JetBrainsMonoNL Nerd Font Mono', 'monospace'",
+        "editor.fontLigatures": true,
+        "editor.fontSize": 16,
+        "editor.formatOnPaste": true,
+        "editor.formatOnSave": true,
+        "editor.formatOnSaveMode": "modifications",
+        "editor.guides.bracketPairs": "active",
+        "editor.inertialScroll": true,
+        "editor.inlineSuggest.edits.allowCodeShifting": "horizontal",
+        "editor.inlineSuggest.minShowDelay": 200,
+        "editor.linkedEditing": true,
+        "editor.minimap.autohide": "scroll",
+        "editor.minimap.enabled": false,
+        "editor.mouseWheelZoom": true,
+        "editor.semanticHighlighting.enabled": true,
+        "editor.tabCompletion": "onlySnippets",
+        "editor.tabSize": 2,
+        "files.autoSave": "afterDelay",
+        "files.autoSaveWhenNoErrors": true,
+        "files.autoSaveWorkspaceFilesOnly": true,
+        "telemetry.editStats.enabled": false,
+        "telemetry.feedback.enabled": false,
+        "terminal.integrated.cursorBlinking": true,
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.minimumContrastRatio": 1,
+        "terminal.integrated.sendKeybindingsToShell": true,
+        "vitest.maximumConfigs": 99,
+        "window.titleBarStyle": "custom",
+        "biome.configurationPath": "./biome.json",
+        "biome.enabled": true
+      }
+    }
+  },
+  // here you can pass environment variables from the host
+  "containerEnv": {
+    "GH_PAT": "${localEnv:GH_PAT}",
+    "GH_TOKEN": "${localEnv:GH_PAT}",
+    "GITHUB_TOKEN": "${localEnv:GH_PAT}"
+  },
+  "remoteUser": "node",
+  // here you can mount host files into container
+  // target/container path ca not be dynamic
+  "mounts": [
+    "source=${localEnv:HOME}/.bash_history,target=/home/node/.bash_history,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.codex,target=/home/node/.codex,type=bind,consistency=cached",
+    //  "source=${localEnv:HOME}/.docker,target=/home/node/.docker,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.git-credentials,target=/home/node/.git-credentials,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.gitconfig,target=/home/node/.gitconfig,type=bind,consistency=cached"
+  ]
+}

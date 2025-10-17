@@ -1,0 +1,14 @@
+node_modules
+coverage
+dist
+**/dist/**
+.github/actions/proxmox-openapi-artifacts/dist
+.github/actions/proxmox-openapi-artifacts/dist/**
+./.github/actions/proxmox-openapi-artifacts/dist
+./.github/actions/proxmox-openapi-artifacts/dist/**
+playwright-report
+test-results
+blob-report
+docs/openapi
+docs/openapi/**
+**/docs/openapi/**

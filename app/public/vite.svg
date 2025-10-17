@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 410 404" fill="none">
+  <defs>
+    <linearGradient id="vite-gradient" x1="255.5" y1="7" x2="418" y2="100.5" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#41D1FF"/>
+      <stop offset="1" stop-color="#BD34FE"/>
+    </linearGradient>
+    <linearGradient id="vite-flame" x1="88.5" y1="0" x2="144" y2="118.5" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFEA83"/>
+      <stop offset="0.083" stop-color="#FFDD35"/>
+      <stop offset="1" stop-color="#FFA800"/>
+    </linearGradient>
+  </defs>
+  <path d="M399.641 59.524C404.253 41.244 387.555 25.456 369.631 30.86L22.2173 135.562C8.30901 139.738 3.34157 156.971 13.302 167.454L73.7255 230.806C80.2138 237.659 90.7513 238.525 98.3199 232.793L361.181 33.0183C370.096 26.088 383.075 30.1401 386.011 41.396L399.641 59.524Z" fill="url(#vite-gradient)"/>
+  <path d="M132.221 359.62C128.771 372.46 114.64 377.682 103.543 369.49L19.6457 307.298C9.90716 300.04 9.75482 285.247 19.3326 277.677L362.357 7.95756C379.56 -5.61955 404.424 8.15977 399.46 28.8067L132.221 359.62Z" fill="url(#vite-gradient)"/>
+  <path d="M312.951 83.0489C317.898 68.8619 300.743 57.8017 289.039 66.5352L115.071 196.205C105.615 203.303 104.101 217.282 112.411 226.213L167.112 284.733C175.094 293.235 188.763 292.307 195.625 283.082L312.951 83.0489Z" fill="url(#vite-flame)"/>
+</svg>

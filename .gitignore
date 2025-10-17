@@ -1,0 +1,52 @@
+# Build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+# Generic build directories
+dist/
+!.github/actions/proxmox-openapi-artifacts/dist/
+build/
+
+# Test binary, built with `go test -c`
+*.test
+
+# Code coverage profiles and other test artifacts
+*.out
+coverage.*
+coverage/
+*.coverprofile
+profile.cov
+
+# Dependency directories
+node_modules/
+
+# Generated OpenAPI artifacts
+var/
+docs/openapi/
+
+# React Router generated artifacts
+.react-router/
+public/openapi.json
+public/proxmox-ve.yaml
+
+# Playwright artifacts
+playwright-report/
+blob-report/
+test-results/
+
+# Go workspace file
+go.work
+go.work.sum
+
+# env file
+.env
+
+# Editor/IDE
+.idea/
+.vscode/
+
+# Project specifics
+.runonce
+.env
