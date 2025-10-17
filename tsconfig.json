@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "verbatimModuleSyntax": true,
+    "esModuleInterop": true,
+    "allowImportingTsExtensions": true,
+    "baseUrl": ".",
+    "paths": {
+      "@proxmox-openapi/shared": ["tools/shared"],
+      "@proxmox-openapi/shared/*": ["tools/shared/*"],
+      "@proxmox-openapi/api-scraper": ["tools/api-scraper"],
+      "@proxmox-openapi/api-scraper/*": ["tools/api-scraper/src/*"],
+      "@proxmox-openapi/api-normalizer": ["tools/api-normalizer"],
+      "@proxmox-openapi/api-normalizer/*": ["tools/api-normalizer/src/*"],
+      "@proxmox-openapi/openapi-generator": ["tools/openapi-generator"],
+      "@proxmox-openapi/openapi-generator/*": ["tools/openapi-generator/src/*"],
+      "@proxmox-openapi/automation": ["tools/automation/src/index.ts"],
+      "@proxmox-openapi/automation/*": ["tools/automation/src/*"],
+      "react-dom/client": ["types/react-dom-client.d.ts"]
+    }
+  },
+  "include": [
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "tools/**/*.ts",
+    "tests/**/*.ts",
+    "types/**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/dist",
+    "app/dist",
+    "var",
+    "var/**",
+    "docs/openapi",
+    "docs/openapi/**",
+    ".devcontainer",
+    ".devcontainer/**"
+  ]
+}

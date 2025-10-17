@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Proxmox VE API Documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        margin: 0;
+        padding: 1.5rem;
+        background: #0b0d0f;
+        color: #f5f7fa;
+      }
+      h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 0.5rem;
+      }
+      .x-tree-node-text {
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        background: rgba(15, 76, 129, 0.35);
+        border: 1px solid rgba(90, 152, 209, 0.4);
+      }
+      .hint {
+        margin-top: 1.5rem;
+        font-size: 0.875rem;
+        color: rgba(245, 247, 250, 0.75);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Mock Proxmox API Viewer</h1>
+    <p>Offline fixture served when network access to the upstream viewer is unavailable.</p>
+    <ul id="resource-list" aria-label="API resources">
+      <li class="x-tree-node-text">/access</li>
+      <li class="x-tree-node-text">/cluster</li>
+      <li class="x-tree-node-text">/nodes</li>
+      <li class="x-tree-node-text">/pools</li>
+      <li class="x-tree-node-text">/storage</li>
+      <li class="x-tree-node-text">/version</li>
+    </ul>
+    <p class="hint">The scraper fetches <code>apidoc.js</code> for schema data.</p>
+    <script>
+      document.title = 'Proxmox VE API Documentation';
+    </script>
+  </body>
+</html>

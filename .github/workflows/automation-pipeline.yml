@@ -1,0 +1,68 @@
+name: automation-pipeline
+
+on:
+  pull_request:
+    branches:
+      - dev
+    paths:
+      - .github/workflows/automation-pipeline.yml
+      - package.json
+      - package-lock.json
+      - biome.json
+      - tsconfig.json
+      - vite.config.ts
+      - vitest.config.ts
+      - "app/**"
+      - "tests/**"
+      - "tools/**"
+      - "!tools/analysis/**"
+  workflow_dispatch: {}
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run automation pipeline (CI mode)
+        run: npm run automation:pipeline -- --report var/automation-summary.json
+
+      - name: Validate generated OpenAPI document
+        run: npm run openapi:validate
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Run unit suites
+        run: |
+          npm run normalizer:test
+          npm run openapi:test
+          npm run ui:test
+
+      - name: Run regression QA suite
+        run: npm run regression:test
+
+      - name: Upload OpenAPI artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: proxmox-openapi
+          path: |
+            var/openapi/proxmox-ve.json
+            var/openapi/proxmox-ve.yaml
+            var/automation-summary.json
+          if-no-files-found: error
