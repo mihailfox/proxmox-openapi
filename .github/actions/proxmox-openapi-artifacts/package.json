@@ -1,7 +1,7 @@
 {
   "name": "proxmox-openapi-artifacts-action",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
+  "private": false,
   "description": "GitHub Action that runs the Proxmox OpenAPI automation pipeline.",
   "type": "module",
   "scripts": {
