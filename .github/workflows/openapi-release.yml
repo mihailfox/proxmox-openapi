@@ -1,0 +1,68 @@
+name: openapi-release
+
+on:
+  push:
+    tags:
+      - 'v*'
+      - 'v*.*.*'
+      - 'v*.*.*-alpha.*'
+      - 'v*.*.*-beta.*'
+      - 'v*.*.*-rc.*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate OpenAPI artifacts
+        run: npm run automation:pipeline -- --mode=ci --report var/automation-summary.json
+
+      - name: Run regression suite
+        run: npm run regression:test
+
+      - name: Validate OpenAPI document
+        run: npm run openapi:validate
+
+      - name: Prepare release payload
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          npm run openapi:release:prepare -- "${RELEASE_TAG}"
+          STAGING_DIR="var/openapi-release/proxmox-openapi-schema-${RELEASE_TAG}"
+          npm run automation:summary -- --input var/automation-summary.json --output "${STAGING_DIR}/AUTOMATION_SUMMARY.md" --relative-to "${STAGING_DIR}"
+          (cd var/openapi-release && tar -czf "proxmox-openapi-schema-${RELEASE_TAG}.tgz" "proxmox-openapi-schema-${RELEASE_TAG}")
+          (cd var/openapi-release && zip -r "proxmox-openapi-schema-${RELEASE_TAG}.zip" "proxmox-openapi-schema-${RELEASE_TAG}")
+
+      - name: Publish GitHub release
+        id: release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Proxmox OpenAPI ${{ github.ref_name }}
+          body_path: var/openapi-release/proxmox-openapi-schema-${{ github.ref_name }}/RELEASE_NOTES.md
+          files: |
+            var/openapi-release/proxmox-openapi-schema-${{ github.ref_name }}.tgz
+            var/openapi-release/proxmox-openapi-schema-${{ github.ref_name }}.zip
+            var/openapi-release/proxmox-openapi-schema-${{ github.ref_name }}/proxmox-ve.json
+            var/openapi-release/proxmox-openapi-schema-${{ github.ref_name }}/proxmox-ve.yaml
+            var/openapi-release/proxmox-openapi-schema-${{ github.ref_name }}/openapi.sha256.json
+            var/openapi-release/proxmox-openapi-schema-${{ github.ref_name }}/automation-summary.json
+            var/openapi-release/proxmox-openapi-schema-${{ github.ref_name }}/AUTOMATION_SUMMARY.md
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-alpha.') || contains(github.ref_name, '-beta.') || contains(github.ref_name, '-rc.') }}
+          fail_on_unmatched_files: true
+          overwrite: true
