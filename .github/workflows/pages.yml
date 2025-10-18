@@ -14,6 +14,7 @@ on:
       - 'tools/openapi-generator/**'
       - 'tools/api-scraper/**'
       - 'tools/api-normalizer/**'
+# The filters ensure we rebuild Pages only when the SPA or schema inputs change.
 
 permissions:
   contents: read
@@ -29,20 +30,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      # Match the locally supported Node.js version so Playwright & Vite behave consistently.
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: npm
           cache-dependency-path: package-lock.json
+      # Install workspace dependencies (automation + SPA).
       - name: Install dependencies
         run: npm install
+      # Generate the raw snapshot, normalized IR, and OpenAPI bundles consumed by the SPA.
       - name: Generate OpenAPI artifacts
         run: npm run automation:pipeline -- --mode=ci --report var/automation-summary.json
+      # Build the static site and copy artifacts into the Vite output for GitHub Pages.
       - name: Build static site
         env:
           VITE_SITE_BASE: /proxmox-openapi/
         run: npm run pages:build
+      # Upload the prepared bundle for deployment.
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
