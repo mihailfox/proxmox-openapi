@@ -10,7 +10,7 @@ function parseColor(value: string) {
 function relativeLuminance({ r, g, b }: { r: number; g: number; b: number }) {
   const channel = (value: number) => {
     const normalized = value / 255;
-    return normalized <= 0.03928 ? normalized / 12.92 : Math.pow((normalized + 0.055) / 1.055, 2.4);
+    return normalized <= 0.03928 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
   };
   const R = channel(r);
   const G = channel(g);
@@ -113,13 +113,13 @@ test.describe('theme toggle', () => {
     await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
 
     const swaggerFilter = await page.evaluate(() => {
-      const target = document.querySelector('#swagger');
+      const target = document.querySelector('[data-swagger-root="true"]');
       return target ? getComputedStyle(target).filter : null;
     });
     expect(swaggerFilter, 'Expected swagger container to apply dark-mode filter').toMatch(/invert\((?:88%|0\.88)\)/);
 
     const microlightFilter = await page.evaluate(() => {
-      const target = document.querySelector('#swagger .microlight');
+      const target = document.querySelector('[data-swagger-root="true"] .microlight');
       if (!target) return null;
       return getComputedStyle(target).filter;
     });
@@ -127,6 +127,6 @@ test.describe('theme toggle', () => {
       expect(microlightFilter).toMatch(/invert\(100%\)/);
     }
 
-    await expect(page.locator('#swagger .swagger-ui')).toBeVisible();
+    await expect(page.locator('[data-swagger-root="true"] .swagger-ui')).toBeVisible();
   });
 });
