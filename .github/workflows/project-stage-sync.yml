@@ -1,0 +1,160 @@
+name: Project Stage Sync
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+  issues:
+    types: [opened, edited, closed, reopened]
+  project_card:
+    types: [created, edited]
+
+permissions:
+  contents: read
+  issues: read
+  repository-projects: write
+
+jobs:
+  sync-stage:
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: PVT_kwHOA9QND84BF1Am
+      STAGE_FIELD_NAME: Stage
+      STATUS_FIELD_NAME: Status
+    steps:
+      - name: Sync project stage with status
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.PROJECT_AUTOMATION_TOKEN != '' && secrets.PROJECT_AUTOMATION_TOKEN || github.token }}
+          script: |
+            const PROJECT_ID = process.env.PROJECT_ID;
+            const STAGE_FIELD_NAME = process.env.STAGE_FIELD_NAME;
+            const STATUS_FIELD_NAME = process.env.STATUS_FIELD_NAME;
+
+            const statusToStage = new Map([
+              ['Todo', 'Backlog'],
+              ['In Progress', 'MVP'],
+              ['Done', 'Production'],
+            ]);
+
+            const fetchProject = `
+              query($projectId: ID!) {
+                node(id: $projectId) {
+                  ... on ProjectV2 {
+                    items(first: 100) {
+                      nodes {
+                        id
+                        content {
+                          __typename
+                          ... on Issue {
+                            number
+                            title
+                            state
+                            milestone {
+                              title
+                            }
+                          }
+                        }
+                        statusValue: fieldValueByName(name: "${STATUS_FIELD_NAME}") {
+                          __typename
+                          ... on ProjectV2ItemFieldSingleSelectValue {
+                            name
+                          }
+                        }
+                        stageValue: fieldValueByName(name: "${STAGE_FIELD_NAME}") {
+                          __typename
+                          ... on ProjectV2ItemFieldSingleSelectValue {
+                            name
+                          }
+                        }
+                      }
+                    }
+                    fields(first: 20) {
+                      nodes {
+                        __typename
+                        ... on ProjectV2SingleSelectField {
+                          id
+                          name
+                          options {
+                            id
+                            name
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            `;
+
+            const data = await github.graphql(fetchProject, { projectId: PROJECT_ID });
+            const project = data.node;
+            if (!project) {
+              core.setFailed(`Project ${PROJECT_ID} not found`);
+              return;
+            }
+
+            const fields = project.fields.nodes.filter(node => node.__typename === 'ProjectV2SingleSelectField');
+            const stageField = fields.find(field => field.name === STAGE_FIELD_NAME);
+            const statusField = fields.find(field => field.name === STATUS_FIELD_NAME);
+
+            if (!stageField) {
+              core.setFailed(`Unable to locate field '${STAGE_FIELD_NAME}'`);
+              return;
+            }
+            if (!statusField) {
+              core.warning(`Field '${STATUS_FIELD_NAME}' not found; skipping sync.`);
+              return;
+            }
+
+            const stageOptionByName = new Map(stageField.options.map(option => [option.name, option.id]));
+
+            const updateMutation = `
+              mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
+                updateProjectV2ItemFieldValue(
+                  input: {
+                    projectId: $projectId
+                    itemId: $itemId
+                    fieldId: $fieldId
+                    value: { singleSelectOptionId: $optionId }
+                  }
+                ) {
+                  projectV2Item { id }
+                }
+              }
+            `;
+
+            for (const item of project.items.nodes) {
+              const statusName = item.statusValue?.name;
+              if (!statusName) {
+                core.info(`Skipping item without '${STATUS_FIELD_NAME}' value: ${item.content?.number ?? item.id}`);
+                continue;
+              }
+
+              let targetStage = statusToStage.get(statusName) ?? 'Backlog';
+              const milestoneTitle = item.content?.milestone?.title ?? '';
+              if (milestoneTitle && /beta/i.test(milestoneTitle)) {
+                targetStage = 'Beta';
+              }
+
+              const currentStage = item.stageValue?.name;
+              if (currentStage === targetStage) {
+                continue;
+              }
+
+              const optionId = stageOptionByName.get(targetStage);
+              if (!optionId) {
+                core.warning(`No option '${targetStage}' found for item ${item.content?.number ?? item.id}`);
+                continue;
+              }
+
+              await github.graphql(updateMutation, {
+                projectId: PROJECT_ID,
+                itemId: item.id,
+                fieldId: stageField.id,
+                optionId,
+              });
+
+              const issueLabel = item.content?.number ? `#${item.content.number}` : item.id;
+              core.info(`Updated Stage for ${issueLabel} -> ${targetStage}`);
+            }
