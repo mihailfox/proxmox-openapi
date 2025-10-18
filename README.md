@@ -70,6 +70,11 @@ jobs:
           offline: true
 ```
 
+## Schema Releases
+- Review the automated workflow in `.github/workflows/openapi-release.yml` before tagging.
+- Follow [docs/releases.md](docs/releases.md) for artifact layout, download commands, and verification steps.
+- Run `npm run regression:test` and `npm run openapi:validate` prior to creating a release tag.
+
 ## Contributing
 1. Install dependencies with `npm install`.
 2. Run targeted checks (`npm run lint`, `npm run test:all`, etc.) before pushing.
