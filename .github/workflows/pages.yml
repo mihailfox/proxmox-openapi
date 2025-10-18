@@ -9,6 +9,7 @@ on:
       - '.github/workflows/pages.yml'
       - 'package.json'
       - 'package-lock.json'
+      - 'app/**'
       - 'tools/automation/**'
       - 'tools/openapi-generator/**'
       - 'tools/api-scraper/**'
@@ -38,6 +39,10 @@ jobs:
         run: npm install
       - name: Generate OpenAPI artifacts
         run: npm run automation:pipeline -- --mode=ci --report var/automation-summary.json
+      - name: Build static site
+        env:
+          VITE_SITE_BASE: /proxmox-openapi/
+        run: npm run pages:build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:

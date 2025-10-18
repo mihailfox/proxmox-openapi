@@ -25,11 +25,14 @@ node_modules/
 # Generated OpenAPI artifacts
 var/
 docs/openapi/
+# SPA bundled specs
+app/public/openapi/
 
 # React Router generated artifacts
 .react-router/
 public/openapi.json
 public/proxmox-ve.yaml
+app/public/openapi/
 
 # Playwright artifacts
 playwright-report/
