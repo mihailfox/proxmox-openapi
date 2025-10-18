@@ -15,14 +15,14 @@ export const ARTIFACT_BASELINES: ArtifactBaseline[] = [
     label: "Raw API snapshot",
     description: "Cached payload scraped from the Proxmox API viewer.",
     path: resolveFromRoot("tools/api-scraper/data/raw/proxmox-openapi-schema.json"),
-    sha256: "e5c1f9da030fb2a1b23dbc212cc491f229e3784eefdf33e4a6af76064ca48bec",
+    sha256: "dac485e9a087f98f6f6f8ae4692ddde817e0855dfdcb77f7e74de2cf593c5e3e",
   },
   {
     id: "normalized-ir",
     label: "Normalized intermediate representation",
     description: "Structured document produced by the normalization pipeline.",
     path: resolveFromRoot("tools/api-normalizer/data/ir/proxmox-openapi-ir.json"),
-    sha256: "0a9743bb0e84990249480658d26ee6f865386271dee07541d6c93b2009e8be4d",
+    sha256: "82b101978e129a42bff7e979d71cddf568ace309cbfdb533d605692940152351",
   },
   {
     id: "openapi-json",
