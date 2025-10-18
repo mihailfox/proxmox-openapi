@@ -53,7 +53,7 @@ export function SpecExplorerPage() {
         </nav>
       </div>
       {isExplorerVisible ? (
-        <div className="swagger-container" id="swagger">
+        <div className="swagger-container" data-swagger-root="true">
           <SwaggerViewer specUrl={specUrl} />
         </div>
       ) : (

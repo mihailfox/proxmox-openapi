@@ -7,16 +7,16 @@
     <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.29.3/swagger-ui.css" />
     <style>
       /* Fast dark mode https://github.com/swagger-api/swagger-ui/issues/5327 */
-      [data-theme='dark'] #swagger {
+      [data-theme='dark'] [data-swagger-root='true'] {
         filter: invert(88%) hue-rotate(180deg);
       }
-      [data-theme='dark'] #swagger .microlight {
+      [data-theme='dark'] [data-swagger-root='true'] .microlight {
         filter: invert(100%) hue-rotate(180deg);
       }
-      [data-is-system-theme='false'][data-theme='light'] #swagger {
+      [data-is-system-theme='false'][data-theme='light'] [data-swagger-root='true'] {
         background-color: #f5f5f5;
       }
-      [data-is-system-theme='false'][data-theme='dark'] #swagger {
+      [data-is-system-theme='false'][data-theme='dark'] [data-swagger-root='true'] {
         background-color: #fff;
       }
     </style>

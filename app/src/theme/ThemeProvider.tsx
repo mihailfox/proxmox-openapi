@@ -37,6 +37,11 @@ function getInitialMode(): ThemeMode {
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [mode, setModeState] = useState<ThemeMode>(getInitialMode);
 
+  const setMode = useCallback((next: ThemeMode) => {
+    applyDocumentTheme(next);
+    setModeState(next);
+  }, []);
+
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
@@ -60,16 +65,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
     mediaQuery.addEventListener("change", handler);
     return () => mediaQuery.removeEventListener("change", handler);
-  }, []);
+  }, [setMode]);
 
   useEffect(() => {
     applyDocumentTheme(mode);
   }, [mode]);
-
-  const setMode = useCallback((next: ThemeMode) => {
-    applyDocumentTheme(next);
-    setModeState(next);
-  }, []);
 
   const toggle = useCallback(() => {
     setModeState((current) => {
