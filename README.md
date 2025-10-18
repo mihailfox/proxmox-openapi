@@ -70,6 +70,11 @@ jobs:
           offline: true
 ```
 
+## Schema Releases
+- Push tags matching `v*`, semantic versions, or prerelease suffixes (`-alpha.*`, `-beta.*`, `-rc.*`) to trigger `.github/workflows/openapi-release.yml`.
+- The workflow regenerates artifacts, runs `npm run regression:test` and `npm run openapi:validate`, and publishes assets via `softprops/action-gh-release@v2`.
+- See [docs/releases.md](docs/releases.md) for download commands, checksum verification, and release metadata.
+
 ## Contributing
 1. Install dependencies with `npm install`.
 2. Run targeted checks (`npm run lint`, `npm run test:all`, etc.) before pushing.
