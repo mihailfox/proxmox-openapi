@@ -29,6 +29,47 @@ The "Project Stage Sync" workflow keeps the delivery project up to date. Review 
 - Check for broken links using a crawler such as `npx broken-link-checker https://mihailfox.github.io/proxmox-openapi/` before publishing.
 - Verify that the embedded Swagger UI loads the latest `openapi/proxmox-ve.json` bundle after every automation pipeline run.
 
+## GitHub Action Usage
+The bundled action in `.github/actions/proxmox-openapi-artifacts` runs the automation pipeline and ships with the
+repository. After cloning, rebuild the dist output with `npm run action:package` whenever the source changes.
+
+### GitHub-hosted runners
+
+```yaml
+jobs:
+  openapi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Generate Proxmox OpenAPI artifacts
+        uses: mihailfox/proxmox-openapi/.github/actions/proxmox-openapi-artifacts@v1
+        with:
+          mode: ci
+          fallback-to-cache: true
+```
+
+### Self-hosted runners (offline-compatible)
+
+Download the release bundle and reference it locally:
+
+```bash
+curl -sSL https://github.com/mihailfox/proxmox-openapi/releases/download/v1.0.0/proxmox-openapi-artifacts-action-v1.0.0.tgz \
+  | tar -xz -C .github/actions --strip-components=1 proxmox-openapi-artifacts-action
+```
+
+```yaml
+jobs:
+  openapi:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v5
+      - name: Generate Proxmox OpenAPI artifacts
+        uses: ./proxmox-openapi-artifacts-action
+        with:
+          mode: full
+          offline: true
+```
+
 ## Contributing
 1. Install dependencies with `npm install`.
 2. Run targeted checks (`npm run lint`, `npm run test:all`, etc.) before pushing.

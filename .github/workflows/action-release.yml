@@ -1,0 +1,46 @@
+name: action-release
+
+on:
+  release:
+    types:
+      - published
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install dependencies
+        run: npm install
+      - name: Build action bundle
+        run: npm run action:package
+      - name: Prepare release bundle
+        run: |
+          set -euo pipefail
+          VERSION="${GITHUB_REF_NAME}"
+          STAGING_DIR="var/action-bundle/proxmox-openapi-artifacts-action"
+          mkdir -p "${STAGING_DIR}"
+          cp .github/actions/proxmox-openapi-artifacts/action.yml "${STAGING_DIR}/action.yml"
+          cp .github/actions/proxmox-openapi-artifacts/README.md "${STAGING_DIR}/README.md"
+          mkdir -p "${STAGING_DIR}/dist"
+          cp .github/actions/proxmox-openapi-artifacts/dist/index.cjs "${STAGING_DIR}/dist/index.cjs"
+          cp .github/actions/proxmox-openapi-artifacts/dist/index.cjs.map "${STAGING_DIR}/dist/index.cjs.map"
+          tar -czf "var/action-bundle/proxmox-openapi-artifacts-action-${VERSION}.tgz" -C var/action-bundle proxmox-openapi-artifacts-action
+          (cd var/action-bundle && zip -r "proxmox-openapi-artifacts-action-${VERSION}.zip" proxmox-openapi-artifacts-action)
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            var/action-bundle/proxmox-openapi-artifacts-action-${{ github.ref_name }}.tgz
+            var/action-bundle/proxmox-openapi-artifacts-action-${{ github.ref_name }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
