@@ -1,0 +1,181 @@
+name: release
+
+on:
+  release:
+    types:
+      - published
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.normalize.outputs.version }}
+      tag: ${{ steps.normalize.outputs.tag }}
+    steps:
+      - name: Derive release version
+        id: normalize
+        env:
+          RAW_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          if [ -z "${RAW_TAG}" ]; then
+            echo "Release tag missing from event payload" >&2
+            exit 1
+          fi
+
+          TAG="${RAW_TAG}"
+          VERSION="${TAG#v}"
+
+          if ! [[ "${VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Release tag '${TAG}' must follow the format 'vX.Y.Z' to be publishable to npm." >&2
+            exit 1
+          fi
+
+          echo "Using release version ${VERSION}"
+          echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
+          echo "tag=v${VERSION}" >> "${GITHUB_OUTPUT}"
+
+  openapi:
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate OpenAPI artifacts
+        run: npm run automation:pipeline -- --mode=ci --report var/automation-summary.json
+
+      - name: Run regression suite
+        run: npm run regression:test
+
+      - name: Validate OpenAPI document
+        run: npm run openapi:validate
+
+      - name: Prepare release payload
+        env:
+          RELEASE_TAG: ${{ needs.prepare.outputs.tag }}
+        run: |
+          set -euo pipefail
+          npm run openapi:release:prepare -- "${RELEASE_TAG}"
+          STAGING_DIR="var/openapi-release/proxmox-openapi-schema-${RELEASE_TAG}"
+          RELEASE_NOTES="var/openapi-release/RELEASE_NOTES-${RELEASE_TAG}.md"
+          test -f "${RELEASE_NOTES}"
+          (cd var/openapi-release && tar -czf "proxmox-openapi-schema-${RELEASE_TAG}.tgz" "proxmox-openapi-schema-${RELEASE_TAG}")
+          (cd var/openapi-release && zip -r "proxmox-openapi-schema-${RELEASE_TAG}.zip" "proxmox-openapi-schema-${RELEASE_TAG}")
+
+      - name: Publish OpenAPI assets
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Proxmox OpenAPI ${{ needs.prepare.outputs.tag }}
+          body_path: var/openapi-release/RELEASE_NOTES-${{ needs.prepare.outputs.tag }}.md
+          files: |
+            var/openapi-release/proxmox-openapi-schema-${{ needs.prepare.outputs.tag }}.tgz
+            var/openapi-release/proxmox-openapi-schema-${{ needs.prepare.outputs.tag }}.zip
+          draft: false
+          prerelease: false
+          fail_on_unmatched_files: true
+          overwrite: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  action:
+    needs:
+      - prepare
+      - openapi
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build action bundle
+        run: npm run action:package
+
+      - name: Package action artifacts
+        env:
+          RELEASE_TAG: ${{ needs.prepare.outputs.tag }}
+        run: |
+          set -euo pipefail
+          STAGING_DIR="var/action-bundle/proxmox-openapi-artifacts-action"
+          mkdir -p "${STAGING_DIR}/dist"
+          cp .github/actions/proxmox-openapi-artifacts/action.yml "${STAGING_DIR}/action.yml"
+          cp .github/actions/proxmox-openapi-artifacts/README.md "${STAGING_DIR}/README.md"
+          cp .github/actions/proxmox-openapi-artifacts/dist/index.cjs "${STAGING_DIR}/dist/index.cjs"
+          cp .github/actions/proxmox-openapi-artifacts/dist/index.cjs.map "${STAGING_DIR}/dist/index.cjs.map"
+          (cd var/action-bundle && tar -czf "proxmox-openapi-artifacts-action-${RELEASE_TAG}.tgz" proxmox-openapi-artifacts-action)
+          (cd var/action-bundle && zip -r "proxmox-openapi-artifacts-action-${RELEASE_TAG}.zip" proxmox-openapi-artifacts-action)
+
+      - name: Upload action assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            var/action-bundle/proxmox-openapi-artifacts-action-${{ needs.prepare.outputs.tag }}.tgz
+            var/action-bundle/proxmox-openapi-artifacts-action-${{ needs.prepare.outputs.tag }}.zip
+          fail_on_unmatched_files: true
+          overwrite: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  npm:
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+          registry-url: https://npm.pkg.github.com
+
+      - name: Configure npm authentication
+        run: |
+          cat <<'RC' >> ~/.npmrc
+          //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+          RC
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Remove deprecated npm config flags
+        run: npm config delete always-auth --location=user || true
+
+      - name: Align package version
+        run: |
+          set -euo pipefail
+          VERSION="${{ needs.prepare.outputs.version }}"
+          npm version "${VERSION}" --workspace packages/proxmox-openapi --no-git-tag-version
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build package
+        run: npm run build --workspace packages/proxmox-openapi
+
+      - name: Publish package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm publish --workspace packages/proxmox-openapi --provenance --access public
