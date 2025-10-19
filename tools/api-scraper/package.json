@@ -1,6 +1,6 @@
 {
   "name": "@proxmox-openapi/api-scraper",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "type": "module"
 }
