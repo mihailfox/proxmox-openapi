@@ -88,7 +88,7 @@ jobs:
           draft: false
           prerelease: false
           fail_on_unmatched_files: true
-          overwrite: true
+          overwrite_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -134,7 +134,7 @@ jobs:
             var/action-bundle/proxmox-openapi-artifacts-action-${{ needs.prepare.outputs.tag }}.tgz
             var/action-bundle/proxmox-openapi-artifacts-action-${{ needs.prepare.outputs.tag }}.zip
           fail_on_unmatched_files: true
-          overwrite: true
+          overwrite_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
