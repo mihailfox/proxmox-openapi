@@ -26,7 +26,29 @@ jobs:
       - name: Prepare release bundle
         run: |
           set -euo pipefail
-          VERSION="${GITHUB_REF_NAME}"
+          RELEASE_TAG="${GITHUB_REF_NAME}"
+          if [ -z "${RELEASE_TAG}" ]; then
+            echo "Missing release tag" >&2
+            exit 1
+          fi
+          RELEASE_VERSION="$(
+            node -e '
+          const tag = process.env.RELEASE_TAG ?? "";
+          if (!tag) throw new Error("missing tag");
+          const stripped = tag.replace(/^v/i, "");
+          if (!stripped) throw new Error(`unable to derive version from tag "${tag}"`);
+          const normalized = stripped.replace(/\.([0-9A-Za-z-]+)\./, "-$1.");
+          if (!/^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$/.test(normalized)) {
+            throw new Error(`unsupported release tag "${tag}" -> "${normalized}"`);
+          }
+          process.stdout.write(normalized);
+          ' 2>/tmp/action-release-version.err
+          )" || {
+            cat /tmp/action-release-version.err >&2
+            exit 1
+          }
+          NORMALIZED_TAG="v${RELEASE_VERSION}"
+          echo "Normalized action version: ${NORMALIZED_TAG}"
           STAGING_DIR="var/action-bundle/proxmox-openapi-artifacts-action"
           mkdir -p "${STAGING_DIR}"
           cp .github/actions/proxmox-openapi-artifacts/action.yml "${STAGING_DIR}/action.yml"
@@ -34,13 +56,19 @@ jobs:
           mkdir -p "${STAGING_DIR}/dist"
           cp .github/actions/proxmox-openapi-artifacts/dist/index.cjs "${STAGING_DIR}/dist/index.cjs"
           cp .github/actions/proxmox-openapi-artifacts/dist/index.cjs.map "${STAGING_DIR}/dist/index.cjs.map"
-          tar -czf "var/action-bundle/proxmox-openapi-artifacts-action-${VERSION}.tgz" -C var/action-bundle proxmox-openapi-artifacts-action
-          (cd var/action-bundle && zip -r "proxmox-openapi-artifacts-action-${VERSION}.zip" proxmox-openapi-artifacts-action)
+          tar -czf "var/action-bundle/proxmox-openapi-artifacts-action-${NORMALIZED_TAG}.tgz" -C var/action-bundle proxmox-openapi-artifacts-action
+          (cd var/action-bundle && zip -r "proxmox-openapi-artifacts-action-${NORMALIZED_TAG}.zip" proxmox-openapi-artifacts-action)
+          echo "NORMALIZED_TAG=${NORMALIZED_TAG}" >> $GITHUB_ENV
+          tar -czf "var/action-bundle/proxmox-openapi-artifacts-action-${NORMALIZED_TAG}.tgz" -C var/action-bundle proxmox-openapi-artifacts-action
+          (cd var/action-bundle && zip -r "proxmox-openapi-artifacts-action-${NORMALIZED_TAG}.zip" proxmox-openapi-artifacts-action)
+          echo "NORMALIZED_TAG=${NORMALIZED_TAG}" >> $GITHUB_ENV
       - name: Upload release assets
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            var/action-bundle/proxmox-openapi-artifacts-action-${{ github.ref_name }}.tgz
-            var/action-bundle/proxmox-openapi-artifacts-action-${{ github.ref_name }}.zip
+            var/action-bundle/proxmox-openapi-artifacts-action-${{ env.NORMALIZED_TAG }}.tgz
+            var/action-bundle/proxmox-openapi-artifacts-action-${{ env.NORMALIZED_TAG }}.zip
+            var/action-bundle/proxmox-openapi-artifacts-action-${{ env.NORMALIZED_TAG }}.tgz
+            var/action-bundle/proxmox-openapi-artifacts-action-${{ env.NORMALIZED_TAG }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
