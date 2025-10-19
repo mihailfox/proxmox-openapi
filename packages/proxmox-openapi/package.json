@@ -19,7 +19,7 @@
     }
   },
   "bin": {
-    "proxmox-openapi": "./dist/cli.cjs"
+    "proxmox-openapi": "dist/cli.cjs"
   },
   "files": [
     "dist",
