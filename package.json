@@ -31,6 +31,7 @@
     "automation:pipeline": "tsx tools/automation/src/cli.ts",
     "automation:summary": "tsx tools/automation/scripts/format-summary.ts",
     "openapi:prepare": "node scripts/openapi-sync.mjs",
+    "openapi:release:prepare": "node scripts/prepare-openapi-release.mjs",
     "ui:build": "vite build",
     "build": "npm run typecheck && npm run openapi:prepare && npm run ui:build",
     "ui:dev": "npm run openapi:prepare && vite",
