@@ -2,11 +2,19 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "../../tsconfig.node.json",
   "compilerOptions": {
-    "rootDir": "./src",
+    "rootDir": "../../",
     "outDir": "./dist",
     "declaration": true,
     "declarationMap": true,
-    "emitDeclarationOnly": false
+    "emitDeclarationOnly": false,
+    "composite": true
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "../../tools/api-scraper/src",
+    "../../tools/api-normalizer/src",
+    "../../tools/openapi-generator/src",
+    "../../tools/automation/src",
+    "../../tools/shared"
+  ]
 }
