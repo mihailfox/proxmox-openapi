@@ -3,7 +3,7 @@ name: automation-pipeline
 on:
   pull_request:
     branches:
-      - dev
+      - main
     paths:
       - .github/workflows/automation-pipeline.yml
       - package.json
@@ -15,6 +15,23 @@ on:
       - "app/**"
       - "tests/**"
       - "tools/**"
+      - "packages/**"
+      - "!tools/analysis/**"
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/automation-pipeline.yml
+      - package.json
+      - package-lock.json
+      - biome.json
+      - tsconfig.json
+      - vite.config.ts
+      - vitest.config.ts
+      - "app/**"
+      - "tests/**"
+      - "tools/**"
+      - "packages/**"
       - "!tools/analysis/**"
   workflow_dispatch: {}
 
