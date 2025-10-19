@@ -35,6 +35,22 @@ jobs:
       - name: Remove deprecated npm config flags
         run: npm config delete always-auth --location=user || true
 
+      - name: Align package version with release tag
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          if [ -z "${RELEASE_TAG}" ]; then
+            echo "Missing release tag from event payload" >&2
+            exit 1
+          fi
+          RELEASE_VERSION="${RELEASE_TAG#v}"
+          if [ -z "${RELEASE_VERSION}" ]; then
+            echo "Unable to derive version from tag '${RELEASE_TAG}'" >&2
+            exit 1
+          fi
+          npm version "${RELEASE_VERSION}" --workspace packages/proxmox-openapi --no-git-tag-version
+
       - name: Install dependencies
         run: npm install
 
