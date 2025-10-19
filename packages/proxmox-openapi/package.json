@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "CLI and library for generating Proxmox OpenAPI artifacts.",
   "type": "module",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
