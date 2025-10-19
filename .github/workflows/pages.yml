@@ -7,8 +7,6 @@ on:
       - main
     paths:
       - '.github/workflows/pages.yml'
-      - 'package.json'
-      - 'package-lock.json'
       - 'app/**'
       - 'tools/automation/**'
       - 'tools/openapi-generator/**'
