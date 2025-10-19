@@ -35,6 +35,17 @@ The packaged site will be available under `var/pages/`. You can inspect it local
 - Schedule a manual dispatch before major releases if automation has been paused or when a regenerated schema needs to
   ship independently of code changes.
 
+## API Explorer Responsiveness
+
+- The explorer payload is lazy loaded. End users must click **Load API Explorer** inside the placeholder panel; this
+  keeps the initial route fast on GitHub Pages.
+- Schema documents are fetched and sanitised before mounting Swagger UI so large inline examples do not freeze the UI.
+  Expect operation panels to open with collapsed content (`docExpansion: none`) and alphabetically sorted tags/paths.
+- Syntax highlighting remains enabled. If a future schema change reintroduces slowness, capture a performance profile
+  and consider trimming oversized examples or deferring additional components via the Swagger UI plugin API.
+- In dark mode the primary explorer button uses a blue gradient for AA contrast, and the **host**/**port** inputs render
+  with light text to maintain readability.
+
 ## Rollback Procedure
 
 1. Identify the previous good commit SHA from the `main` history.

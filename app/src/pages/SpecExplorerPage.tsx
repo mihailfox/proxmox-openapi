@@ -39,26 +39,29 @@ export function SpecExplorerPage() {
           to the resources you care about.
         </p>
       </header>
-      <div className="explorer-actions">
-        <button type="button" className="button button--primary" onClick={handleLoadExplorer} disabled={isExplorerVisible}>
-          {isExplorerVisible ? "Explorer Loaded" : "Load API Explorer"}
-        </button>
-        <nav className="explorer-downloads" aria-label="Schema downloads">
-          <a className="button button--ghost" href={specUrl} target="_blank" rel="noreferrer">
-            Download JSON
-          </a>
-          <a className="button button--ghost" href={yamlUrl} target="_blank" rel="noreferrer">
-            Download YAML
-          </a>
-        </nav>
-      </div>
+      <nav className="explorer-actions" aria-label="Schema downloads">
+        <a className="button button--ghost" href={specUrl} target="_blank" rel="noreferrer">
+          Download JSON
+        </a>
+        <a className="button button--ghost" href={yamlUrl} target="_blank" rel="noreferrer">
+          Download YAML
+        </a>
+      </nav>
       {isExplorerVisible ? (
         <div className="swagger-container" data-swagger-root="true">
           <SwaggerViewer specUrl={specUrl} />
         </div>
       ) : (
         <div className="swagger-placeholder">
-          <p>The explorer loads on demand so the page stays fast. Click the button above to initialise Swagger UI.</p>
+          <p>The explorer loads on demand so the page stays fast. Click the button below to initialise Swagger UI.</p>
+          <button
+            type="button"
+            className="button button--primary"
+            onClick={handleLoadExplorer}
+            disabled={isExplorerVisible}
+          >
+            {isExplorerVisible ? "Explorer Loaded" : "Load API Explorer"}
+          </button>
         </div>
       )}
     </div>
