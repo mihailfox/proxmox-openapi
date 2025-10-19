@@ -4,6 +4,68 @@ interface SwaggerViewerProps {
   specUrl: string;
 }
 
+const LARGE_EXAMPLE_THRESHOLD = 4000;
+
+function sanitizeSpecDocument<T>(input: T): T {
+  if (!input || typeof input !== "object") {
+    return input;
+  }
+
+  const clone =
+    typeof structuredClone === "function"
+      ? structuredClone(input)
+      : (JSON.parse(JSON.stringify(input)) as T);
+
+  const queue: unknown[] = [clone];
+
+  while (queue.length > 0) {
+    const current = queue.pop();
+    if (!current || typeof current !== "object") {
+      continue;
+    }
+
+    if (Array.isArray(current)) {
+      for (const item of current) {
+        if (item && typeof item === "object") {
+          queue.push(item);
+        }
+      }
+      continue;
+    }
+
+    for (const key of Object.keys(current)) {
+      const value = (current as Record<string, unknown>)[key];
+
+      if (key === "example") {
+        if (typeof value === "string" && value.length > LARGE_EXAMPLE_THRESHOLD) {
+          delete (current as Record<string, unknown>)[key];
+          continue;
+        }
+        if (value && typeof value === "object") {
+          const serialized = JSON.stringify(value);
+          if (serialized.length > LARGE_EXAMPLE_THRESHOLD) {
+            (current as Record<string, unknown>)[key] = {
+              note: "Example trimmed for performance",
+            };
+            continue;
+          }
+        }
+      }
+
+      if (key === "examples" && value && typeof value === "object") {
+        delete (current as Record<string, unknown>)[key];
+        continue;
+      }
+
+      if (value && typeof value === "object") {
+        queue.push(value);
+      }
+    }
+  }
+
+  return clone;
+}
+
 export function SwaggerViewer({ specUrl }: SwaggerViewerProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -12,12 +74,32 @@ export function SwaggerViewer({ specUrl }: SwaggerViewerProps) {
   useEffect(() => {
     let isCancelled = false;
     let ui: unknown;
+    const controller = new AbortController();
 
     async function mountSwagger() {
       try {
-        const [{ default: SwaggerUIBundle }] = await Promise.all([
+        setIsLoading(true);
+        setError(null);
+
+        const [{ default: SwaggerUIBundle }, response] = await Promise.all([
           import("swagger-ui-dist/swagger-ui-es-bundle"),
+          fetch(specUrl, { signal: controller.signal }),
         ]);
+
+        if (!response.ok) {
+          throw new Error(`Unable to retrieve schema (status ${response.status})`);
+        }
+
+        const spec = await response.json();
+        const sanitizedSpec = sanitizeSpecDocument(spec);
+
+        await new Promise<void>((resolve) => {
+          if (typeof requestAnimationFrame === "function") {
+            requestAnimationFrame(() => resolve());
+          } else {
+            setTimeout(() => resolve(), 0);
+          }
+        });
 
         if (isCancelled || !containerRef.current) {
           return;
@@ -25,19 +107,34 @@ export function SwaggerViewer({ specUrl }: SwaggerViewerProps) {
 
         ui = SwaggerUIBundle({
           domNode: containerRef.current,
-          url: specUrl,
+          spec: sanitizedSpec,
           presets: [SwaggerUIBundle.presets.apis],
           layout: "BaseLayout",
-          docExpansion: "list",
+          docExpansion: "none",
           deepLinking: true,
+          filter: true,
+          defaultModelExpandDepth: 0,
+          defaultModelsExpandDepth: -1,
+          operationsSorter: "alpha",
+          tagsSorter: "alpha",
+          tryItOutEnabled: false,
+          showCommonExtensions: false,
+          onComplete() {
+            if (!isCancelled) {
+              setIsLoading(false);
+              setError(null);
+            }
+          },
         });
 
-        if (!isCancelled) {
-          setIsLoading(false);
-          setError(null);
-        }
+        // Some Swagger UI versions don't invoke onComplete reliably in SPA mounts.
+        setTimeout(() => {
+          if (!isCancelled) {
+            setIsLoading(false);
+          }
+        }, 0);
       } catch (err) {
-        if (!isCancelled) {
+        if (!isCancelled && !controller.signal.aborted) {
           const message = err instanceof Error ? err.message : String(err);
           setError(message);
           setIsLoading(false);
@@ -49,6 +146,7 @@ export function SwaggerViewer({ specUrl }: SwaggerViewerProps) {
 
     return () => {
       isCancelled = true;
+      controller.abort();
       if (ui && typeof (ui as { destroy?: () => void }).destroy === "function") {
         (ui as { destroy: () => void }).destroy();
       }

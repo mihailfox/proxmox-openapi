@@ -254,6 +254,17 @@ html[data-theme="light"] .app-nav__link:focus-visible {
   box-shadow: 0 0 0 rgba(0, 0, 0, 0);
 }
 
+html[data-theme="dark"] .page--explorer .button--primary {
+  background: linear-gradient(135deg, #2563eb, #38bdf8);
+  color: #f8fafc;
+  border-color: transparent;
+}
+
+html[data-theme="dark"] .page--explorer .button--primary:hover,
+html[data-theme="dark"] .page--explorer .button--primary:focus-visible {
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+}
+
 .button--ghost {
   border-color: var(--color-border);
   color: var(--color-text);
@@ -375,6 +386,15 @@ html[data-theme="light"] .app-nav__link:focus-visible {
   background: rgba(15, 23, 42, 0.2);
   color: var(--color-muted);
   text-align: center;
+  display: grid;
+  gap: 1.25rem;
+  justify-items: center;
+}
+
+html[data-theme="dark"] .swagger-placeholder {
+  background: rgba(148, 163, 184, 0.12);
+  border-color: rgba(148, 163, 184, 0.4);
+  color: var(--color-text);
 }
 
 .swagger-viewer {
@@ -392,6 +412,24 @@ html[data-theme="light"] .app-nav__link:focus-visible {
   justify-items: center;
   padding: 2rem 0;
   color: var(--color-muted);
+}
+
+.swagger-container .swagger-ui input,
+.swagger-container .swagger-ui select,
+.swagger-container .swagger-ui textarea {
+  font-family: inherit;
+}
+
+html[data-theme="dark"] .swagger-container .swagger-ui input,
+html[data-theme="dark"] .swagger-container .swagger-ui select,
+html[data-theme="dark"] .swagger-container .swagger-ui textarea {
+  background-color: rgba(30, 41, 59, 0.45);
+  color: var(--color-text);
+  border-color: rgba(148, 163, 184, 0.45);
+}
+
+html[data-theme="dark"] .swagger-container .swagger-ui input::placeholder {
+  color: rgba(226, 232, 240, 0.65);
 }
 
 .swagger-fallback--error {
@@ -423,15 +461,10 @@ html[data-theme="light"] .app-nav__link:focus-visible {
 .explorer-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.explorer-downloads {
-  display: flex;
-  flex-wrap: wrap;
   gap: 0.75rem;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 1.25rem;
 }
 
 .page--explorer .page-header {
