@@ -44,4 +44,4 @@ jobs:
       - name: Publish package
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm publish --workspace packages/proxmox-openapi --provenance
+        run: npm publish --workspace packages/proxmox-openapi --provenance --access public
