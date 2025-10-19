@@ -48,8 +48,7 @@ async function buildChecksumManifest(assetPaths) {
   );
 
   const artifacts = entries.reduce((acc, entry) => {
-    const key = entry.file.replace(/\.[^.]+$/, "");
-    acc[key] = entry;
+    acc[entry.file] = entry;
     return acc;
   }, {});
 
