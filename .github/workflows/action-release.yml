@@ -33,16 +33,16 @@ jobs:
           fi
           RELEASE_VERSION="$(
             node -e '
-const tag = process.env.RELEASE_TAG ?? "";
-if (!tag) throw new Error("missing tag");
-const stripped = tag.replace(/^v/i, "");
-if (!stripped) throw new Error(`unable to derive version from tag "${tag}"`);
-const normalized = stripped.replace(/\.([0-9A-Za-z-]+)\./, "-$1.");
-if (!/^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$/.test(normalized)) {
-  throw new Error(`unsupported release tag "${tag}" -> "${normalized}"`);
-}
-process.stdout.write(normalized);
-' 2>/tmp/action-release-version.err
+          const tag = process.env.RELEASE_TAG ?? "";
+          if (!tag) throw new Error("missing tag");
+          const stripped = tag.replace(/^v/i, "");
+          if (!stripped) throw new Error(`unable to derive version from tag "${tag}"`);
+          const normalized = stripped.replace(/\.([0-9A-Za-z-]+)\./, "-$1.");
+          if (!/^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$/.test(normalized)) {
+            throw new Error(`unsupported release tag "${tag}" -> "${normalized}"`);
+          }
+          process.stdout.write(normalized);
+          ' 2>/tmp/action-release-version.err
           )" || {
             cat /tmp/action-release-version.err >&2
             exit 1
@@ -59,10 +59,15 @@ process.stdout.write(normalized);
           tar -czf "var/action-bundle/proxmox-openapi-artifacts-action-${NORMALIZED_TAG}.tgz" -C var/action-bundle proxmox-openapi-artifacts-action
           (cd var/action-bundle && zip -r "proxmox-openapi-artifacts-action-${NORMALIZED_TAG}.zip" proxmox-openapi-artifacts-action)
           echo "NORMALIZED_TAG=${NORMALIZED_TAG}" >> $GITHUB_ENV
+          tar -czf "var/action-bundle/proxmox-openapi-artifacts-action-${NORMALIZED_TAG}.tgz" -C var/action-bundle proxmox-openapi-artifacts-action
+          (cd var/action-bundle && zip -r "proxmox-openapi-artifacts-action-${NORMALIZED_TAG}.zip" proxmox-openapi-artifacts-action)
+          echo "NORMALIZED_TAG=${NORMALIZED_TAG}" >> $GITHUB_ENV
       - name: Upload release assets
         uses: softprops/action-gh-release@v2
         with:
           files: |
+            var/action-bundle/proxmox-openapi-artifacts-action-${{ env.NORMALIZED_TAG }}.tgz
+            var/action-bundle/proxmox-openapi-artifacts-action-${{ env.NORMALIZED_TAG }}.zip
             var/action-bundle/proxmox-openapi-artifacts-action-${{ env.NORMALIZED_TAG }}.tgz
             var/action-bundle/proxmox-openapi-artifacts-action-${{ env.NORMALIZED_TAG }}.zip
         env:
