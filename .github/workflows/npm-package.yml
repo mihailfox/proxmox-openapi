@@ -44,11 +44,23 @@ jobs:
             echo "Missing release tag from event payload" >&2
             exit 1
           fi
-          RELEASE_VERSION="${RELEASE_TAG#v}"
-          if [ -z "${RELEASE_VERSION}" ]; then
-            echo "Unable to derive version from tag '${RELEASE_TAG}'" >&2
+          RELEASE_VERSION="$(
+            node -e '
+const tag = process.env.RELEASE_TAG ?? "";
+if (!tag) throw new Error("missing tag");
+const stripped = tag.replace(/^v/i, "");
+if (!stripped) throw new Error(`unable to derive version from tag "${tag}"`);
+const normalized = stripped.replace(/\.([0-9A-Za-z-]+)\./, "-$1.");
+if (!/^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$/.test(normalized)) {
+  throw new Error(`unsupported release tag "${tag}" -> "${normalized}"`);
+}
+process.stdout.write(normalized);
+' 2>/tmp/npm-release-version.err
+          )" || {
+            cat /tmp/npm-release-version.err >&2
             exit 1
-          fi
+          }
+          echo "Resolved npm version: ${RELEASE_VERSION}"
           npm version "${RELEASE_VERSION}" --workspace packages/proxmox-openapi --no-git-tag-version
 
       - name: Install dependencies
