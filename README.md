@@ -70,6 +70,23 @@ jobs:
           offline: true
 ```
 
+## npm Package
+- Configure an `.npmrc` entry with your GitHub Packages token:
+
+  ```ini
+  @mihailfox:registry=https://npm.pkg.github.com
+  //npm.pkg.github.com/:_authToken=${NPM_TOKEN}
+  ```
+
+- Install and run the CLI:
+
+  ```bash
+  npm install @mihailfox/proxmox-openapi
+  npx @mihailfox/proxmox-openapi --mode ci --report var/automation-summary.json
+  ```
+
+- See [docs/packages.md](docs/packages.md) for CLI flag reference, library usage, and release cadence details.
+
 ## Schema Releases
 - Push tags matching `v*`, semantic versions, or prerelease suffixes (`-alpha.*`, `-beta.*`, `-rc.*`) to trigger `.github/workflows/openapi-release.yml`.
 - The workflow regenerates artifacts, runs `npm run regression:test` and `npm run openapi:validate`, and publishes assets via `softprops/action-gh-release@v2`.

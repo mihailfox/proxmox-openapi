@@ -5,6 +5,7 @@
   "private": true,
   "workspaces": [
     ".github/actions/proxmox-openapi-artifacts",
+    "packages/proxmox-openapi",
     "tools/api-scraper",
     "tools/api-normalizer",
     "tools/openapi-generator",
@@ -12,7 +13,7 @@
     "tools/shared"
   ],
   "description": "Tooling to scrape the Proxmox API viewer and generate OpenAPI specifications.",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "engines": {
     "node": ">=24.0.0"
   },

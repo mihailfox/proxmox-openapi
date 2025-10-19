@@ -69,6 +69,7 @@ npm install --registry=https://npm.pkg.github.com/@mihailfox/proxmox-openapi
 ## Release Cadence
 
 - The workflow `.github/workflows/openapi-release.yml` rebuilds the schema, runs validation (`npm run openapi:validate`), and uploads archives via `softprops/action-gh-release@v2`.
+- `.github/workflows/npm-package.yml` publishes `@mihailfox/proxmox-openapi` to GitHub Packages for every release tag (including prereleases).
 - Tags containing prerelease suffixes are published as prereleases; stable tags are marked as latest.
 - Before tagging, ensure `npm run regression:test` passes so the baseline remains current.
 - Use `npm run automation:summary -- --input var/automation-summary.json` to inspect the current artifact layout when preparing release notes.
