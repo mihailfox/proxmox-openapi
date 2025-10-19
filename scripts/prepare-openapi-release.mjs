@@ -9,8 +9,6 @@ const workspace = process.cwd();
 const artifactsDir = path.resolve("var", "openapi");
 const releaseRoot = path.resolve("var", "openapi-release");
 const stagingDir = path.join(releaseRoot, `proxmox-openapi-schema-${tagName}`);
-const automationSummaryPath = path.resolve("var", "automation-summary.json");
-
 async function main() {
   await fs.rm(stagingDir, { recursive: true, force: true });
   await fs.mkdir(stagingDir, { recursive: true });
@@ -25,9 +23,7 @@ async function main() {
   await writeJson(path.join(stagingDir, "openapi.sha256.json"), manifest);
 
   const releaseNotes = await composeReleaseNotes(tagName);
-  await fs.writeFile(path.join(stagingDir, "RELEASE_NOTES.md"), releaseNotes, "utf8");
-
-  await copyIfExists(automationSummaryPath, path.join(stagingDir, "automation-summary.json"));
+  await fs.writeFile(path.join(releaseRoot, `RELEASE_NOTES-${tagName}.md`), releaseNotes, "utf8");
 
   console.log(`[openapi-release] Prepared bundle at ${path.relative(workspace, stagingDir)}.`);
 }
@@ -114,7 +110,7 @@ async function readWorkingState() {
 
 async function readAutomationSummary() {
   try {
-    return JSON.parse(await fs.readFile(automationSummaryPath, "utf8"));
+    return JSON.parse(await fs.readFile(path.resolve("var", "automation-summary.json"), "utf8"));
   } catch {
     return null;
   }
@@ -150,15 +146,6 @@ async function readStateAtRef(ref) {
 
 function runGitShow(ref, file) {
   return execSync(`git show ${ref}:${file}`, { encoding: "utf8" });
-}
-
-async function copyIfExists(source, target) {
-  try {
-    await fs.access(source);
-    await fs.copyFile(source, target);
-  } catch {
-    // optional file
-  }
 }
 
 async function writeJson(filePath, payload) {
