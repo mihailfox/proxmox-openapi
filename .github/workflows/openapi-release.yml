@@ -44,7 +44,8 @@ jobs:
           set -euo pipefail
           npm run openapi:release:prepare -- "${RELEASE_TAG}"
           STAGING_DIR="var/openapi-release/proxmox-openapi-schema-${RELEASE_TAG}"
-          npm run automation:summary -- --input var/automation-summary.json --output "${STAGING_DIR}/AUTOMATION_SUMMARY.md" --relative-to "${STAGING_DIR}"
+          RELEASE_NOTES_PATH="var/openapi-release/RELEASE_NOTES-${RELEASE_TAG}.md"
+          test -f "${RELEASE_NOTES_PATH}"
           (cd var/openapi-release && tar -czf "proxmox-openapi-schema-${RELEASE_TAG}.tgz" "proxmox-openapi-schema-${RELEASE_TAG}")
           (cd var/openapi-release && zip -r "proxmox-openapi-schema-${RELEASE_TAG}.zip" "proxmox-openapi-schema-${RELEASE_TAG}")
 
@@ -53,15 +54,11 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           name: Proxmox OpenAPI ${{ github.ref_name }}
-          body_path: var/openapi-release/proxmox-openapi-schema-${{ github.ref_name }}/RELEASE_NOTES.md
+          body_path: var/openapi-release/RELEASE_NOTES-${{ github.ref_name }}.md
           files: |
             var/openapi-release/proxmox-openapi-schema-${{ github.ref_name }}.tgz
             var/openapi-release/proxmox-openapi-schema-${{ github.ref_name }}.zip
-            var/openapi-release/proxmox-openapi-schema-${{ github.ref_name }}/proxmox-ve.json
-            var/openapi-release/proxmox-openapi-schema-${{ github.ref_name }}/proxmox-ve.yaml
             var/openapi-release/proxmox-openapi-schema-${{ github.ref_name }}/openapi.sha256.json
-            var/openapi-release/proxmox-openapi-schema-${{ github.ref_name }}/automation-summary.json
-            var/openapi-release/proxmox-openapi-schema-${{ github.ref_name }}/AUTOMATION_SUMMARY.md
           draft: false
           prerelease: ${{ contains(github.ref_name, '-alpha.') || contains(github.ref_name, '-beta.') || contains(github.ref_name, '-rc.') }}
           fail_on_unmatched_files: true
