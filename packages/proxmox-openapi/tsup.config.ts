@@ -9,6 +9,7 @@ export default defineConfig([
     clean: true,
     outDir: "dist",
     target: "node18",
+    tsconfig: "tsconfig.tsup.json",
   },
   {
     entry: { cli: "src/cli.ts" },
@@ -17,6 +18,7 @@ export default defineConfig([
     clean: false,
     outDir: "dist",
     target: "node18",
+    tsconfig: "tsconfig.tsup.json",
     banner: {
       js: "#!/usr/bin/env node",
     },
