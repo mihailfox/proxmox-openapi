@@ -46009,6 +46009,37 @@ function buildOperationId(method, path6) {
 }
 
 // ../../../tools/openapi-generator/src/generator.ts
+var PRIMARY_TAG_GROUP_ORDER = ["access", "cluster", "nodes", "storage", "pools", "version"];
+var SEGMENT_DISPLAY_OVERRIDES = /* @__PURE__ */ new Map([
+  ["acl", "ACL"],
+  ["access", "Access Control"],
+  ["acme", "ACME"],
+  ["apt", "APT"],
+  ["backup", "Backup"],
+  ["backup-info", "Backup Info"],
+  ["ceph", "Ceph"],
+  ["cluster", "Cluster"],
+  ["config", "Configuration"],
+  ["dns", "DNS"],
+  ["ha", "High Availability"],
+  ["lxc", "Containers (LXC)"],
+  ["mapping", "Mappings"],
+  ["metrics", "Metrics"],
+  ["network", "Network"],
+  ["nodes", "Nodes"],
+  ["notifications", "Notifications"],
+  ["openid", "OpenID Connect"],
+  ["nextid", "Next ID"],
+  ["pools", "Resource Pools"],
+  ["qemu", "Virtual Machines (QEMU)"],
+  ["replication", "Replication"],
+  ["sdn", "Software Defined Networking"],
+  ["storage", "Storage"],
+  ["tfa", "Two-Factor Auth"],
+  ["tasks", "Tasks"],
+  ["version", "Version"],
+  ["vzdump", "VZDump"]
+]);
 var DEFAULT_SERVER_URL = "https://{host}:{port}/api2/json";
 var DEFAULT_SERVER = {
   url: DEFAULT_SERVER_URL,
@@ -46039,8 +46070,46 @@ var SECURITY_SCHEMES = {
 function setExtension(target, key, value) {
   target[key] = value;
 }
+function deriveTagInfo(path6, depth = 2) {
+  const rawSegments = path6.split("/").filter((value) => Boolean(value) && !value.startsWith("{"));
+  if (rawSegments.length === 0) {
+    return {
+      name: "general",
+      group: "general",
+      segments: ["general"]
+    };
+  }
+  const trimmed = rawSegments.slice(0, Math.max(1, Math.min(depth, rawSegments.length)));
+  const name = trimmed.join("/");
+  const group = rawSegments[0];
+  return {
+    name,
+    group,
+    segments: trimmed
+  };
+}
+function formatSegment(segment) {
+  const normalized = segment.toLowerCase();
+  const overridden = SEGMENT_DISPLAY_OVERRIDES.get(normalized);
+  if (overridden) {
+    return overridden;
+  }
+  const words = segment.split(/[-_]/).filter(Boolean).map((part) => part.charAt(0).toUpperCase() + part.slice(1));
+  return words.join(" ") || segment;
+}
+function formatDisplayName(info2) {
+  return info2.segments.map(formatSegment).join(" \u203A ");
+}
+function buildTagDescription(info2, displayName) {
+  if (info2.segments.length <= 1) {
+    return `Operations for the ${displayName} endpoints.`;
+  }
+  const [parent, ...rest] = info2.segments.map(formatSegment);
+  const child = rest.join(" \u203A ");
+  return `Operations for ${child} under ${parent}.`;
+}
 function generateOpenApiDocument(ir, options = {}) {
-  const tagMap = /* @__PURE__ */ new Map();
+  const tagMetadata = /* @__PURE__ */ new Map();
   const contexts = collectEndpointContexts(ir.groups);
   contexts.sort((a, b) => {
     if (a.endpoint.path === b.endpoint.path) {
@@ -46050,8 +46119,13 @@ function generateOpenApiDocument(ir, options = {}) {
   });
   const paths = {};
   for (const context of contexts) {
-    if (!tagMap.has(context.tagName)) {
-      tagMap.set(context.tagName, { description: context.tagDescription });
+    if (!tagMetadata.has(context.tag.name)) {
+      const displayName = formatDisplayName(context.tag);
+      tagMetadata.set(context.tag.name, {
+        info: context.tag,
+        displayName,
+        description: buildTagDescription(context.tag, displayName)
+      });
     }
     const pathItem = paths[context.endpoint.path] ?? {};
     const method = context.endpoint.httpMethod.toLowerCase();
@@ -46068,48 +46142,79 @@ function generateOpenApiDocument(ir, options = {}) {
     openapi: "3.1.0",
     info: info2,
     servers: [options.serverUrl ? { ...DEFAULT_SERVER, url: options.serverUrl } : DEFAULT_SERVER],
-    tags: Array.from(tagMap.entries()).map(([name, value]) => ({
-      name,
-      description: value.description
-    })),
+    tags: [],
     paths,
     components: {
       securitySchemes: SECURITY_SCHEMES
     }
   };
+  const groupedTags = /* @__PURE__ */ new Map();
+  for (const metadata of tagMetadata.values()) {
+    const bucket = groupedTags.get(metadata.info.group) ?? [];
+    bucket.push(metadata);
+    groupedTags.set(metadata.info.group, bucket);
+  }
+  const orderedGroups = Array.from(groupedTags.keys()).sort((a, b) => {
+    const indexA = PRIMARY_TAG_GROUP_ORDER.indexOf(a);
+    const indexB = PRIMARY_TAG_GROUP_ORDER.indexOf(b);
+    if (indexA === -1 && indexB === -1) {
+      return a.localeCompare(b);
+    }
+    if (indexA === -1) return 1;
+    if (indexB === -1) return -1;
+    return indexA - indexB;
+  });
+  const tags = [];
+  const tagGroups = [];
+  for (const groupKey of orderedGroups) {
+    const metadataList = groupedTags.get(groupKey);
+    if (!metadataList) continue;
+    metadataList.sort((a, b) => a.displayName.localeCompare(b.displayName));
+    tagGroups.push({
+      name: formatSegment(groupKey),
+      tags: metadataList.map((meta) => meta.info.name)
+    });
+    for (const meta of metadataList) {
+      const tag = {
+        name: meta.info.name,
+        description: meta.description
+      };
+      setExtension(tag, "x-displayName", meta.displayName);
+      tags.push(tag);
+    }
+  }
+  document.tags = tags;
   setExtension(document, "x-proxmox", {
     irVersion: ir.irVersion,
     normalizedAt: ir.normalizedAt,
     source: ir.source,
     summary: ir.summary
   });
+  setExtension(document, "x-tagGroups", tagGroups);
   return document;
 }
-function collectEndpointContexts(groups, trail = []) {
+function collectEndpointContexts(groups) {
   const contexts = [];
   for (const group of groups) {
-    const nextTrail = [...trail, group.label];
-    const tagDescription = nextTrail.join(" \u203A ");
     for (const endpoint of group.endpoints) {
       contexts.push({
         endpoint,
-        tagName: group.path,
-        tagDescription
+        tag: deriveTagInfo(endpoint.path)
       });
     }
     if (group.children.length > 0) {
-      contexts.push(...collectEndpointContexts(group.children, nextTrail));
+      contexts.push(...collectEndpointContexts(group.children));
     }
   }
   return contexts;
 }
 function convertEndpointToOperation(context) {
-  const { endpoint, tagName } = context;
+  const { endpoint, tag } = context;
   const operation = {
     operationId: endpoint.operationId,
     summary: endpoint.name,
     description: endpoint.description,
-    tags: [tagName],
+    tags: [tag.name],
     responses: convertResponses(endpoint.responses)
   };
   setExtension(operation, "x-proxmox-endpoint-id", endpoint.id);
@@ -46371,12 +46476,12 @@ var import_yaml = __toESM(require_dist2(), 1);
 // ../../../tools/automation/data/regression/openapi.sha256.json
 var openapi_sha256_default = {
   json: {
-    sha256: "c80393e0f50f797f005fba6fb5459b9abb26661cf56c780957143188f0ecae20"
+    sha256: "ff318991702a1881adce58784c3cbf764975cc83af630178e4f90da1b2b0abdc"
   },
   yaml: {
-    sha256: "f31a5574852f8d8e57666a3e16bac2057243e2912291f640c6222f2e63411690"
+    sha256: "cd8442e675aab431774fd57c2c030b62b8e2f95fca6f91ce6d68e216961e5383"
   },
-  generatedAt: "2025-10-18T21:11:32.870Z"
+  generatedAt: "2025-10-19T20:14:13.536Z"
 };
 
 // ../../../tools/shared/paths.ts
@@ -46427,14 +46532,14 @@ var ARTIFACT_BASELINES = [
     label: "Raw API snapshot",
     description: "Cached payload scraped from the Proxmox API viewer.",
     path: resolveFromRoot("tools/api-scraper/data/raw/proxmox-openapi-schema.json"),
-    sha256: "dac485e9a087f98f6f6f8ae4692ddde817e0855dfdcb77f7e74de2cf593c5e3e"
+    sha256: "be8b5b0faf483b521b8ac698467a2e406117dff7d044d85375c113002f558201"
   },
   {
     id: "normalized-ir",
     label: "Normalized intermediate representation",
     description: "Structured document produced by the normalization pipeline.",
     path: resolveFromRoot("tools/api-normalizer/data/ir/proxmox-openapi-ir.json"),
-    sha256: "82b101978e129a42bff7e979d71cddf568ace309cbfdb533d605692940152351"
+    sha256: "d74175b22b3346df9af533fcd84689f9e1256ec88fdc13a431d1698d54cb9c60"
   },
   {
     id: "openapi-json",

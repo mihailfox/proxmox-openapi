@@ -43,6 +43,27 @@ describe("generateOpenApiDocument", () => {
     expect(document.tags?.length).toBeGreaterThan(0);
   });
 
+  it("groups tags by top-level category", () => {
+    const document = generateOpenApiDocument(ir);
+    const tagGroups = (document as unknown as Record<string, unknown>)["x-tagGroups"] as
+      | Array<{ name: string; tags: string[] }>
+      | undefined;
+
+    expect(tagGroups).toBeDefined();
+    const nodesGroup = tagGroups?.find((group) => group.name === "Nodes");
+    expect(nodesGroup).toBeDefined();
+    expect(nodesGroup?.tags).toContain("nodes/qemu");
+
+    const qemuTag = document.tags?.find((tag) => tag.name === "nodes/qemu");
+    expect(qemuTag).toBeDefined();
+    expect((qemuTag as unknown as Record<string, unknown>)["x-displayName"]).toBe(
+      "Nodes › Virtual Machines (QEMU)"
+    );
+
+    const qemuListOperation = document.paths?.["/nodes/{node}/qemu"]?.get;
+    expect(qemuListOperation?.tags).toEqual(["nodes/qemu"]);
+  });
+
   it("includes every endpoint from the intermediate representation", () => {
     const document = generateOpenApiDocument(ir);
     const operationCount = countOperations(document);

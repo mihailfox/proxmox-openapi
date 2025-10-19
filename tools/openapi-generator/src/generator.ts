@@ -13,11 +13,55 @@ type SchemaObject = OpenAPIV3_1.SchemaObject;
 type MediaTypeObject = OpenAPIV3_1.MediaTypeObject;
 type SecurityRequirement = OpenAPIV3_1.SecurityRequirementObject;
 
+interface TagInfo {
+  name: string;
+  group: string;
+  segments: string[];
+}
+
 interface EndpointContext {
   endpoint: NormalizedEndpoint;
-  tagName: string;
-  tagDescription?: string;
+  tag: TagInfo;
 }
+
+interface TagMetadata {
+  info: TagInfo;
+  displayName: string;
+  description: string;
+}
+
+const PRIMARY_TAG_GROUP_ORDER = ["access", "cluster", "nodes", "storage", "pools", "version"];
+
+const SEGMENT_DISPLAY_OVERRIDES = new Map<string, string>([
+  ["acl", "ACL"],
+  ["access", "Access Control"],
+  ["acme", "ACME"],
+  ["apt", "APT"],
+  ["backup", "Backup"],
+  ["backup-info", "Backup Info"],
+  ["ceph", "Ceph"],
+  ["cluster", "Cluster"],
+  ["config", "Configuration"],
+  ["dns", "DNS"],
+  ["ha", "High Availability"],
+  ["lxc", "Containers (LXC)"],
+  ["mapping", "Mappings"],
+  ["metrics", "Metrics"],
+  ["network", "Network"],
+  ["nodes", "Nodes"],
+  ["notifications", "Notifications"],
+  ["openid", "OpenID Connect"],
+  ["nextid", "Next ID"],
+  ["pools", "Resource Pools"],
+  ["qemu", "Virtual Machines (QEMU)"],
+  ["replication", "Replication"],
+  ["sdn", "Software Defined Networking"],
+  ["storage", "Storage"],
+  ["tfa", "Two-Factor Auth"],
+  ["tasks", "Tasks"],
+  ["version", "Version"],
+  ["vzdump", "VZDump"],
+]);
 
 export interface GenerateOpenApiOptions {
   /**
@@ -61,8 +105,59 @@ function setExtension<T>(target: T, key: string, value: unknown): void {
   (target as unknown as Record<string, unknown>)[key] = value;
 }
 
+function deriveTagInfo(path: string, depth = 2): TagInfo {
+  const rawSegments = path.split("/").filter((value) => Boolean(value) && !value.startsWith("{"));
+
+  if (rawSegments.length === 0) {
+    return {
+      name: "general",
+      group: "general",
+      segments: ["general"],
+    };
+  }
+
+  const trimmed = rawSegments.slice(0, Math.max(1, Math.min(depth, rawSegments.length)));
+  const name = trimmed.join("/");
+  const group = rawSegments[0];
+
+  return {
+    name,
+    group,
+    segments: trimmed,
+  };
+}
+
+function formatSegment(segment: string): string {
+  const normalized = segment.toLowerCase();
+  const overridden = SEGMENT_DISPLAY_OVERRIDES.get(normalized);
+  if (overridden) {
+    return overridden;
+  }
+
+  const words = segment
+    .split(/[-_]/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1));
+
+  return words.join(" ") || segment;
+}
+
+function formatDisplayName(info: TagInfo): string {
+  return info.segments.map(formatSegment).join(" › ");
+}
+
+function buildTagDescription(info: TagInfo, displayName: string): string {
+  if (info.segments.length <= 1) {
+    return `Operations for the ${displayName} endpoints.`;
+  }
+
+  const [parent, ...rest] = info.segments.map(formatSegment);
+  const child = rest.join(" › ");
+  return `Operations for ${child} under ${parent}.`;
+}
+
 export function generateOpenApiDocument(ir: NormalizedApiDocument, options: GenerateOpenApiOptions = {}): Document {
-  const tagMap = new Map<string, { description?: string }>();
+  const tagMetadata = new Map<string, TagMetadata>();
   const contexts = collectEndpointContexts(ir.groups);
 
   contexts.sort((a, b) => {
@@ -75,8 +170,13 @@ export function generateOpenApiDocument(ir: NormalizedApiDocument, options: Gene
   const paths: Document["paths"] = {};
 
   for (const context of contexts) {
-    if (!tagMap.has(context.tagName)) {
-      tagMap.set(context.tagName, { description: context.tagDescription });
+    if (!tagMetadata.has(context.tag.name)) {
+      const displayName = formatDisplayName(context.tag);
+      tagMetadata.set(context.tag.name, {
+        info: context.tag,
+        displayName,
+        description: buildTagDescription(context.tag, displayName),
+      });
     }
 
     const pathItem = (paths[context.endpoint.path] ?? {}) as OpenAPIV3_1.PathItemObject;
@@ -96,15 +196,57 @@ export function generateOpenApiDocument(ir: NormalizedApiDocument, options: Gene
     openapi: "3.1.0",
     info,
     servers: [options.serverUrl ? { ...DEFAULT_SERVER, url: options.serverUrl } : DEFAULT_SERVER],
-    tags: Array.from(tagMap.entries()).map(([name, value]) => ({
-      name,
-      description: value.description,
-    })),
+    tags: [],
     paths,
     components: {
       securitySchemes: SECURITY_SCHEMES,
     },
   };
+
+  const groupedTags = new Map<string, TagMetadata[]>();
+
+  for (const metadata of tagMetadata.values()) {
+    const bucket = groupedTags.get(metadata.info.group) ?? [];
+    bucket.push(metadata);
+    groupedTags.set(metadata.info.group, bucket);
+  }
+
+  const orderedGroups = Array.from(groupedTags.keys()).sort((a, b) => {
+    const indexA = PRIMARY_TAG_GROUP_ORDER.indexOf(a);
+    const indexB = PRIMARY_TAG_GROUP_ORDER.indexOf(b);
+
+    if (indexA === -1 && indexB === -1) {
+      return a.localeCompare(b);
+    }
+    if (indexA === -1) return 1;
+    if (indexB === -1) return -1;
+    return indexA - indexB;
+  });
+
+  const tags: OpenAPIV3_1.TagObject[] = [];
+  const tagGroups: Array<{ name: string; tags: string[] }> = [];
+
+  for (const groupKey of orderedGroups) {
+    const metadataList = groupedTags.get(groupKey);
+    if (!metadataList) continue;
+
+    metadataList.sort((a, b) => a.displayName.localeCompare(b.displayName));
+    tagGroups.push({
+      name: formatSegment(groupKey),
+      tags: metadataList.map((meta) => meta.info.name),
+    });
+
+    for (const meta of metadataList) {
+      const tag: OpenAPIV3_1.TagObject = {
+        name: meta.info.name,
+        description: meta.description,
+      };
+      setExtension(tag, "x-displayName", meta.displayName);
+      tags.push(tag);
+    }
+  }
+
+  document.tags = tags;
 
   setExtension(document, "x-proxmox", {
     irVersion: ir.irVersion,
@@ -112,27 +254,24 @@ export function generateOpenApiDocument(ir: NormalizedApiDocument, options: Gene
     source: ir.source,
     summary: ir.summary,
   });
+  setExtension(document, "x-tagGroups", tagGroups);
 
   return document;
 }
 
-function collectEndpointContexts(groups: NormalizedGroup[], trail: string[] = []): EndpointContext[] {
+function collectEndpointContexts(groups: NormalizedGroup[]): EndpointContext[] {
   const contexts: EndpointContext[] = [];
 
   for (const group of groups) {
-    const nextTrail = [...trail, group.label];
-    const tagDescription = nextTrail.join(" › ");
-
     for (const endpoint of group.endpoints) {
       contexts.push({
         endpoint,
-        tagName: group.path,
-        tagDescription,
+        tag: deriveTagInfo(endpoint.path),
       });
     }
 
     if (group.children.length > 0) {
-      contexts.push(...collectEndpointContexts(group.children, nextTrail));
+      contexts.push(...collectEndpointContexts(group.children));
     }
   }
 
@@ -140,12 +279,12 @@ function collectEndpointContexts(groups: NormalizedGroup[], trail: string[] = []
 }
 
 function convertEndpointToOperation(context: EndpointContext): Operation {
-  const { endpoint, tagName } = context;
+  const { endpoint, tag } = context;
   const operation: Operation = {
     operationId: endpoint.operationId,
     summary: endpoint.name,
     description: endpoint.description,
-    tags: [tagName],
+    tags: [tag.name],
     responses: convertResponses(endpoint.responses),
   };
 
