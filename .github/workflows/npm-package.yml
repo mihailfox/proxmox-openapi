@@ -1,0 +1,43 @@
+name: npm-package
+
+on:
+  release:
+    types:
+      - published
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+          registry-url: https://npm.pkg.github.com
+
+      - name: Configure npm authentication
+        run: |
+          cat <<'RC' >> ~/.npmrc
+          //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+          RC
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build package
+        run: npm run build --workspace packages/proxmox-openapi
+
+      - name: Publish package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm publish --workspace packages/proxmox-openapi --provenance

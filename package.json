@@ -5,6 +5,7 @@
   "private": true,
   "workspaces": [
     ".github/actions/proxmox-openapi-artifacts",
+    "packages/proxmox-openapi",
     "tools/api-scraper",
     "tools/api-normalizer",
     "tools/openapi-generator",
