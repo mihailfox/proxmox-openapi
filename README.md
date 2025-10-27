@@ -6,6 +6,7 @@ Utilities for scraping the official Proxmox API viewer, normalizing responses, a
 - `app/`: Vite-based SPA that surfaces the generated specifications.
 - `tools/`: CLI packages for scraping, normalization, OpenAPI generation, and automation helpers.
 - `.github/workflows/`: CI pipelines for validations, artifact generation, GitHub Pages, and project automation.
+- `.devcontainer/`: Containerized development environment configs. See [docs/devcontainer.md](docs/devcontainer.md).
 
 ## SPA Overview
 The SPA under `app/` is a React + Vite project that ships the marketing pages, API explorer, and statically bundled
