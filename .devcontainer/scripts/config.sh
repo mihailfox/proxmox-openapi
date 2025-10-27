@@ -5,6 +5,42 @@ ALIASES="$HOME/.bash_aliases"
 INPUTRC="$HOME/.inputrc"
 BASHRC="$HOME/.bashrc"
 HELIX_CONFIG="$HOME/.config/helix/config.toml"
+SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DEVCONTAINER_JSON_PATH="${DEVCONTAINER_JSON:-${SCRIPTS_DIR}/../devcontainer.json}"
+
+bool_is_true(){
+  local value="${1:-}"
+  case "${value,,}" in
+    true|1|yes|on) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+should_configure_helix(){
+  if ! command -v hx >/dev/null 2>&1; then
+    return 1
+  fi
+
+  local default_value="true"
+  local features_json=""
+  local parsed=""
+
+  if [[ -f "${DEVCONTAINER_JSON_PATH}" ]] && command -v jq >/dev/null 2>&1; then
+    features_json="$(devcontainer_get_config_value "features" "${DEVCONTAINER_JSON_PATH}" "" 0 2>/dev/null || true)"
+    if [[ -n "${features_json}" ]]; then
+      parsed="$(jq -r --arg feature "./features/cli-tools" --arg option "helix" '
+        ( .[$feature] // empty ) as $cfg
+        | if ($cfg | type) == "boolean" then $cfg
+          elif ($cfg | type) == "object" then $cfg[$option] // empty
+          else empty
+          end
+      ' <<<"${features_json}" 2>/dev/null || true)"
+    fi
+  fi
+
+  local value="${parsed:-$default_value}"
+  bool_is_true "${value}"
+}
 
 log "Creating $BASH_PROMPT file..."
 cat <<'EOF' >"$BASH_PROMPT"
@@ -147,59 +183,25 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-# bash theme - partly inspired by https://github.com/ohmyzsh/ohmyzsh/blob/master/themes/robbyrussell.zsh-theme
-__bash_prompt() {
-    local userpart='`export XIT=$? \
-        && [ ! -z "${GITHUB_USER:-}" ] && echo -n "\[\033[0;32m\]@${GITHUB_USER:-} " || echo -n "\[\033[0;32m\]\u " \
-        && [ "$XIT" -ne "0" ] && echo -n "\[\033[1;31m\]➜" || echo -n "\[\033[0m\]➜"`'
-    local gitbranch='`\
-        if [ "$(git config --get devcontainers-theme.hide-status 2>/dev/null)" != 1 ] && [ "$(git config --get codespaces-theme.hide-status 2>/dev/null)" != 1 ]; then \
-            export BRANCH="$(git --no-optional-locks symbolic-ref --short HEAD 2>/dev/null || git --no-optional-locks rev-parse --short HEAD 2>/dev/null)"; \
-            if [ "${BRANCH:-}" != "" ]; then \
-                echo -n "\[\033[0;36m\](\[\033[1;31m\]${BRANCH:-}" \
-                && if [ "$(git config --get devcontainers-theme.show-dirty 2>/dev/null)" = 1 ] && \
-                    git --no-optional-locks ls-files --error-unmatch -m --directory --no-empty-directory -o --exclude-standard ":/*" > /dev/null 2>&1; then \
-                        echo -n " \[\033[1;33m\]✗"; \
-                fi \
-                && echo -n "\[\033[0;36m\]) "; \
-            fi; \
-        fi`'
-    local lightblue='\[\033[1;34m\]'
-    local removecolor='\[\033[0m\]'
-    PS1="${userpart} ${lightblue}\w ${gitbranch}${removecolor}\n❯ "
-    unset -f __bash_prompt
-}
-__bash_prompt
-export PROMPT_DIRTRIM=4
 
-# Check if the terminal is xterm
-if [[ "$TERM" == "xterm" ]]; then
-    # Function to set the terminal title to the current command
-    preexec() {
-        local cmd="${BASH_COMMAND}"
-        echo -ne "\033]0;${USER}@${HOSTNAME}: ${cmd}\007"
-    }
-
-    # Function to reset the terminal title to the shell type after the command is executed
-    precmd() {
-        echo -ne "\033]0;${USER}@${HOSTNAME}: ${SHELL}\007"
-    }
-
-    # Trap DEBUG signal to call preexec before each command
-    trap 'preexec' DEBUG
-
-    # Append to PROMPT_COMMAND to call precmd before displaying the prompt
-    PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND; }precmd"
+if [ -f "${BASH_PROMPT}" ]; then
+  . "${BASH_PROMPT}"
 fi
 
-source <(bat --completion bash)
-source <(fzf --bash)
+if command -v bat >/dev/null 2>&1; then
+  source <(bat --completion bash)
+fi
+
+if command -v fzf >/dev/null 2>&1; then
+  eval "$(fzf --bash)"
+fi
 
 EOF
 
-log "Creating helix config..."
-mkdir -p "$(dirname "$HELIX_CONFIG")"
-cat <<'EOF' >"$HELIX_CONFIG"
+if should_configure_helix; then
+  log "Creating helix config..."
+  mkdir -p "$(dirname "$HELIX_CONFIG")"
+  cat <<'EOF' >"$HELIX_CONFIG"
 theme = "catppuccin-mocha"
 
 [editor]
@@ -238,3 +240,6 @@ insert = "bar"
 normal = "block"
 select = "underline"
 EOF
+else
+  log "Skipping helix config (feature disabled or helix not installed)."
+fi

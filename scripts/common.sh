@@ -47,7 +47,8 @@ _log_emit(){
   local stream="$2"
   shift 2
   local message="$*"
-  local tag="[$(_log_source_tag)]"
+  local tag
+  tag="[$(_log_source_tag)]"
   local indicator=""
   local color=""
   local reset=""
@@ -91,6 +92,14 @@ _log_emit(){
 log(){ _log_emit info stdout "$*"; }
 warn(){ _log_emit warn stderr "$*"; }
 err(){ _log_emit error stderr "$*"; }
+
+_sudo_exec(){
+  if command -v sudo >/dev/null 2>&1; then
+    sudo "$@"
+  else
+    "$@"
+  fi
+}
 
 sanitize_devcontainer_json(){
   local file="$1"
@@ -258,7 +267,7 @@ _install_from_deb(){
 
   log "Installing ${package} ${version}..."
   curl -L --fail --show-error --progress-bar -o "$deb_path" "$url"
-  sudo dpkg -i "$deb_path"
+  _sudo_exec dpkg -i "$deb_path"
   rm -rf "$tmp_dir"
 }
 
@@ -334,7 +343,7 @@ _install_from_archive(){
   local source_binary="${executables[0]}"
   local destination="/usr/local/bin/${package}"
 
-  sudo install -m 0755 "$source_binary" "$destination"
+  _sudo_exec install -m 0755 "$source_binary" "$destination"
   rm -rf "$tmp_dir"
   log "${package} ${version} installed to ${destination}"
 }
@@ -357,13 +366,23 @@ ensure_apt_packages() {
   if (( ${#missing[@]} )); then
     if [[ "${APT_UPDATED}" != true ]]; then
       log "Updating apt package index..."
-      sudo apt-get update 
+      _sudo_exec apt-get update -qqy &>/dev/null
       APT_UPDATED=true
     fi
     log "Installing missing packages: ${missing[*]}..."
-    sudo apt-get -qq -o Dpkg::Use-Pty=0 install -y "${missing[@]}"
+    _sudo_exec apt-get -qq -o Dpkg::Use-Pty=0 install -y "${missing[@]}"
   else
     log "apt packages already installed: ${packages[*]}"
+  fi
+}
+
+apt_cleanup(){
+  if command -v apt-get >/dev/null 2>&1; then
+    _sudo_exec apt-get clean >/dev/null 2>&1 || true
+  fi
+
+  if [[ -d /var/lib/apt/lists ]]; then
+    _sudo_exec rm -rf /var/lib/apt/lists/* /var/lib/apt/lists/partial >/dev/null 2>&1 || true
   fi
 }
 
@@ -387,7 +406,7 @@ ensure_gem_installed() {
   fi
 
   log "Installing gem ${gem_name}..."
-  sudo gem install --no-document "$gem_name"
+  _sudo_exec gem install --no-document "$gem_name"
 }
 
 ensure_npm_package() {
