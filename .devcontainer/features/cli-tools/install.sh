@@ -147,6 +147,74 @@ install_binary(){
   log "${name} installed."
 }
 
+gh_can_auth(){
+  if ! command -v gh >/dev/null 2>&1; then
+    return 1
+  fi
+
+  if [[ -n "${GH_TOKEN:-}" || -n "${GITHUB_TOKEN:-}" ]]; then
+    return 0
+  fi
+
+  gh auth status >/dev/null 2>&1
+}
+
+fetch_release_tag(){
+  local repo="$1"
+  local fallback_tag="$2"
+  local tag=""
+
+  if gh_can_auth; then
+    tag="$(gh release view --repo "${repo}" --json tagName --jq '.tagName' 2>/dev/null || true)"
+  fi
+
+  if [[ -z "${tag}" ]]; then
+    local release_json=""
+    if release_json="$(curl -fsSL "https://api.github.com/repos/${repo}/releases/latest" 2>/dev/null)"; then
+      if command -v jq >/dev/null 2>&1; then
+        tag="$(jq -r '.tag_name' <<<"${release_json}")"
+      else
+        tag="$(awk -F'"' '/"tag_name"/ {print $4; exit}' <<<"${release_json}")"
+      fi
+    fi
+  fi
+
+  if [[ -z "${tag}" || "${tag}" == "null" ]]; then
+    tag="${fallback_tag}"
+  fi
+
+  normalize_tag "${tag}"
+}
+
+resolve_release_tag(){
+  local repo="$1"
+  local tag_env="$2"
+  local version_env="$3"
+  local fallback_tag="$4"
+
+  local tag="${!tag_env:-}"
+  if [[ -n "${tag}" ]]; then
+    normalize_tag "${tag}"
+    return
+  fi
+
+  local version="${!version_env:-}"
+  if [[ -n "${version}" ]]; then
+    if [[ "${version,,}" == "latest" ]]; then
+      fetch_release_tag "${repo}" "${fallback_tag}"
+      return
+    fi
+    if [[ "${version}" == v* ]]; then
+      printf '%s\n' "${version}"
+    else
+      printf 'v%s\n' "${version}"
+    fi
+    return
+  fi
+
+  fetch_release_tag "${repo}" "${fallback_tag}"
+}
+
 install_tar_binary(){
   local name="$1"
   local url="$2"
@@ -217,6 +285,62 @@ gh_can_auth(){
   gh auth status >/dev/null 2>&1
 }
 
+fetch_release_tag(){
+  local repo="$1"
+  local fallback_tag="$2"
+  local tag=""
+
+  if gh_can_auth; then
+    tag="$(gh release view --repo "${repo}" --json tagName --jq '.tagName' 2>/dev/null || true)"
+  fi
+
+  if [[ -z "${tag}" ]]; then
+    local release_json=""
+    if release_json="$(curl -fsSL "https://api.github.com/repos/${repo}/releases/latest" 2>/dev/null)"; then
+      if command -v jq >/dev/null 2>&1; then
+        tag="$(jq -r '.tag_name' <<<"${release_json}")"
+      else
+        tag="$(awk -F'"' '/"tag_name"/ {print $4; exit}' <<<"${release_json}")"
+      fi
+    fi
+  fi
+
+  if [[ -z "${tag}" || "${tag}" == "null" ]]; then
+    tag="${fallback_tag}"
+  fi
+
+  normalize_tag "${tag}"
+}
+
+resolve_release_tag(){
+  local repo="$1"
+  local tag_env="$2"
+  local version_env="$3"
+  local fallback_tag="$4"
+
+  local tag="${!tag_env:-}"
+  if [[ -n "${tag}" ]]; then
+    normalize_tag "${tag}"
+    return
+  fi
+
+  local version="${!version_env:-}"
+  if [[ -n "${version}" ]]; then
+    if [[ "${version,,}" == "latest" ]]; then
+      fetch_release_tag "${repo}" "${fallback_tag}"
+      return
+    fi
+    if [[ "${version}" == v* ]]; then
+      printf '%s\n' "${version}"
+    else
+      printf 'v%s\n' "${version}"
+    fi
+    return
+  fi
+
+  fetch_release_tag "${repo}" "${fallback_tag}"
+}
+
 install_ripgrep(){
   local version="${RIPGREP_VERSION:-14.1.1-1}"
   local tag="${RIPGREP_TAG:-14.1.1}"
@@ -269,33 +393,8 @@ install_fzf(){
       ensure_apt_packages fzf
       ;;
     gh-release)
-      local version="${FZF_VERSION:-latest}"
-      local tag=""
-      if [[ "${version}" == "latest" ]]; then
-        log "Resolving latest fzf release tag..."
-        if gh_can_auth; then
-          if ! tag="$(gh release view --repo junegunn/fzf --json tagName --jq '.tagName' 2>/dev/null)"; then
-            warn "gh release view failed; falling back to GitHub API."
-          fi
-        else
-          log "GitHub CLI not authenticated; using REST API."
-        fi
-        if [[ -z "${tag:-}" ]]; then
-          local release_json=""
-          if ! release_json="$(curl -fsSL https://api.github.com/repos/junegunn/fzf/releases/latest)"; then
-            err "Failed to fetch fzf release metadata."
-            exit 1
-          fi
-          if command -v jq >/dev/null 2>&1; then
-            tag="$(jq -r '.tag_name' <<<"${release_json}")"
-          else
-            tag="$(awk -F'\"' '/\"tag_name\"/ {print $4; exit}' <<<"${release_json}")"
-          fi
-        fi
-      else
-        tag="${version}"
-      fi
-      tag="$(normalize_tag "${tag}")"
+      local tag
+      tag="$(resolve_release_tag "junegunn/fzf" "FZF_TAG" "FZF_VERSION" "v0.66.1")"
       local asset_version="${tag#v}"
       local asset="fzf-${asset_version}-linux_${BIN_ARCH}.tar.gz"
       local url="https://github.com/junegunn/fzf/releases/download/${tag}/${asset}"
@@ -334,15 +433,15 @@ install_jq(){
 }
 
 install_yq(){
-  local version="${YQ_VERSION:-4.48.1}"
-  local tag="${YQ_TAG:-v${version}}"
+  local tag
+  tag="$(resolve_release_tag "mikefarah/yq" "YQ_TAG" "YQ_VERSION" "v4.48.1")"
   local url="https://github.com/mikefarah/yq/releases/download/${tag}/yq_linux_${BIN_ARCH}"
   install_binary "yq" "${url}"
 }
 
 install_gojq(){
-  local version="${GOJQ_VERSION:-0.12.17}"
-  local tag="${GOJQ_TAG:-v${version}}"
+  local tag
+  tag="$(resolve_release_tag "itchyny/gojq" "GOJQ_TAG" "GOJQ_VERSION" "v0.12.17")"
   local asset="gojq_${tag}_linux_${BIN_ARCH}.tar.gz"
   local url="https://github.com/itchyny/gojq/releases/download/${tag}/${asset}"
   install_tar_binary "gojq" "${url}" "gojq"
@@ -366,8 +465,8 @@ install_shellcheck(){
       ensure_apt_packages shellcheck
       ;;
     gh-release)
-      local version="${SHELLCHECK_VERSION:-0.10.0}"
-      local tag="${SHELLCHECK_TAG:-v${version}}"
+      local tag
+      tag="$(resolve_release_tag "koalaman/shellcheck" "SHELLCHECK_TAG" "SHELLCHECK_VERSION" "v0.10.0")"
       local arch
       arch="$(shellcheck_arch)"
       local asset="shellcheck-${tag}.linux.${arch}.tar.xz"
@@ -394,8 +493,8 @@ install_shfmt(){
       ensure_apt_packages shfmt
       ;;
     gh-release)
-      local version="${SHFMT_VERSION:-3.9.0}"
-      local tag="${SHFMT_TAG:-v${version}}"
+      local tag
+      tag="$(resolve_release_tag "mvdan/sh" "SHFMT_TAG" "SHFMT_VERSION" "v3.9.0")"
       local asset="shfmt_${tag}_linux_${BIN_ARCH}"
       local url="https://github.com/mvdan/sh/releases/download/${tag}/${asset}"
       install_binary "shfmt" "${url}"
