@@ -1,0 +1,46 @@
+{
+  "id": "cli-tools",
+  "name": "CLI tools",
+  "version": "1.0.0",
+  "description": "Installs ripgrep, fd, bat, delta, lsd, helix, and lynx from upstream releases or apt.",
+  "options": {
+    "ripgrep": {
+      "type": "boolean",
+      "default": true,
+      "description": "Install ripgrep."
+    },
+    "fd": {
+      "type": "boolean",
+      "default": true,
+      "description": "Install fd (a simple, fast alternative to find)."
+    },
+    "bat": {
+      "type": "boolean",
+      "default": true,
+      "description": "Install bat (a cat clone with wings)."
+    },
+    "lsd": {
+      "type": "boolean",
+      "default": true,
+      "description": "Install lsd (an ls alternative)."
+    },
+    "delta": {
+      "type": "boolean",
+      "default": true,
+      "description": "Install git-delta."
+    },
+    "helix": {
+      "type": "boolean",
+      "default": true,
+      "description": "Install the Helix editor."
+    },
+    "lynx": {
+      "type": "boolean",
+      "default": true,
+      "description": "Install lynx via apt."
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/common-utils:2"
+  ]
+}

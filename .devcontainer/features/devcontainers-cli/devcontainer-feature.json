@@ -1,0 +1,21 @@
+{
+  "id": "devcontainers-cli",
+  "name": "devcontainer cli",
+  "version": "1.0.0",
+  "description": "Installs the M$ devcontainers CLI",
+  "options": {
+    "version": {
+      "default": "latest",
+      "description": "Select the version to install.",
+      "proposals": [
+        "latest"
+      ],
+      "type": "string"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/common-utils:2",
+    "ghcr.io/devcontainers/features/docker-outside-of-docker",
+    "ghcr.io/devcontainers/features/node"
+  ]
+}
