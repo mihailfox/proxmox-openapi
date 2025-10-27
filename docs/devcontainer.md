@@ -35,6 +35,12 @@ and supports per-tool overrides. Example configuration:
 
 When no overrides are provided, the installer fetches the latest GitHub release (or uses the package manager).
 
+### Default Behavior
+
+- GitHub-hosted tools install the newest published release when `*Version` and `*Tag` are omitted.
+- The feature prefers authenticated `gh` lookups and automatically falls back to anonymous REST calls.
+- APT-backed tools reuse the distro packages unless explicitly toggled to `gh-release`.
+
 ## Lifecycle Scripts
 
 `.devcontainer/scripts/` contains:
