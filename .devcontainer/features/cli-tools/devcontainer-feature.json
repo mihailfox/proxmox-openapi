@@ -60,6 +60,28 @@
       "default": true,
       "description": "Install gojq from the GitHub release."
     },
+    "shellcheckMethod": {
+      "type": "string",
+      "enum": ["apt", "gh-release"],
+      "default": "gh-release",
+      "description": "Select how shellcheck should be installed."
+    },
+    "shfmtMethod": {
+      "type": "string",
+      "enum": ["apt", "gh-release"],
+      "default": "gh-release",
+      "description": "Select how shfmt should be installed."
+    },
+    "shellcheck": {
+      "type": "boolean",
+      "default": true,
+      "description": "Install shellcheck via apt."
+    },
+    "shfmt": {
+      "type": "boolean",
+      "default": true,
+      "description": "Install shfmt via apt."
+    },
     "lynx": {
       "type": "boolean",
       "default": true,

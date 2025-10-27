@@ -154,11 +154,11 @@ install_tar_binary(){
 
   local tmp_dir archive extracted
   tmp_dir="$(mktemp -d)"
-  archive="${tmp_dir}/archive.tar.gz"
+  archive="${tmp_dir}/$(basename "${url}")"
 
   log "Downloading ${name} from ${url}..."
   curl -fsSL -o "${archive}" "${url}"
-  tar -xzf "${archive}" -C "${tmp_dir}"
+  tar -xf "${archive}" -C "${tmp_dir}"
 
   extracted="$(find "${tmp_dir}" -type f -name "${target_name}" -perm /111 | head -n1 || true)"
   if [[ -z "${extracted}" ]]; then
@@ -300,6 +300,62 @@ install_gojq(){
   install_tar_binary "gojq" "${url}" "gojq"
 }
 
+shellcheck_arch(){
+  case "${BIN_ARCH}" in
+    amd64) printf 'x86_64' ;;
+    arm64) printf 'aarch64' ;;
+    *) err "Unsupported architecture for shellcheck: ${BIN_ARCH}"; exit 1 ;;
+  esac
+}
+
+install_shellcheck(){
+  local method
+  method="$(feature_option_value "shellcheck_method" "gh-release")"
+  method="${method,,}"
+
+  case "${method}" in
+    apt)
+      ensure_apt_packages shellcheck
+      ;;
+    gh-release)
+      local version="${SHELLCHECK_VERSION:-0.10.0}"
+      local tag="${SHELLCHECK_TAG:-v${version}}"
+      local arch
+      arch="$(shellcheck_arch)"
+      local asset="shellcheck-${tag}.linux.${arch}.tar.xz"
+      local url="https://github.com/koalaman/shellcheck/releases/download/${tag}/${asset}"
+      install_tar_binary "shellcheck" "${url}" "shellcheck"
+      ;;
+    *)
+      err "Unsupported shellcheck installation method: ${method}"
+      exit 1
+      ;;
+  esac
+}
+
+install_shfmt(){
+  local method
+  method="$(feature_option_value "shfmt_method" "gh-release")"
+  method="${method,,}"
+
+  case "${method}" in
+    apt)
+      ensure_apt_packages shfmt
+      ;;
+    gh-release)
+      local version="${SHFMT_VERSION:-3.9.0}"
+      local tag="${SHFMT_TAG:-v${version}}"
+      local asset="shfmt_${tag}_linux_${BIN_ARCH}"
+      local url="https://github.com/mvdan/sh/releases/download/${tag}/${asset}"
+      install_binary "shfmt" "${url}"
+      ;;
+    *)
+      err "Unsupported shfmt installation method: ${method}"
+      exit 1
+      ;;
+  esac
+}
+
 DEB_ARCH="$(detect_arch)"
 BIN_ARCH="${DEB_ARCH}"
 
@@ -361,6 +417,18 @@ if feature_option_enabled "gojq" "true"; then
   install_gojq
 else
   log "Skipping gojq installation."
+fi
+
+if feature_option_enabled "shellcheck" "true"; then
+  install_shellcheck
+else
+  log "Skipping shellcheck installation."
+fi
+
+if feature_option_enabled "shfmt" "true"; then
+  install_shfmt
+else
+  log "Skipping shfmt installation."
 fi
 
 if feature_option_enabled "lynx" "true"; then
