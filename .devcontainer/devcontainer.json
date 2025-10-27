@@ -8,11 +8,9 @@
     "ghcr.io/devcontainers/features/github-cli:1": {},
     // "ghcr.io/devcontainers-extra/features/uv:1": {},
     "ghcr.io/facebook/devcontainers/features/dotslash:latest": {},
-    "./features/cli-tools": {},
-    "./features/fzf": {
-      "method": "gh-release"
+    "./features/cli-tools": {
+      "fzfMethod": "gh-release"
     },
-    "./features/jq-familly": {},
     "./features/devcontainers-cli": {}
   },
   "forwardPorts": [5173, 4173],

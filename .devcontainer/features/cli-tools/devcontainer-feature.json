@@ -2,8 +2,19 @@
   "id": "cli-tools",
   "name": "CLI tools",
   "version": "1.0.0",
-  "description": "Installs ripgrep, fd, bat, delta, lsd, helix, and lynx from upstream releases or apt.",
+  "description": "Installs common CLI tooling (ripgrep, fd, bat, lsd, git-delta, helix, lynx, jq, yq, gojq, fzf).",
   "options": {
+    "fzf": {
+      "type": "boolean",
+      "default": true,
+      "description": "Install fzf fuzzy finder."
+    },
+    "fzfMethod": {
+      "type": "string",
+      "enum": ["apt", "gh-release"],
+      "default": "gh-release",
+      "description": "Select how fzf should be installed (apt package or GitHub release)."
+    },
     "ripgrep": {
       "type": "boolean",
       "default": true,
@@ -33,6 +44,21 @@
       "type": "boolean",
       "default": true,
       "description": "Install the Helix editor."
+    },
+    "jq": {
+      "type": "boolean",
+      "default": true,
+      "description": "Install jq via apt."
+    },
+    "yq": {
+      "type": "boolean",
+      "default": true,
+      "description": "Install yq from the GitHub release."
+    },
+    "gojq": {
+      "type": "boolean",
+      "default": true,
+      "description": "Install gojq from the GitHub release."
     },
     "lynx": {
       "type": "boolean",

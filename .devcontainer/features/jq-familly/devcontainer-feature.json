@@ -1,9 +1,0 @@
-{
-  "id": "jq-familly",
-  "name": "jq, yq, gojq",
-  "version": "1.0.0",
-  "description": "Installs jq (json parser), yq (yaml parser), gojq (jq implemented in golang)",
-  "installsAfter": [
-    "ghcr.io/devcontainers/features/common-utils:2"
-  ]
-}
