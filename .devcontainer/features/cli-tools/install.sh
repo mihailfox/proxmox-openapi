@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -Eeuox pipefail
+set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
@@ -152,7 +152,8 @@ install_tar_binary(){
   local url="$2"
   local target_name="${3:-$1}"
 
-  local tmp_dir archive extracted tar_flags
+  local tmp_dir archive extracted
+  local -a tar_flags=()
   tmp_dir="$(mktemp -d)"
   archive="${tmp_dir}/$(basename "${url}")"
 
@@ -202,6 +203,18 @@ install_tar_binary(){
 
   rm -rf "${tmp_dir}"
   log "${name} installed."
+}
+
+gh_can_auth(){
+  if ! command -v gh >/dev/null 2>&1; then
+    return 1
+  fi
+
+  if [[ -n "${GH_TOKEN:-}" || -n "${GITHUB_TOKEN:-}" ]]; then
+    return 0
+  fi
+
+  gh auth status >/dev/null 2>&1
 }
 
 install_ripgrep(){
@@ -260,10 +273,12 @@ install_fzf(){
       local tag=""
       if [[ "${version}" == "latest" ]]; then
         log "Resolving latest fzf release tag..."
-        if command -v gh >/dev/null 2>&1; then
+        if gh_can_auth; then
           if ! tag="$(gh release view junegunn/fzf --json tagName --jq '.tagName' 2>/dev/null)"; then
             warn "gh release view failed; falling back to GitHub API."
           fi
+        else
+          log "GitHub CLI not authenticated; using REST API."
         fi
         if [[ -z "${tag:-}" ]]; then
           local release_json=""
