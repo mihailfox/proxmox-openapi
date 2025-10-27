@@ -13,6 +13,8 @@ else
   err(){ log "$*"; }
 fi
 
+log "Starting CLI tools installation..."
+
 if ! declare -f download_and_install_package >/dev/null 2>&1; then
   download_and_install_package(){
     local package="$1"
