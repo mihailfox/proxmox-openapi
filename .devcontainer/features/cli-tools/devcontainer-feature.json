@@ -2,7 +2,7 @@
   "id": "cli-tools",
   "name": "CLI tools",
   "version": "1.0.0",
-  "description": "Installs common CLI tooling (ripgrep, fd, bat, lsd, git-delta, helix, lynx, jq, yq, gojq, fzf).",
+  "description": "Installs common CLI tooling (ripgrep, fd, bat, lsd, git-delta, helix, jq, yq, gojq, fzf, shellcheck, shfmt, lynx).",
   "options": {
     "fzf": {
       "type": "boolean",
@@ -60,11 +60,21 @@
       "default": true,
       "description": "Install gojq from the GitHub release."
     },
+    "shellcheck": {
+      "type": "boolean",
+      "default": true,
+      "description": "Install shellcheck."
+    },
     "shellcheckMethod": {
       "type": "string",
       "enum": ["apt", "gh-release"],
       "default": "gh-release",
       "description": "Select how shellcheck should be installed."
+    },
+    "shfmt": {
+      "type": "boolean",
+      "default": true,
+      "description": "Install shfmt."
     },
     "shfmtMethod": {
       "type": "string",
@@ -89,6 +99,7 @@
     }
   },
   "installsAfter": [
-    "ghcr.io/devcontainers/features/common-utils:2"
+    "ghcr.io/devcontainers/features/common-utils:2",
+    "ghcr.io/devcontainers/features/github-cli:1"
   ]
 }

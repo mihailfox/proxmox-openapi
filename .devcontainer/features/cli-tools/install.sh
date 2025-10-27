@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -Eeuo pipefail
+set -Eeuox pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
@@ -152,13 +152,34 @@ install_tar_binary(){
   local url="$2"
   local target_name="${3:-$1}"
 
-  local tmp_dir archive extracted
+  local tmp_dir archive extracted tar_flags
   tmp_dir="$(mktemp -d)"
   archive="${tmp_dir}/$(basename "${url}")"
 
   log "Downloading ${name} from ${url}..."
   curl -fsSL -o "${archive}" "${url}"
-  tar -xf "${archive}" -C "${tmp_dir}"
+
+  case "${archive}" in
+    *.tar.gz|*.tgz)
+      tar_flags=(-xzf)
+      ;;
+    *.tar.xz|*.txz)
+      tar_flags=(-xJf)
+      ;;
+    *.tar.bz2|*.tbz|*.tbz2)
+      tar_flags=(-xjf)
+      ;;
+    *.tar)
+      tar_flags=(-xf)
+      ;;
+    *)
+      err "Unsupported archive format for ${archive}"
+      rm -rf "${tmp_dir}"
+      exit 1
+      ;;
+  esac
+
+  tar "${tar_flags[@]}" "${archive}" -C "${tmp_dir}"
 
   extracted="$(find "${tmp_dir}" -type f -name "${target_name}" -perm /111 | head -n1 || true)"
   if [[ -z "${extracted}" ]]; then
@@ -236,13 +257,25 @@ install_fzf(){
       ;;
     gh-release)
       local version="${FZF_VERSION:-latest}"
-      local tag
+      local tag=""
       if [[ "${version}" == "latest" ]]; then
         log "Resolving latest fzf release tag..."
-        tag="$(curl -fsSL https://api.github.com/repos/junegunn/fzf/releases/latest | awk -F'\"' '/\"tag_name\"/ {print $4; exit}')"
-        if [[ -z "${tag}" ]]; then
-          err "Failed to resolve fzf release tag."
-          exit 1
+        if command -v gh >/dev/null 2>&1; then
+          if ! tag="$(gh release view junegunn/fzf --json tagName --jq '.tagName' 2>/dev/null)"; then
+            warn "gh release view failed; falling back to GitHub API."
+          fi
+        fi
+        if [[ -z "${tag:-}" ]]; then
+          local release_json=""
+          if ! release_json="$(curl -fsSL https://api.github.com/repos/junegunn/fzf/releases/latest)"; then
+            err "Failed to fetch fzf release metadata."
+            exit 1
+          fi
+          if command -v jq >/dev/null 2>&1; then
+            tag="$(jq -r '.tag_name' <<<"${release_json}")"
+          else
+            tag="$(awk -F'\"' '/\"tag_name\"/ {print $4; exit}' <<<"${release_json}")"
+          fi
         fi
       else
         tag="${version}"
@@ -324,6 +357,9 @@ install_shellcheck(){
       arch="$(shellcheck_arch)"
       local asset="shellcheck-${tag}.linux.${arch}.tar.xz"
       local url="https://github.com/koalaman/shellcheck/releases/download/${tag}/${asset}"
+      if ! command -v xz >/dev/null 2>&1; then
+        ensure_apt_packages xz-utils
+      fi
       install_tar_binary "shellcheck" "${url}" "shellcheck"
       ;;
     *)
