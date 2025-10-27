@@ -274,7 +274,7 @@ install_fzf(){
       if [[ "${version}" == "latest" ]]; then
         log "Resolving latest fzf release tag..."
         if gh_can_auth; then
-          if ! tag="$(gh release view junegunn/fzf --json tagName --jq '.tagName' 2>/dev/null)"; then
+          if ! tag="$(gh release view --repo junegunn/fzf --json tagName --jq '.tagName' 2>/dev/null)"; then
             warn "gh release view failed; falling back to GitHub API."
           fi
         else
