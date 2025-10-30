@@ -32,7 +32,7 @@ app/public/openapi/
 .react-router/
 public/openapi.json
 public/proxmox-ve.yaml
-app/public/openapi/
+app/public/openapi/*
 
 # Playwright artifacts
 playwright-report/

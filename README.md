@@ -18,6 +18,14 @@ to deliver a full-featured Terraform provider and other infrastructure-as-code i
 - `.devcontainer/`: Containerized development environment configs. See [docs/devcontainer.md](docs/devcontainer.md).
 - `var/`: Workspace-local output directory (automation summaries, OpenAPI bundles, release staging, static site builds).
 
+### Git hooks & formatting
+- We pin Git’s hooks directory to `.githooks` (`git config core.hooksPath .githooks`) so every commit runs Biome on staged
+  sources. The pre-commit script (`.githooks/pre-commit`) exits quietly if `npx` or `@biomejs/biome` are missing.
+- The hook executes `npx @biomejs/biome check --write --staged --files-ignore-unknown=true --no-errors-on-unmatched`.
+  It formats only staged files, sorts imports, and applies autofixable lint fixes without touching unstaged work.
+- Format the entire tree manually with `npx @biomejs/biome check --write --organize-imports-enabled=true .` whenever you
+  want a clean sweep.
+
 ## SPA Overview
 The SPA under `app/` is a React + Vite project that ships the marketing pages, API explorer, and statically bundled
 OpenAPI artifacts. The build expects fresh schema bundles under `var/openapi`, which are synced into the public assets

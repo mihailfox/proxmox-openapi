@@ -49,6 +49,9 @@
     "action:package": "npm run lint --workspace .github/actions/proxmox-openapi-artifacts && npm run typecheck --workspace .github/actions/proxmox-openapi-artifacts && npm run build --workspace .github/actions/proxmox-openapi-artifacts",
     "action:verify": "npm run action:package && git diff --quiet -- .github/actions/proxmox-openapi-artifacts/dist || (echo 'dist output differs. Run npm run action:package and commit the dist folder.' >&2; exit 1)"
   },
+  "lint-staged": {
+    "*.{ts,tsx,js,json}": "biome format --write --organize-imports"
+  },
   "devDependencies": {
     "@apidevtools/swagger-parser": "^12.0.0",
     "@biomejs/biome": "^2.2.5",
