@@ -9,6 +9,22 @@ This document describes the GitHub automation that keeps the Proxmox OpenAPI del
 - **Token usage:** The job requests `repository-projects: write`. It prefers the `PROJECT_AUTOMATION_TOKEN` secret for broader scopes and automatically falls back to the default `GITHUB_TOKEN` when the PAT is absent.
 - **Beta handling:** Issues attached to milestones containing "beta" are promoted to the Beta stage even if Status is still "In Progress".
 
+### Pipeline Modes & Flags
+- `npm run automation:pipeline` drives the scrape → normalize → generate flow implemented in `tools/automation/src/pipeline.ts`.
+- **CI mode (`--mode=ci`)** is the default. It operates offline, reuses cached snapshots, and validates existing artifacts.
+- **Full mode (`--mode=full`)** performs a live scrape using Playwright and honours `--offline`/`--fallback-to-cache` overrides:
+  - `--fallback-to-cache` / `--no-fallback-to-cache` control whether cached snapshots are reused when scraping fails.
+  - `--offline` forces cache usage even in full mode (useful for air-gapped runners).
+- All stages respect optional output paths: `--raw-output`, `--ir-output`, `--openapi-dir`, and `--basename`.
+- Pass `--report <path>` to emit an automation summary (see `var/automation-summary.json`). The summary feeds status updates and PR notes.
+
+### Regression Summary & Reporting
+- The pipeline logs a QA digest via `logRegressionReport()`—checksum comparisons against `tools/automation/data/regression/openapi.sha256.json`,
+  normalization counts, and JSON↔YAML parity checks.
+- Convert summary JSON into Markdown using `tsx tools/automation/scripts/format-summary.ts --input var/automation-summary.json`.
+- Refresh baseline hashes after intentional schema changes with `npm run regression:record` (wraps `tools/automation/scripts/update-regression-baseline.ts`).
+- Regression Vitest specs (`tests/regression`) gate merges on checksum parity, tag counts, and repo hygiene (no generated artifacts in `docs/openapi/`).
+
 ## Manual Overrides
 If automation is paused or lacks access, update Stage manually for affected items:
 1. Open the project item in GitHub (Project #4, "Proxmox OpenAPI Delivery").
