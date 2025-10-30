@@ -73,8 +73,5 @@
     "react-router-dom": "^7.9.4",
     "swagger-ui-dist": "^5.29.3",
     "yaml": "^2.8.1"
-  },
-  "overrides": {
-    "source-map": "0.7.6"
   }
 }
