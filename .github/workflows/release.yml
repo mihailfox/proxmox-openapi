@@ -57,10 +57,7 @@ jobs:
         run: npm install
 
       - name: Generate OpenAPI artifacts
-        run: npm run automation:pipeline -- --mode=ci --report var/automation-summary.json
-
-      - name: Run regression suite
-        run: npm run regression:test
+        run: npm run automation:pipeline -- --mode=full --report var/automation-summary.json
 
       - name: Validate OpenAPI document
         run: npm run openapi:validate
