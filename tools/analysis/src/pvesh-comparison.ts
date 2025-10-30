@@ -51,7 +51,7 @@ interface ComparisonResult {
 }
 
 const DEFAULT_OFFICIAL_ROOT = path.resolve("vendor", "pve-manager");
-const DEFAULT_IR_PATH = path.resolve("tools", "api-normalizer", "data", "ir", "proxmox-openapi-ir.json");
+const DEFAULT_IR_PATH = path.resolve("var", "cache", "api-normalizer", "ir", "proxmox-openapi-ir.json");
 
 function parseArgs(argv: string[]): CliOptions {
   const options: CliOptions = {
@@ -96,7 +96,7 @@ function printUsageAndExit(): never {
     `Options:\n` +
     `  --official <path>   Add a search root for Perl modules (repeatable, comma-separated values supported).\n` +
     `                      Defaults to vendor/pve-manager.\n` +
-    `  --ir <path>         Path to the normalized IR JSON file (default packages/proxmox-openapi/data/api-normalizer/cache/ir/proxmox-openapi-ir.json).\n` +
+    `  --ir <path>         Path to the normalized IR JSON file (default var/cache/api-normalizer/ir/proxmox-openapi-ir.json).\n` +
     `  --output <path>     Optional JSON output file for the comparison summary.\n` +
     `  --limit <number>    Limit the number of diff entries printed per category.\n` +
     `  -h, --help          Show this message.`;

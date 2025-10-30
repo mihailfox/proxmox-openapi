@@ -44,9 +44,7 @@ describe("formatAutomationSummary", () => {
     expect(markdown).toContain("## Automation summary");
     expect(markdown).toContain("- Summary JSON: `var/reports/automation-summary.json`");
     expect(markdown).toContain("- Cache usage: ✨ Fresh scrape");
-    expect(markdown).toContain(
-      "| Raw snapshot | `packages/proxmox-openapi/data/api-scraper/raw/proxmox-openapi-schema.json` |"
-    );
+    expect(markdown).toContain("| Raw snapshot | `var/cache/api-scraper/raw/proxmox-openapi-schema.json` |");
     expect(markdown).toContain("| OpenAPI YAML | `var/openapi/proxmox-ve.yaml` |");
     expect(markdown.endsWith("\n")).toBe(true);
   });

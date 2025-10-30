@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "type": "module",
   "private": false,
-  "workspaces": [".github/actions/proxmox-openapi-artifacts", "packages/proxmox-openapi"],
+  "workspaces": [
+    ".github/actions/proxmox-openapi-artifacts",
+    "packages/proxmox-openapi"
+  ],
   "description": "Tooling to scrape the Proxmox API viewer and generate OpenAPI specifications.",
   "license": "GPL-3.0",
   "engines": {
@@ -38,10 +41,8 @@
     "normalizer:test": "vitest run --config packages/proxmox-openapi/vitest.api-normalizer.config.ts",
     "openapi:test": "vitest run --config packages/proxmox-openapi/vitest.openapi-generator.config.ts",
     "automation:test": "vitest run --config packages/proxmox-openapi/vitest.automation.config.ts",
-    "regression:test": "vitest run --config tests/regression/vitest.config.ts",
-    "regression:record": "node --import tsx --no-warnings packages/proxmox-openapi/scripts/automation/update-regression-baseline.ts",
     "pages:build": "npm run openapi:prepare && npm run ui:build && node scripts/prepare-pages.mjs",
-    "test:all": "npm run ui:test && npm run scraper:test:unit && npm run normalizer:test && npm run openapi:test && npm run automation:test && npm run regression:test",
+    "test:all": "npm run ui:test && npm run scraper:test:unit && npm run normalizer:test && npm run openapi:test && npm run automation:test",
     "test": "npm run test:all",
     "action:install": "npm install --workspace .github/actions/proxmox-openapi-artifacts",
     "action:build": "npm run build --workspace .github/actions/proxmox-openapi-artifacts",

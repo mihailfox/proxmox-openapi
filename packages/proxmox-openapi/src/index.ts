@@ -32,7 +32,6 @@ export {
   DATA_DIR,
   RAW_SNAPSHOT_CACHE_PATH,
   NORMALIZED_IR_CACHE_PATH,
-  AUTOMATION_BASELINE_PATH,
   resolveFromRoot,
   relativeToRoot,
 } from "./internal/shared/paths.ts";
