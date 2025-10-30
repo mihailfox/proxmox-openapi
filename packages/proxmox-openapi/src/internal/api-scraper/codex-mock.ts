@@ -4,10 +4,10 @@ import { resolve } from "node:path";
 import type { BrowserContext } from "playwright";
 
 import { RAW_SNAPSHOT_CACHE_PATH } from "../shared/paths.ts";
-import { resolveFromModule } from "../shared/module-paths.ts";
+import { resolveFromModule, toModuleDirname } from "../shared/module-paths.ts";
 import type { ApiSchemaMethod, ApiSchemaNode, RawApiMethod, RawApiTreeNode } from "./types.ts";
 
-const moduleReference = typeof __dirname === "string" ? __dirname : (import.meta as ImportMeta | undefined);
+const moduleReference = typeof __dirname === "string" ? __dirname : resolveModuleDirname();
 const MOCK_ROOT = resolveFromModule(moduleReference ?? process.cwd(), "mocks");
 const MOCK_INDEX_PATH = resolve(MOCK_ROOT, "index.html");
 const MOCK_SNAPSHOT_PATH = RAW_SNAPSHOT_CACHE_PATH;
@@ -27,6 +27,22 @@ let cachedAssets: MockAssets | undefined;
 let loadPromise: Promise<MockAssets> | undefined;
 let cachedScript: string | undefined;
 let scriptPromise: Promise<string> | undefined;
+
+function resolveModuleDirname(): string | undefined {
+  try {
+    const moduleUrl = new Function(
+      "return typeof import !== 'undefined' && import.meta && import.meta.url ? import.meta.url : undefined;"
+    )() as string | undefined;
+
+    if (typeof moduleUrl === "string") {
+      return toModuleDirname(moduleUrl);
+    }
+  } catch {
+    // Ignore failures and fall back to process.cwd().
+  }
+
+  return undefined;
+}
 
 function isTruthy(value: string | undefined): boolean {
   if (!value) {
