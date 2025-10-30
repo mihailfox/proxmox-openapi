@@ -10,9 +10,9 @@
     "build": "tsup"
   },
   "dependencies": {
-    "@proxmox-openapi/automation": "0.1.0",
     "@actions/core": "^1.11.1",
-    "@actions/exec": "^1.1.1"
+    "@actions/exec": "^1.1.1",
+    "@mihailfox/proxmox-openapi": "file:../../packages/proxmox-openapi"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

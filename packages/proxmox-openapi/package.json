@@ -34,8 +34,13 @@
     "prepublishOnly": "npm run typecheck && npm run build"
   },
   "dependencies": {
+    "@proxmox-openapi/api-normalizer": "0.1.0",
+    "@proxmox-openapi/api-scraper": "0.1.0",
     "@proxmox-openapi/automation": "0.1.0",
-    "commander": "^12.1.0"
+    "@proxmox-openapi/openapi-generator": "0.1.0",
+    "@proxmox-openapi/shared": "0.1.0",
+    "commander": "^12.1.0",
+    "yaml": "^2.8.1"
   },
   "devDependencies": {
     "tsup": "^8.5.0",

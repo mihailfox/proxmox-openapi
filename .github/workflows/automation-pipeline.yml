@@ -53,8 +53,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run automation pipeline (CI mode)
-        run: npm run automation:pipeline -- --report var/automation-summary.json
+      - name: Run proxmox-openapi pipeline (CI mode)
+        run: npx proxmox-openapi pipeline --mode ci --report var/automation-summary.json
 
       - name: Validate generated OpenAPI document
         run: npm run openapi:validate
