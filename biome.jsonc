@@ -31,15 +31,6 @@
   },
   "overrides": [
     {
-      "includes": ["var/openapi/**/*"],
-      "linter": {
-        "enabled": false
-      },
-      "formatter": {
-        "enabled": false
-      }
-    },
-    {
       "includes": ["**/dist/**/*"],
       "linter": {
         "enabled": false
