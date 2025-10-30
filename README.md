@@ -53,6 +53,16 @@ for targeted debugging.
    `http://127.0.0.1:5173`.
 4. When finished, stop the dev server with `Ctrl+C`. Regenerate artifacts whenever the API schema changes.
 
+### Devcontainer & launcher helpers
+- The devcontainer definition lives under `.devcontainer/`; see [docs/devcontainer.md](docs/devcontainer.md) for the full
+  image layout, helper scripts, and troubleshooting tips.
+- `./launcher.sh` wraps the most common devcontainer actions:
+  - `./launcher.sh vscode --attach-shell` opens the repo in VS Code and waits for the container before spawning a shell.
+  - `./launcher.sh get_config customizations.vscode.settings` queries arbitrary paths from `devcontainer.json` if you
+    need to script against the configuration.
+- The launcher sources `scripts/common.sh`, which also powers other automation helpers. Use `./launcher.sh help` for the
+  full command list.
+
 ## Working With Automation
 The "Project Stage Sync" workflow keeps the delivery project up to date. Review the [automation runbook](docs/automation.md) for triggers,
 token requirements, CLI flags, and manual override instructions. When opening a pull request, ensure the relevant issue is linked so the
