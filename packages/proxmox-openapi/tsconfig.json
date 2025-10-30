@@ -11,12 +11,7 @@
   },
   "include": [
     "src",
-    "../../tools/api-scraper/src",
-    "../../tools/api-normalizer/src",
-    "../../tools/openapi-generator/src",
-    "../../tools/automation/src",
-    "../../tools/automation/data/**/*.json",
-    "../../tools/automation/data/regression/openapi.sha256.json",
-    "../../tools/shared"
+    "scripts/**/*.ts",
+    "data/**/*.json"
   ]
 }

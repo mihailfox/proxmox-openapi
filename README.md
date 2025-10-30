@@ -12,8 +12,7 @@ to deliver a full-featured Terraform provider and other infrastructure-as-code i
 
 ## Packages
 - `app/`: Vite-based SPA that surfaces the generated specifications and embeds Swagger UI with lazy loading.
-- `tools/`: Source workspaces for scraping, normalization, OpenAPI generation, and orchestration (`automation`).
-- `packages/`: Published distribution of the consolidated CLI (`@mihailfox/proxmox-openapi`) bundling scrape, normalize, generate, and pipeline orchestration.
+- `packages/proxmox-openapi/`: Consolidated source for scraping, normalization, OpenAPI generation, automation orchestration, and the published CLI (`@mihailfox/proxmox-openapi`).
 - `.github/actions/proxmox-openapi-artifacts/`: First-party GitHub Action wrapping the automation pipeline for CI.
 - `.github/workflows/`: CI pipelines for validations, artifact generation, GitHub Pages, and project automation.
 - `.devcontainer/`: Containerized development environment configs. See [docs/devcontainer.md](docs/devcontainer.md).
@@ -27,7 +26,7 @@ via `npm run openapi:prepare` before Vite serves or builds the site. GitHub Page
 deployment workflow and rollback guidance.
 
 ## Automation Pipeline Overview
-The automation pipeline chains the following stages (implemented in `tools/automation/src/pipeline.ts`):
+The automation pipeline chains the following stages (implemented in `packages/proxmox-openapi/src/internal/automation/pipeline.ts`):
 1. **Scrape** – `@proxmox-openapi/api-scraper` launches Playwright, fetches `apidoc.js`, and persists a raw snapshot (JSON).
 2. **Normalize** – `@proxmox-openapi/api-normalizer` converts the raw tree into a versioned intermediate representation (IR).
 3. **Generate** – `@proxmox-openapi/openapi-generator` emits OpenAPI 3.1 JSON/YAML documents and enriches tags/metadata.
@@ -36,8 +35,8 @@ The automation pipeline chains the following stages (implemented in `tools/autom
 Run the end-to-end flow with `npx proxmox-openapi pipeline` (or `npm run automation:pipeline`, which proxies the same CLI).
 Pass `--mode=full` for a live scrape or `--no-fallback-to-cache` to fail fast when Proxmox endpoints are unreachable. The
 command writes a JSON summary to `var/automation-summary.json` when invoked with `--report <path>` and logs a regression
-digest (checksums, parity stats). Stage-specific commands (`scrape`, `normalize`, `generate`) mirror the individual tools
-under `tools/` for targeted debugging.
+digest (checksums, parity stats). Stage-specific commands (`scrape`, `normalize`, `generate`) mirror the library internals
+under `packages/proxmox-openapi/src/internal/` for targeted debugging.
 
 ### Local Development Quickstart
 1. Install dependencies with `npm install`.
@@ -49,7 +48,7 @@ under `tools/` for targeted debugging.
 ## Working With Automation
 The "Project Stage Sync" workflow keeps the delivery project up to date. Review the [automation runbook](docs/automation.md) for triggers,
 token requirements, CLI flags, and manual override instructions. When opening a pull request, ensure the relevant issue is linked so the
-workflow can reconcile status changes. Use `tools/automation/scripts/format-summary.ts` to turn pipeline summaries into Markdown for PRs.
+workflow can reconcile status changes. Use `packages/proxmox-openapi/scripts/automation/format-summary.ts` to turn pipeline summaries into Markdown for PRs.
 
 ## Monitoring & Quality
 - Run a Lighthouse audit (Performance, Accessibility, Best Practices ≥ 90) against the deployed pages site after significant UI changes.
@@ -58,9 +57,9 @@ workflow can reconcile status changes. Use `tools/automation/scripts/format-summ
 
 ## Testing & Regression
 - `npm run test:all` executes unit suites for the scraper, normalizer, generator, automation helpers, and regression harness.
-- Regression specs (`tests/regression`) assert checksum baselines from `tools/automation/data/regression/openapi.sha256.json` and parity between JSON/YAML outputs.
-- Playwright suites cover scraper smoke tests (`tools/api-scraper/tests/smoke.spec.ts`) and UI contrast/theme behaviour (`tests/ui/theme.spec.ts`).
-- Update baselines via `npm run regression:record` (which delegates to `tools/automation/scripts/update-regression-baseline.ts`) after intentional schema shifts.
+- Regression specs (`tests/regression`) assert checksum baselines from `packages/proxmox-openapi/data/automation/assets/regression/openapi.sha256.json` and parity between JSON/YAML outputs.
+- Playwright suites cover scraper smoke tests (`packages/proxmox-openapi/tests/api-scraper/smoke.spec.ts`) and UI contrast/theme behaviour (`tests/ui/theme.spec.ts`).
+- Update baselines via `npm run regression:record` (which delegates to `packages/proxmox-openapi/scripts/automation/update-regression-baseline.ts`) after intentional schema shifts.
 
 ## GitHub Action Usage
 The bundled action in `.github/actions/proxmox-openapi-artifacts` runs the automation pipeline and ships with the

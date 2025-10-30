@@ -1,8 +1,11 @@
 import { access } from "node:fs/promises";
 import { constants } from "node:fs";
 
-import { runAutomationPipeline } from "@proxmox-openapi/automation";
-import { OPENAPI_JSON_PATH, OPENAPI_YAML_PATH } from "@proxmox-openapi/shared/paths.ts";
+import {
+  OPENAPI_JSON_PATH,
+  OPENAPI_YAML_PATH,
+  runAutomationPipeline,
+} from "@mihailfox/proxmox-openapi";
 
 let ensurePromise: Promise<void> | null = null;
 

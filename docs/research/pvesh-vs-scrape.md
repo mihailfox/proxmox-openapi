@@ -2,7 +2,7 @@
 
 ## Data sources
 - **Official Perl modules**: Parsed from the upstream Proxmox repositories (`pve-manager`, `pve-cluster`, `pve-storage`, `pve-firewall`, `pve-ha-manager`, `pve-access-control`, `pve-container`, `qemu-server`, and `pve-network`). The `tools/analysis/pvesh-comparison.ts` script walks each checkout (including `src/` subtrees) and inspects every `package PVE::API2::*` section for `register_method` calls to reconstruct the REST tree.【F:tools/analysis/src/pvesh-comparison.ts†L4-L331】
-- **Scraped dataset**: `tools/api-normalizer/data/ir/proxmox-openapi-ir.json` generated from the interactive API viewer. The comparison script loads every normalized endpoint and aggregates them by method and path.【F:tools/analysis/src/pvesh-comparison.ts†L333-L409】
+- **Scraped dataset**: `packages/proxmox-openapi/data/api-normalizer/cache/ir/proxmox-openapi-ir.json` generated from the interactive API viewer. The comparison script loads every normalized endpoint and aggregates them by method and path.【F:tools/analysis/src/pvesh-comparison.ts†L333-L409】
 
 ## How to reproduce
 Run the TypeScript helper after cloning the upstream Perl repositories alongside this project:

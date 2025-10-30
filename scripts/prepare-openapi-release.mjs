@@ -101,8 +101,33 @@ function formatDelta(label, previous, current) {
 }
 
 async function readWorkingState() {
-  const normalized = JSON.parse(await fs.readFile(path.resolve("tools", "api-normalizer", "data", "ir", "proxmox-openapi-ir.json"), "utf8"));
-  const snapshot = JSON.parse(await fs.readFile(path.resolve("tools", "api-scraper", "data", "raw", "proxmox-openapi-schema.json"), "utf8"));
+  const normalized = JSON.parse(
+    await fs.readFile(
+      path.resolve(
+        "packages",
+        "proxmox-openapi",
+        "data",
+        "api-normalizer",
+        "cache",
+        "ir",
+        "proxmox-openapi-ir.json"
+      ),
+      "utf8"
+    )
+  );
+  const snapshot = JSON.parse(
+    await fs.readFile(
+      path.resolve(
+        "packages",
+        "proxmox-openapi",
+        "data",
+        "api-scraper",
+        "raw",
+        "proxmox-openapi-schema.json"
+      ),
+      "utf8"
+    )
+  );
   const automation = await readAutomationSummary();
   return { normalized, snapshot, automation };
 }
@@ -138,8 +163,10 @@ function resolvePreviousTag(currentTag) {
 }
 
 async function readStateAtRef(ref) {
-  const normalized = JSON.parse(runGitShow(ref, "tools/api-normalizer/data/ir/proxmox-openapi-ir.json"));
-  const snapshot = JSON.parse(runGitShow(ref, "tools/api-scraper/data/raw/proxmox-openapi-schema.json"));
+  const normalized = JSON.parse(
+    runGitShow(ref, "packages/proxmox-openapi/data/api-normalizer/cache/ir/proxmox-openapi-ir.json")
+  );
+  const snapshot = JSON.parse(runGitShow(ref, "packages/proxmox-openapi/data/api-scraper/raw/proxmox-openapi-schema.json"));
   return { normalized, snapshot };
 }
 

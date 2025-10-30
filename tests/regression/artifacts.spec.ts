@@ -2,8 +2,11 @@ import { describe, expect, it, beforeAll } from "vitest";
 import { readdirSync } from "node:fs";
 import path from "node:path";
 
-import { ARTIFACT_BASELINES } from "../../tools/automation/src/regression/baselines";
-import { computeArtifactState, computeRegressionSummary } from "../../tools/automation/src/regression/summary";
+import { ARTIFACT_BASELINES } from "../../packages/proxmox-openapi/src/internal/automation/regression/baselines.ts";
+import {
+  computeArtifactState,
+  computeRegressionSummary,
+} from "../../packages/proxmox-openapi/src/internal/automation/regression/summary.ts";
 import { ensureOpenApiArtifacts } from "./helpers";
 
 beforeAll(async () => {

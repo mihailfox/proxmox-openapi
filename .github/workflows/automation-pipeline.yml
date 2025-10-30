@@ -14,9 +14,8 @@ on:
       - vitest.config.ts
       - "app/**"
       - "tests/**"
-      - "tools/**"
+      - "packages/proxmox-openapi/**"
       - "packages/**"
-      - "!tools/analysis/**"
   push:
     branches:
       - main
@@ -30,9 +29,8 @@ on:
       - vitest.config.ts
       - "app/**"
       - "tests/**"
-      - "tools/**"
+      - "packages/proxmox-openapi/**"
       - "packages/**"
-      - "!tools/analysis/**"
   workflow_dispatch: {}
 
 jobs:

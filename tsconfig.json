@@ -15,23 +15,15 @@
     "allowImportingTsExtensions": true,
     "baseUrl": ".",
     "paths": {
-      "@proxmox-openapi/shared": ["tools/shared"],
-      "@proxmox-openapi/shared/*": ["tools/shared/*"],
-      "@proxmox-openapi/api-scraper": ["tools/api-scraper"],
-      "@proxmox-openapi/api-scraper/*": ["tools/api-scraper/src/*"],
-      "@proxmox-openapi/api-normalizer": ["tools/api-normalizer"],
-      "@proxmox-openapi/api-normalizer/*": ["tools/api-normalizer/src/*"],
-      "@proxmox-openapi/openapi-generator": ["tools/openapi-generator"],
-      "@proxmox-openapi/openapi-generator/*": ["tools/openapi-generator/src/*"],
-      "@proxmox-openapi/automation": ["tools/automation/src/index.ts"],
-      "@proxmox-openapi/automation/*": ["tools/automation/src/*"],
+      "@mihailfox/proxmox-openapi": ["packages/proxmox-openapi/src/index.ts"],
+      "@mihailfox/proxmox-openapi/*": ["packages/proxmox-openapi/src/*"],
       "react-dom/client": ["types/react-dom-client.d.ts"]
     }
   },
   "include": [
     "app/**/*.ts",
     "app/**/*.tsx",
-    "tools/**/*.ts",
+    "packages/proxmox-openapi/**/*.ts",
     "tests/**/*.ts",
     "types/**/*.d.ts"
   ],
