@@ -10,7 +10,9 @@ This document describes the GitHub automation that keeps the Proxmox OpenAPI del
 - **Beta handling:** Issues attached to milestones containing "beta" are promoted to the Beta stage even if Status is still "In Progress".
 
 ### Pipeline Modes & Flags
-- `npm run automation:pipeline` drives the scrape → normalize → generate flow implemented in `tools/automation/src/pipeline.ts`.
+- `npx proxmox-openapi pipeline` (aliased via `npm run automation:pipeline`) drives the scrape → normalize → generate flow
+  implemented in `tools/automation/src/pipeline.ts`. Stage-specific commands (`proxmox-openapi scrape|normalize|generate`)
+  mirror the dedicated scripts for troubleshooting individual phases.
 - **CI mode (`--mode=ci`)** is the default. It operates offline, reuses cached snapshots, and validates existing artifacts.
 - **Full mode (`--mode=full`)** performs a live scrape using Playwright and honours `--offline`/`--fallback-to-cache` overrides:
   - `--fallback-to-cache` / `--no-fallback-to-cache` control whether cached snapshots are reused when scraping fails.

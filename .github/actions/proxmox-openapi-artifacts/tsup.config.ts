@@ -13,7 +13,7 @@ export default defineConfig({
   outDir: "dist",
   bundle: true,
   shims: false,
-  noExternal: ["@actions/core", "@actions/exec", "@proxmox-openapi/automation"],
+  noExternal: ["@actions/core", "@actions/exec", "@mihailfox/proxmox-openapi"],
   external: ["playwright", "playwright-core", "chromium-bidi"],
   outExtension() {
     return {

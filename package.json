@@ -25,11 +25,11 @@
     "format": "biome format --write .",
     "check": "biome check . && npm run action:verify",
     "typecheck": "tsc --build tsconfig.build.json",
-    "scraper:scrape": "tsx tools/api-scraper/src/cli.ts",
-    "normalizer:generate": "tsx tools/api-normalizer/src/cli.ts",
-    "openapi:generate": "tsx tools/openapi-generator/src/cli.ts",
+    "scraper:scrape": "proxmox-openapi scrape",
+    "normalizer:generate": "proxmox-openapi normalize",
+    "openapi:generate": "proxmox-openapi generate",
     "openapi:validate": "tsx tools/openapi-generator/src/validate.ts",
-    "automation:pipeline": "tsx tools/automation/src/cli.ts",
+    "automation:pipeline": "proxmox-openapi pipeline",
     "automation:summary": "tsx tools/automation/scripts/format-summary.ts",
     "openapi:prepare": "node scripts/openapi-sync.mjs",
     "openapi:release:prepare": "node scripts/prepare-openapi-release.mjs",
@@ -79,6 +79,7 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
+    "@mihailfox/proxmox-openapi": "file:packages/proxmox-openapi",
     "isbot": "^5.1.30",
     "playwright": "^1.55.1",
     "react": "^19.2.0",

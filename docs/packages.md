@@ -19,7 +19,7 @@ Use a GitHub token with `read:packages` scope to download releases (add `write:p
 ## CLI Usage
 
 ```bash
-npx @mihailfox/proxmox-openapi --mode full --openapi-dir var/openapi --report var/automation-summary.json
+npx proxmox-openapi pipeline --mode full --openapi-dir var/openapi --report var/automation-summary.json
 ```
 
 ### Flags
@@ -36,10 +36,26 @@ npx @mihailfox/proxmox-openapi --mode full --openapi-dir var/openapi --report va
 | `--offline` | Skip the live scrape and rely on cached artifacts. |
 | `--fallback-to-cache` / `--no-fallback-to-cache` | Control whether cached snapshots are reused (defaults to reuse). |
 
+### Stage Commands
+
+Run individual phases when you only need part of the pipeline:
+
+```bash
+npx proxmox-openapi scrape --output tools/api-scraper/data/raw/proxmox-openapi-schema.json
+npx proxmox-openapi normalize --input tools/api-scraper/data/raw/proxmox-openapi-schema.json
+npx proxmox-openapi generate --output var/openapi --basename proxmox-ve --format json,yaml
+```
+
+These commands share the same defaults as the original workspace scripts and are useful for debugging targeted changes.
+
 ## Library API
 
 ```ts
 import {
+  DEFAULT_BASE_URL,
+  generateOpenApiDocument,
+  normalizeSnapshot,
+  scrapeApiDocumentation,
   runAutomationPipeline,
   type AutomationPipelineRunOptions,
 } from "@mihailfox/proxmox-openapi";
@@ -48,9 +64,15 @@ const result = await runAutomationPipeline({
   mode: "ci",
   summaryOutputPath: "var/automation-summary.json",
 });
+
+const { snapshot } = await scrapeApiDocumentation({ baseUrl: DEFAULT_BASE_URL, persist: false });
+const normalized = normalizeSnapshot(snapshot);
+const document = generateOpenApiDocument(normalized);
 ```
 
-The return value is an `AutomationPipelineResult` describing generated paths and cache behaviour.
+The return value is an `AutomationPipelineResult` describing generated paths and cache behaviour. Additional helpers such
+as `normalizeSnapshot`, `generateOpenApiDocument`, and `DEFAULT_BASE_URL` let you compose custom flows without dropping
+into the internal workspace packages.
 
 ## Release Cadence
 

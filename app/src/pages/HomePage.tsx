@@ -3,16 +3,16 @@ import { Link } from "react-router-dom";
 
 const featureHighlights = [
   {
-    title: "Fresh OpenAPI bundles",
-    body: "Run the automation pipeline or download the latest GitHub release to stay aligned with the official Proxmox API viewer.",
+    title: "Terraform-ready foundation",
+    body: "OpenAPI bundles power third-party automation, starting with the roadmap to a full Terraform provider for Proxmox VE.",
+  },
+  {
+    title: "Unified CLI & pipeline",
+    body: "The @mihailfox/proxmox-openapi package now handles scraping, normalization, generation, and automation from a single command.",
   },
   {
     title: "Spec explorer",
     body: "Dive into every endpoint using the embedded Swagger UI experience optimised for quick search and filtering.",
-  },
-  {
-    title: "Automation first",
-    body: "GitHub Pages deploys from the main branch with reproducible artifacts and a self-healing project board.",
   },
 ];
 
@@ -26,8 +26,9 @@ export function HomePage() {
         <p className="hero__eyebrow">Proxmox tooling</p>
         <h1 className="hero__title">Unified OpenAPI specs & documentation</h1>
         <p className="hero__subtitle">
-          Generate, explore, and ship Proxmox VE OpenAPI definitions. This SPA bundles the newest schemas, friendly docs,
-          and the automation runbooks that keep everything in sync.
+          Generate, explore, and ship Proxmox VE OpenAPI definitions. Everything here is focused on enabling third-party
+          tooling—starting with the building blocks for a Terraform provider—and the automation runbooks that keep
+          artifacts in sync.
         </p>
         <div className="hero__actions">
           <Link className="button button--primary" to="explorer">

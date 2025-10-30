@@ -2,10 +2,18 @@
 
 Utilities for scraping the official Proxmox API viewer, normalizing responses, and publishing OpenAPI specs plus a companion SPA.
 
+This toolkit underpins a broader goal: ship third-party automation for Proxmox VE, beginning with the ingredients required
+to deliver a full-featured Terraform provider and other infrastructure-as-code integrations.
+
+## Project Vision
+- Deliver first-party quality building blocks that unblock a Terraform provider and future IaC integrations for Proxmox VE.
+- Keep schema generation reproducible so external tooling can track upstream releases with confidence.
+- Provide an approachable UI and documentation hub that mirrors the automation behaviour available through the npm package and GitHub Action.
+
 ## Packages
 - `app/`: Vite-based SPA that surfaces the generated specifications and embeds Swagger UI with lazy loading.
 - `tools/`: Source workspaces for scraping, normalization, OpenAPI generation, and orchestration (`automation`).
-- `packages/`: Published distribution of the automation CLI (`@mihailfox/proxmox-openapi`) that re-exports `tools/automation`.
+- `packages/`: Published distribution of the consolidated CLI (`@mihailfox/proxmox-openapi`) bundling scrape, normalize, generate, and pipeline orchestration.
 - `.github/actions/proxmox-openapi-artifacts/`: First-party GitHub Action wrapping the automation pipeline for CI.
 - `.github/workflows/`: CI pipelines for validations, artifact generation, GitHub Pages, and project automation.
 - `.devcontainer/`: Containerized development environment configs. See [docs/devcontainer.md](docs/devcontainer.md).
@@ -25,13 +33,15 @@ The automation pipeline chains the following stages (implemented in `tools/autom
 3. **Generate** – `@proxmox-openapi/openapi-generator` emits OpenAPI 3.1 JSON/YAML documents and enriches tags/metadata.
 4. **Validate & QA** – Swagger Parser validates the JSON output, and regression helpers compute checksum parity summaries.
 
-`npm run automation:pipeline` defaults to CI mode (offline, cache-enabled). Pass `--mode=full` for a live scrape or
-`--no-fallback-to-cache` to fail fast when Proxmox endpoints are unreachable. The command writes a JSON summary to
-`var/automation-summary.json` when invoked with `--report <path>` and logs a regression digest (checksums, parity stats).
+Run the end-to-end flow with `npx proxmox-openapi pipeline` (or `npm run automation:pipeline`, which proxies the same CLI).
+Pass `--mode=full` for a live scrape or `--no-fallback-to-cache` to fail fast when Proxmox endpoints are unreachable. The
+command writes a JSON summary to `var/automation-summary.json` when invoked with `--report <path>` and logs a regression
+digest (checksums, parity stats). Stage-specific commands (`scrape`, `normalize`, `generate`) mirror the individual tools
+under `tools/` for targeted debugging.
 
 ### Local Development Quickstart
 1. Install dependencies with `npm install`.
-2. Generate or refresh the OpenAPI artifacts (`npm run automation:pipeline -- --mode=ci --report var/automation-summary.json`).
+2. Generate or refresh the OpenAPI artifacts (`npx proxmox-openapi pipeline --mode ci --report var/automation-summary.json`).
 3. Start the SPA dev server (`npm run ui:dev`). The script copies the current artifacts and launches Vite at
    `http://127.0.0.1:5173`.
 4. When finished, stop the dev server with `Ctrl+C`. Regenerate artifacts whenever the API schema changes.
@@ -54,7 +64,9 @@ workflow can reconcile status changes. Use `tools/automation/scripts/format-summ
 
 ## GitHub Action Usage
 The bundled action in `.github/actions/proxmox-openapi-artifacts` runs the automation pipeline and ships with the
-repository. After cloning, rebuild the dist output with `npm run action:package` whenever the source changes.
+repository. It now delegates execution to the `@mihailfox/proxmox-openapi` package so GitHub Actions, local scripts, and
+downstream consumers rely on an identical code path. After cloning, rebuild the dist output with
+`npm run action:package` whenever the source changes.
 
 ### GitHub-hosted runners
 
@@ -105,7 +117,9 @@ jobs:
 
   ```bash
   npm install @mihailfox/proxmox-openapi
-  npx @mihailfox/proxmox-openapi --mode ci --report var/automation-summary.json
+  npx proxmox-openapi pipeline --mode ci --report var/automation-summary.json
+  npx proxmox-openapi scrape --output var/raw/proxmox-openapi-schema.json
+  npx proxmox-openapi generate --output var/openapi --basename proxmox-ve
   ```
 
 - See [docs/packages.md](docs/packages.md) for CLI flag reference, library usage, and release cadence details.

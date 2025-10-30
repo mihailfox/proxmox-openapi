@@ -4,7 +4,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import os from "node:os";
 
-import { runAutomationPipeline, type AutomationPipelineRunOptions } from "@proxmox-openapi/automation";
+import { runAutomationPipeline, type AutomationPipelineRunOptions } from "@mihailfox/proxmox-openapi";
 
 function coerceBoolean(input: string | undefined, defaultValue: boolean): boolean {
   if (!input) {

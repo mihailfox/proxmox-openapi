@@ -1,6 +1,7 @@
 # @mihailfox/proxmox-openapi
 
-Generate Proxmox OpenAPI artifacts (raw snapshot, normalized IR, OpenAPI JSON/YAML) from the comfort of your own CI.
+Generate Proxmox OpenAPI artifacts (raw snapshot, normalized IR, OpenAPI JSON/YAML) from the comfort of your own CI –
+now with dedicated commands for every stage of the pipeline.
 
 ## Installation
 
@@ -20,11 +21,11 @@ npm install @mihailfox/proxmox-openapi --registry=https://npm.pkg.github.com
 
 ## CLI
 
-```bash
-npx @mihailfox/proxmox-openapi --mode full --report var/automation-summary.json
-```
+### Pipeline
 
-### Options
+```bash
+npx @mihailfox/proxmox-openapi pipeline --mode full --report var/automation-summary.json
+```
 
 | Flag | Description |
 | ---- | ----------- |
@@ -38,16 +39,45 @@ npx @mihailfox/proxmox-openapi --mode full --report var/automation-summary.json
 | `--basename <name>` | Basename used for OpenAPI output files. |
 | `--report <path>` | Write the automation summary JSON to the specified path. |
 
+### Stage Commands
+
+Run individual stages when you only need part of the workflow:
+
+```bash
+# Scrape the Proxmox API viewer (writes JSON under tools/api-scraper/data/raw/)
+npx @mihailfox/proxmox-openapi scrape --base-url https://pve.proxmox.com/pve-docs/api-viewer/
+
+# Normalize a snapshot into the IR format
+npx @mihailfox/proxmox-openapi normalize --input tools/api-scraper/data/raw/proxmox-openapi-schema.json
+
+# Generate OpenAPI bundles (JSON & YAML)
+npx @mihailfox/proxmox-openapi generate --output var/openapi --basename proxmox-ve
+```
+
 ## Library Usage
 
 ```ts
-import { runAutomationPipeline } from "@mihailfox/proxmox-openapi";
+import {
+  DEFAULT_BASE_URL,
+  generateOpenApiDocument,
+  normalizeSnapshot,
+  runAutomationPipeline,
+  scrapeApiDocumentation,
+  type AutomationPipelineRunOptions,
+} from "@mihailfox/proxmox-openapi";
 
-await runAutomationPipeline({
+const options: AutomationPipelineRunOptions = {
   mode: "ci",
   summaryOutputPath: "var/automation-summary.json",
-});
+};
+
+const summary = await runAutomationPipeline(options);
+
+// Or compose stages manually:
+const { snapshot } = await scrapeApiDocumentation({ baseUrl: DEFAULT_BASE_URL, persist: false });
+const normalized = normalizeSnapshot(snapshot);
+const document = generateOpenApiDocument(normalized);
 ```
 
-The `AutomationPipelineRunOptions` interface mirrors the CLI flags. See the project documentation for end-to-end
-examples and the release checklist.
+`AutomationPipelineRunOptions` mirrors the CLI flags, and additional helpers such as `DEFAULT_BASE_URL` and
+`scrapeApiDocumentation` expose the lower-level building blocks for custom pipelines.
