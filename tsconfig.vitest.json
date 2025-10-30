@@ -4,5 +4,5 @@
   "compilerOptions": {
     "types": ["vitest/globals"]
   },
-  "include": ["tests/**/*.ts", "tools/**/*.test.ts", "tools/**/*.spec.ts"]
+  "include": ["tests/**/*.ts", "packages/proxmox-openapi/tests/**/*.ts"]
 }

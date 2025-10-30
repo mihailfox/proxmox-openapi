@@ -8,10 +8,7 @@ on:
     paths:
       - '.github/workflows/pages.yml'
       - 'app/**'
-      - 'tools/automation/**'
-      - 'tools/openapi-generator/**'
-      - 'tools/api-scraper/**'
-      - 'tools/api-normalizer/**'
+      - 'packages/proxmox-openapi/**'
 # The filters ensure we rebuild Pages only when the SPA or schema inputs change.
 
 permissions:

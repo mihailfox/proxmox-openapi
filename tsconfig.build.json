@@ -4,11 +4,6 @@
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" },
-    { "path": "./tools/shared/tsconfig.json" },
-    { "path": "./tools/api-scraper/tsconfig.json" },
-    { "path": "./tools/api-normalizer/tsconfig.json" },
-    { "path": "./tools/openapi-generator/tsconfig.json" },
-    { "path": "./tools/automation/tsconfig.json" },
     { "path": "./packages/proxmox-openapi/tsconfig.json" }
   ]
 }

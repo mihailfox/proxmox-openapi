@@ -96,7 +96,7 @@ function printUsageAndExit(): never {
     `Options:\n` +
     `  --official <path>   Add a search root for Perl modules (repeatable, comma-separated values supported).\n` +
     `                      Defaults to vendor/pve-manager.\n` +
-    `  --ir <path>         Path to the normalized IR JSON file (default tools/api-normalizer/data/ir/proxmox-openapi-ir.json).\n` +
+    `  --ir <path>         Path to the normalized IR JSON file (default packages/proxmox-openapi/data/api-normalizer/cache/ir/proxmox-openapi-ir.json).\n` +
     `  --output <path>     Optional JSON output file for the comparison summary.\n` +
     `  --limit <number>    Limit the number of diff entries printed per category.\n` +
     `  -h, --help          Show this message.`;

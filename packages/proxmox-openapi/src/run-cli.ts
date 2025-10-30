@@ -5,28 +5,33 @@ import process from "node:process";
 import { Command, Option } from "commander";
 import { stringify as stringifyYaml } from "yaml";
 
-import { DEFAULT_BASE_URL, scrapeApiDocumentation } from "@proxmox-openapi/api-scraper/scraper.ts";
-import type { RawApiSnapshot } from "@proxmox-openapi/api-scraper/types.ts";
-import { normalizeSnapshot } from "@proxmox-openapi/api-normalizer/normalizer.ts";
-import type { NormalizedApiDocument } from "@proxmox-openapi/api-normalizer/types.ts";
+import { DEFAULT_BASE_URL, scrapeApiDocumentation } from "./internal/api-scraper/scraper.ts";
+import type { RawApiSnapshot } from "./internal/api-scraper/types.ts";
+import { normalizeSnapshot } from "./internal/api-normalizer/normalizer.ts";
+import type { NormalizedApiDocument } from "./internal/api-normalizer/types.ts";
 import {
   generateOpenApiDocument,
   type GenerateOpenApiOptions,
-} from "@proxmox-openapi/openapi-generator/generator.ts";
-import { OPENAPI_ARTIFACT_DIR, OPENAPI_BASENAME } from "@proxmox-openapi/shared/paths.ts";
+} from "./internal/openapi-generator/generator.ts";
+import {
+  NORMALIZED_IR_CACHE_PATH,
+  OPENAPI_ARTIFACT_DIR,
+  OPENAPI_BASENAME,
+  RAW_SNAPSHOT_CACHE_PATH,
+} from "./internal/shared/paths.ts";
 import {
   runAutomationPipeline,
   resolveAutomationPipelineOptions,
   type AutomationPipelineRunOptions,
   type AutomationPipelineResult,
-} from "@proxmox-openapi/automation";
+} from "./internal/automation/pipeline.ts";
 
 export interface CliContext {
   readonly command: Command;
 }
 
-const DEFAULT_RAW_SNAPSHOT_PATH = "tools/api-scraper/data/raw/proxmox-openapi-schema.json";
-const DEFAULT_IR_OUTPUT_PATH = "tools/api-normalizer/data/ir/proxmox-openapi-ir.json";
+const DEFAULT_RAW_SNAPSHOT_PATH = RAW_SNAPSHOT_CACHE_PATH;
+const DEFAULT_IR_OUTPUT_PATH = NORMALIZED_IR_CACHE_PATH;
 
 type PipelineCliOptions = AutomationPipelineRunOptions;
 

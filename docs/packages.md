@@ -41,8 +41,8 @@ npx proxmox-openapi pipeline --mode full --openapi-dir var/openapi --report var/
 Run individual phases when you only need part of the pipeline:
 
 ```bash
-npx proxmox-openapi scrape --output tools/api-scraper/data/raw/proxmox-openapi-schema.json
-npx proxmox-openapi normalize --input tools/api-scraper/data/raw/proxmox-openapi-schema.json
+npx proxmox-openapi scrape --output packages/proxmox-openapi/data/api-scraper/raw/proxmox-openapi-schema.json
+npx proxmox-openapi normalize --input packages/proxmox-openapi/data/api-scraper/raw/proxmox-openapi-schema.json
 npx proxmox-openapi generate --output var/openapi --basename proxmox-ve --format json,yaml
 ```
 

@@ -7,8 +7,7 @@ on:
     paths:
       - '.github/actions/proxmox-openapi-artifacts/**'
       - '.github/workflows/action-validation.yml'
-      - 'tools/automation/**'
-      - 'tools/shared/**'
+      - 'packages/proxmox-openapi/**'
       - 'package.json'
       - 'package-lock.json'
       - 'tsconfig.json'
@@ -19,8 +18,7 @@ on:
     paths:
       - '.github/actions/proxmox-openapi-artifacts/**'
       - '.github/workflows/action-validation.yml'
-      - 'tools/automation/**'
-      - 'tools/shared/**'
+      - 'packages/proxmox-openapi/**'
       - 'package.json'
       - 'package-lock.json'
       - 'tsconfig.json'

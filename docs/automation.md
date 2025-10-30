@@ -11,7 +11,7 @@ This document describes the GitHub automation that keeps the Proxmox OpenAPI del
 
 ### Pipeline Modes & Flags
 - `npx proxmox-openapi pipeline` (aliased via `npm run automation:pipeline`) drives the scrape → normalize → generate flow
-  implemented in `tools/automation/src/pipeline.ts`. Stage-specific commands (`proxmox-openapi scrape|normalize|generate`)
+  implemented in `packages/proxmox-openapi/src/internal/automation/pipeline.ts`. Stage-specific commands (`proxmox-openapi scrape|normalize|generate`)
   mirror the dedicated scripts for troubleshooting individual phases.
 - **CI mode (`--mode=ci`)** is the default. It operates offline, reuses cached snapshots, and validates existing artifacts.
 - **Full mode (`--mode=full`)** performs a live scrape using Playwright and honours `--offline`/`--fallback-to-cache` overrides:
@@ -21,10 +21,10 @@ This document describes the GitHub automation that keeps the Proxmox OpenAPI del
 - Pass `--report <path>` to emit an automation summary (see `var/automation-summary.json`). The summary feeds status updates and PR notes.
 
 ### Regression Summary & Reporting
-- The pipeline logs a QA digest via `logRegressionReport()`—checksum comparisons against `tools/automation/data/regression/openapi.sha256.json`,
+- The pipeline logs a QA digest via `logRegressionReport()`—checksum comparisons against `packages/proxmox-openapi/data/automation/assets/regression/openapi.sha256.json`,
   normalization counts, and JSON↔YAML parity checks.
-- Convert summary JSON into Markdown using `tsx tools/automation/scripts/format-summary.ts --input var/automation-summary.json`.
-- Refresh baseline hashes after intentional schema changes with `npm run regression:record` (wraps `tools/automation/scripts/update-regression-baseline.ts`).
+- Convert summary JSON into Markdown using `tsx packages/proxmox-openapi/scripts/automation/format-summary.ts --input var/automation-summary.json`.
+- Refresh baseline hashes after intentional schema changes with `npm run regression:record` (wraps `packages/proxmox-openapi/scripts/automation/update-regression-baseline.ts`).
 - Regression Vitest specs (`tests/regression`) gate merges on checksum parity, tag counts, and repo hygiene (no generated artifacts in `docs/openapi/`).
 
 ## Manual Overrides

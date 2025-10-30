@@ -44,14 +44,14 @@ npx @mihailfox/proxmox-openapi pipeline --mode full --report var/automation-summ
 Run individual stages when you only need part of the workflow:
 
 ```bash
-# Scrape the Proxmox API viewer (writes JSON under tools/api-scraper/data/raw/)
-npx @mihailfox/proxmox-openapi scrape --base-url https://pve.proxmox.com/pve-docs/api-viewer/
+# Scrape the Proxmox API viewer (writes JSON under packages/proxmox-openapi/data/api-scraper/raw/)
+npx proxmox-openapi scrape --base-url https://pve.proxmox.com/pve-docs/api-viewer/
 
-# Normalize a snapshot into the IR format
-npx @mihailfox/proxmox-openapi normalize --input tools/api-scraper/data/raw/proxmox-openapi-schema.json
+# Normalize a snapshot into the IR format (defaults to the cached raw snapshot bundled with the package)
+npx proxmox-openapi normalize --input packages/proxmox-openapi/data/api-scraper/raw/proxmox-openapi-schema.json
 
 # Generate OpenAPI bundles (JSON & YAML)
-npx @mihailfox/proxmox-openapi generate --output var/openapi --basename proxmox-ve
+npx proxmox-openapi generate --output var/openapi --basename proxmox-ve
 ```
 
 ## Library Usage
