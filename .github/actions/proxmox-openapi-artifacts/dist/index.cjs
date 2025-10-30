@@ -93,7 +93,7 @@ var require_command = __commonJS({
     var os2 = __importStar(require("os"));
     var utils_1 = require_utils();
     function issueCommand(command, properties, message) {
-      const cmd = new Command(command, properties, message);
+      const cmd = new Command2(command, properties, message);
       process.stdout.write(cmd.toString() + os2.EOL);
     }
     exports2.issueCommand = issueCommand;
@@ -102,7 +102,7 @@ var require_command = __commonJS({
     }
     exports2.issue = issue;
     var CMD_STRING = "::";
-    var Command = class {
+    var Command2 = class {
       constructor(command, properties, message) {
         if (!command) {
           command = "missing.command";
@@ -177,7 +177,7 @@ var require_file_command = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.prepareKeyValueMessage = exports2.issueFileCommand = void 0;
     var crypto = __importStar(require("crypto"));
-    var fs4 = __importStar(require("fs"));
+    var fs5 = __importStar(require("fs"));
     var os2 = __importStar(require("os"));
     var utils_1 = require_utils();
     function issueFileCommand(command, message) {
@@ -185,10 +185,10 @@ var require_file_command = __commonJS({
       if (!filePath) {
         throw new Error(`Unable to find environment variable for file command ${command}`);
       }
-      if (!fs4.existsSync(filePath)) {
+      if (!fs5.existsSync(filePath)) {
         throw new Error(`Missing file at path: ${filePath}`);
       }
-      fs4.appendFileSync(filePath, `${(0, utils_1.toCommandValue)(message)}${os2.EOL}`, {
+      fs5.appendFileSync(filePath, `${(0, utils_1.toCommandValue)(message)}${os2.EOL}`, {
         encoding: "utf8"
       });
     }
@@ -658,7 +658,7 @@ var require_errors = __commonJS({
         this.headers = headers;
       }
     };
-    var InvalidArgumentError = class _InvalidArgumentError extends UndiciError {
+    var InvalidArgumentError2 = class _InvalidArgumentError extends UndiciError {
       constructor(message) {
         super(message);
         Error.captureStackTrace(this, _InvalidArgumentError);
@@ -797,7 +797,7 @@ var require_errors = __commonJS({
       RequestContentLengthMismatchError,
       ConnectTimeoutError,
       ResponseStatusCodeError,
-      InvalidArgumentError,
+      InvalidArgumentError: InvalidArgumentError2,
       InvalidReturnValueError,
       RequestAbortedError,
       ClientDestroyedError,
@@ -937,7 +937,7 @@ var require_util = __commonJS({
     var { IncomingMessage } = require("http");
     var stream = require("stream");
     var net = require("net");
-    var { InvalidArgumentError } = require_errors();
+    var { InvalidArgumentError: InvalidArgumentError2 } = require_errors();
     var { Blob: Blob2 } = require("buffer");
     var nodeUtil = require("util");
     var { stringify } = require("querystring");
@@ -965,49 +965,49 @@ var require_util = __commonJS({
       if (typeof url === "string") {
         url = new URL(url);
         if (!/^https?:/.test(url.origin || url.protocol)) {
-          throw new InvalidArgumentError("Invalid URL protocol: the URL must start with `http:` or `https:`.");
+          throw new InvalidArgumentError2("Invalid URL protocol: the URL must start with `http:` or `https:`.");
         }
         return url;
       }
       if (!url || typeof url !== "object") {
-        throw new InvalidArgumentError("Invalid URL: The URL argument must be a non-null object.");
+        throw new InvalidArgumentError2("Invalid URL: The URL argument must be a non-null object.");
       }
       if (!/^https?:/.test(url.origin || url.protocol)) {
-        throw new InvalidArgumentError("Invalid URL protocol: the URL must start with `http:` or `https:`.");
+        throw new InvalidArgumentError2("Invalid URL protocol: the URL must start with `http:` or `https:`.");
       }
       if (!(url instanceof URL)) {
         if (url.port != null && url.port !== "" && !Number.isFinite(parseInt(url.port))) {
-          throw new InvalidArgumentError("Invalid URL: port must be a valid integer or a string representation of an integer.");
+          throw new InvalidArgumentError2("Invalid URL: port must be a valid integer or a string representation of an integer.");
         }
         if (url.path != null && typeof url.path !== "string") {
-          throw new InvalidArgumentError("Invalid URL path: the path must be a string or null/undefined.");
+          throw new InvalidArgumentError2("Invalid URL path: the path must be a string or null/undefined.");
         }
         if (url.pathname != null && typeof url.pathname !== "string") {
-          throw new InvalidArgumentError("Invalid URL pathname: the pathname must be a string or null/undefined.");
+          throw new InvalidArgumentError2("Invalid URL pathname: the pathname must be a string or null/undefined.");
         }
         if (url.hostname != null && typeof url.hostname !== "string") {
-          throw new InvalidArgumentError("Invalid URL hostname: the hostname must be a string or null/undefined.");
+          throw new InvalidArgumentError2("Invalid URL hostname: the hostname must be a string or null/undefined.");
         }
         if (url.origin != null && typeof url.origin !== "string") {
-          throw new InvalidArgumentError("Invalid URL origin: the origin must be a string or null/undefined.");
+          throw new InvalidArgumentError2("Invalid URL origin: the origin must be a string or null/undefined.");
         }
         const port = url.port != null ? url.port : url.protocol === "https:" ? 443 : 80;
         let origin = url.origin != null ? url.origin : `${url.protocol}//${url.hostname}:${port}`;
-        let path6 = url.path != null ? url.path : `${url.pathname || ""}${url.search || ""}`;
+        let path7 = url.path != null ? url.path : `${url.pathname || ""}${url.search || ""}`;
         if (origin.endsWith("/")) {
           origin = origin.substring(0, origin.length - 1);
         }
-        if (path6 && !path6.startsWith("/")) {
-          path6 = `/${path6}`;
+        if (path7 && !path7.startsWith("/")) {
+          path7 = `/${path7}`;
         }
-        url = new URL(origin + path6);
+        url = new URL(origin + path7);
       }
       return url;
     }
     function parseOrigin(url) {
       url = parseURL(url);
       if (url.pathname !== "/" || url.search || url.hash) {
-        throw new InvalidArgumentError("invalid url");
+        throw new InvalidArgumentError2("invalid url");
       }
       return url;
     }
@@ -1137,30 +1137,30 @@ var require_util = __commonJS({
     }
     function validateHandler(handler, method, upgrade) {
       if (!handler || typeof handler !== "object") {
-        throw new InvalidArgumentError("handler must be an object");
+        throw new InvalidArgumentError2("handler must be an object");
       }
       if (typeof handler.onConnect !== "function") {
-        throw new InvalidArgumentError("invalid onConnect method");
+        throw new InvalidArgumentError2("invalid onConnect method");
       }
       if (typeof handler.onError !== "function") {
-        throw new InvalidArgumentError("invalid onError method");
+        throw new InvalidArgumentError2("invalid onError method");
       }
       if (typeof handler.onBodySent !== "function" && handler.onBodySent !== void 0) {
-        throw new InvalidArgumentError("invalid onBodySent method");
+        throw new InvalidArgumentError2("invalid onBodySent method");
       }
       if (upgrade || method === "CONNECT") {
         if (typeof handler.onUpgrade !== "function") {
-          throw new InvalidArgumentError("invalid onUpgrade method");
+          throw new InvalidArgumentError2("invalid onUpgrade method");
         }
       } else {
         if (typeof handler.onHeaders !== "function") {
-          throw new InvalidArgumentError("invalid onHeaders method");
+          throw new InvalidArgumentError2("invalid onHeaders method");
         }
         if (typeof handler.onData !== "function") {
-          throw new InvalidArgumentError("invalid onData method");
+          throw new InvalidArgumentError2("invalid onData method");
         }
         if (typeof handler.onComplete !== "function") {
-          throw new InvalidArgumentError("invalid onComplete method");
+          throw new InvalidArgumentError2("invalid onComplete method");
         }
       }
     }
@@ -2614,20 +2614,20 @@ var require_parseParams = __commonJS({
 var require_basename = __commonJS({
   "../../../node_modules/@fastify/busboy/lib/utils/basename.js"(exports2, module2) {
     "use strict";
-    module2.exports = function basename(path6) {
-      if (typeof path6 !== "string") {
+    module2.exports = function basename(path7) {
+      if (typeof path7 !== "string") {
         return "";
       }
-      for (var i = path6.length - 1; i >= 0; --i) {
-        switch (path6.charCodeAt(i)) {
+      for (var i = path7.length - 1; i >= 0; --i) {
+        switch (path7.charCodeAt(i)) {
           case 47:
           // '/'
           case 92:
-            path6 = path6.slice(i + 1);
-            return path6 === ".." || path6 === "." ? "" : path6;
+            path7 = path7.slice(i + 1);
+            return path7 === ".." || path7 === "." ? "" : path7;
         }
       }
-      return path6 === ".." || path6 === "." ? "" : path6;
+      return path7 === ".." || path7 === "." ? "" : path7;
     };
   }
 });
@@ -5630,7 +5630,7 @@ var require_request = __commonJS({
   "../../../node_modules/undici/lib/core/request.js"(exports2, module2) {
     "use strict";
     var {
-      InvalidArgumentError,
+      InvalidArgumentError: InvalidArgumentError2,
       NotSupportedError
     } = require_errors();
     var assert = require("assert");
@@ -5658,7 +5658,7 @@ var require_request = __commonJS({
     }
     var Request = class _Request {
       constructor(origin, {
-        path: path6,
+        path: path7,
         method,
         body,
         headers,
@@ -5672,32 +5672,32 @@ var require_request = __commonJS({
         throwOnError,
         expectContinue
       }, handler) {
-        if (typeof path6 !== "string") {
-          throw new InvalidArgumentError("path must be a string");
-        } else if (path6[0] !== "/" && !(path6.startsWith("http://") || path6.startsWith("https://")) && method !== "CONNECT") {
-          throw new InvalidArgumentError("path must be an absolute URL or start with a slash");
-        } else if (invalidPathRegex.exec(path6) !== null) {
-          throw new InvalidArgumentError("invalid request path");
+        if (typeof path7 !== "string") {
+          throw new InvalidArgumentError2("path must be a string");
+        } else if (path7[0] !== "/" && !(path7.startsWith("http://") || path7.startsWith("https://")) && method !== "CONNECT") {
+          throw new InvalidArgumentError2("path must be an absolute URL or start with a slash");
+        } else if (invalidPathRegex.exec(path7) !== null) {
+          throw new InvalidArgumentError2("invalid request path");
         }
         if (typeof method !== "string") {
-          throw new InvalidArgumentError("method must be a string");
+          throw new InvalidArgumentError2("method must be a string");
         } else if (tokenRegExp.exec(method) === null) {
-          throw new InvalidArgumentError("invalid request method");
+          throw new InvalidArgumentError2("invalid request method");
         }
         if (upgrade && typeof upgrade !== "string") {
-          throw new InvalidArgumentError("upgrade must be a string");
+          throw new InvalidArgumentError2("upgrade must be a string");
         }
         if (headersTimeout != null && (!Number.isFinite(headersTimeout) || headersTimeout < 0)) {
-          throw new InvalidArgumentError("invalid headersTimeout");
+          throw new InvalidArgumentError2("invalid headersTimeout");
         }
         if (bodyTimeout != null && (!Number.isFinite(bodyTimeout) || bodyTimeout < 0)) {
-          throw new InvalidArgumentError("invalid bodyTimeout");
+          throw new InvalidArgumentError2("invalid bodyTimeout");
         }
         if (reset != null && typeof reset !== "boolean") {
-          throw new InvalidArgumentError("invalid reset");
+          throw new InvalidArgumentError2("invalid reset");
         }
         if (expectContinue != null && typeof expectContinue !== "boolean") {
-          throw new InvalidArgumentError("invalid expectContinue");
+          throw new InvalidArgumentError2("invalid expectContinue");
         }
         this.headersTimeout = headersTimeout;
         this.bodyTimeout = bodyTimeout;
@@ -5734,12 +5734,12 @@ var require_request = __commonJS({
         } else if (util.isFormDataLike(body) || util.isIterable(body) || util.isBlobLike(body)) {
           this.body = body;
         } else {
-          throw new InvalidArgumentError("body must be a string, a Buffer, a Readable stream, an iterable, or an async iterable");
+          throw new InvalidArgumentError2("body must be a string, a Buffer, a Readable stream, an iterable, or an async iterable");
         }
         this.completed = false;
         this.aborted = false;
         this.upgrade = upgrade || null;
-        this.path = query ? util.buildURL(path6, query) : path6;
+        this.path = query ? util.buildURL(path7, query) : path7;
         this.origin = origin;
         this.idempotent = idempotent == null ? method === "HEAD" || method === "GET" : idempotent;
         this.blocking = blocking == null ? false : blocking;
@@ -5751,7 +5751,7 @@ var require_request = __commonJS({
         this.expectContinue = expectContinue != null ? expectContinue : false;
         if (Array.isArray(headers)) {
           if (headers.length % 2 !== 0) {
-            throw new InvalidArgumentError("headers array must be even");
+            throw new InvalidArgumentError2("headers array must be even");
           }
           for (let i = 0; i < headers.length; i += 2) {
             processHeader(this, headers[i], headers[i + 1]);
@@ -5763,11 +5763,11 @@ var require_request = __commonJS({
             processHeader(this, key, headers[key]);
           }
         } else if (headers != null) {
-          throw new InvalidArgumentError("headers must be an object or an array");
+          throw new InvalidArgumentError2("headers must be an object or an array");
         }
         if (util.isFormDataLike(this.body)) {
           if (util.nodeMajor < 16 || util.nodeMajor === 16 && util.nodeMinor < 8) {
-            throw new InvalidArgumentError("Form-Data bodies are only supported in node v16.8 and newer.");
+            throw new InvalidArgumentError2("Form-Data bodies are only supported in node v16.8 and newer.");
           }
           if (!extractBody) {
             extractBody = require_body().extractBody;
@@ -5899,7 +5899,7 @@ var require_request = __commonJS({
         request.headers = {};
         if (Array.isArray(headers)) {
           if (headers.length % 2 !== 0) {
-            throw new InvalidArgumentError("headers array must be even");
+            throw new InvalidArgumentError2("headers array must be even");
           }
           for (let i = 0; i < headers.length; i += 2) {
             processHeader(request, headers[i], headers[i + 1], true);
@@ -5911,7 +5911,7 @@ var require_request = __commonJS({
             processHeader(request, key, headers[key], true);
           }
         } else if (headers != null) {
-          throw new InvalidArgumentError("headers must be an object or an array");
+          throw new InvalidArgumentError2("headers must be an object or an array");
         }
         return request;
       }
@@ -5929,52 +5929,52 @@ var require_request = __commonJS({
     };
     function processHeaderValue(key, val, skipAppend) {
       if (val && typeof val === "object") {
-        throw new InvalidArgumentError(`invalid ${key} header`);
+        throw new InvalidArgumentError2(`invalid ${key} header`);
       }
       val = val != null ? `${val}` : "";
       if (headerCharRegex.exec(val) !== null) {
-        throw new InvalidArgumentError(`invalid ${key} header`);
+        throw new InvalidArgumentError2(`invalid ${key} header`);
       }
       return skipAppend ? val : `${key}: ${val}\r
 `;
     }
     function processHeader(request, key, val, skipAppend = false) {
       if (val && (typeof val === "object" && !Array.isArray(val))) {
-        throw new InvalidArgumentError(`invalid ${key} header`);
+        throw new InvalidArgumentError2(`invalid ${key} header`);
       } else if (val === void 0) {
         return;
       }
       if (request.host === null && key.length === 4 && key.toLowerCase() === "host") {
         if (headerCharRegex.exec(val) !== null) {
-          throw new InvalidArgumentError(`invalid ${key} header`);
+          throw new InvalidArgumentError2(`invalid ${key} header`);
         }
         request.host = val;
       } else if (request.contentLength === null && key.length === 14 && key.toLowerCase() === "content-length") {
         request.contentLength = parseInt(val, 10);
         if (!Number.isFinite(request.contentLength)) {
-          throw new InvalidArgumentError("invalid content-length header");
+          throw new InvalidArgumentError2("invalid content-length header");
         }
       } else if (request.contentType === null && key.length === 12 && key.toLowerCase() === "content-type") {
         request.contentType = val;
         if (skipAppend) request.headers[key] = processHeaderValue(key, val, skipAppend);
         else request.headers += processHeaderValue(key, val);
       } else if (key.length === 17 && key.toLowerCase() === "transfer-encoding") {
-        throw new InvalidArgumentError("invalid transfer-encoding header");
+        throw new InvalidArgumentError2("invalid transfer-encoding header");
       } else if (key.length === 10 && key.toLowerCase() === "connection") {
         const value = typeof val === "string" ? val.toLowerCase() : null;
         if (value !== "close" && value !== "keep-alive") {
-          throw new InvalidArgumentError("invalid connection header");
+          throw new InvalidArgumentError2("invalid connection header");
         } else if (value === "close") {
           request.reset = true;
         }
       } else if (key.length === 10 && key.toLowerCase() === "keep-alive") {
-        throw new InvalidArgumentError("invalid keep-alive header");
+        throw new InvalidArgumentError2("invalid keep-alive header");
       } else if (key.length === 7 && key.toLowerCase() === "upgrade") {
-        throw new InvalidArgumentError("invalid upgrade header");
+        throw new InvalidArgumentError2("invalid upgrade header");
       } else if (key.length === 6 && key.toLowerCase() === "expect") {
         throw new NotSupportedError("expect header not supported");
       } else if (tokenRegExp.exec(key) === null) {
-        throw new InvalidArgumentError("invalid header key");
+        throw new InvalidArgumentError2("invalid header key");
       } else {
         if (Array.isArray(val)) {
           for (let i = 0; i < val.length; i++) {
@@ -6023,7 +6023,7 @@ var require_dispatcher_base = __commonJS({
     var {
       ClientDestroyedError,
       ClientClosedError,
-      InvalidArgumentError
+      InvalidArgumentError: InvalidArgumentError2
     } = require_errors();
     var { kDestroy, kClose, kDispatch, kInterceptors } = require_symbols();
     var kDestroyed = Symbol("destroyed");
@@ -6053,7 +6053,7 @@ var require_dispatcher_base = __commonJS({
           for (let i = newInterceptors.length - 1; i >= 0; i--) {
             const interceptor = this[kInterceptors][i];
             if (typeof interceptor !== "function") {
-              throw new InvalidArgumentError("interceptor must be an function");
+              throw new InvalidArgumentError2("interceptor must be an function");
             }
           }
         }
@@ -6068,7 +6068,7 @@ var require_dispatcher_base = __commonJS({
           });
         }
         if (typeof callback !== "function") {
-          throw new InvalidArgumentError("invalid callback");
+          throw new InvalidArgumentError2("invalid callback");
         }
         if (this[kDestroyed]) {
           queueMicrotask(() => callback(new ClientDestroyedError(), null));
@@ -6111,7 +6111,7 @@ var require_dispatcher_base = __commonJS({
           });
         }
         if (typeof callback !== "function") {
-          throw new InvalidArgumentError("invalid callback");
+          throw new InvalidArgumentError2("invalid callback");
         }
         if (this[kDestroyed]) {
           if (this[kOnDestroyed]) {
@@ -6152,11 +6152,11 @@ var require_dispatcher_base = __commonJS({
       }
       dispatch(opts, handler) {
         if (!handler || typeof handler !== "object") {
-          throw new InvalidArgumentError("handler must be an object");
+          throw new InvalidArgumentError2("handler must be an object");
         }
         try {
           if (!opts || typeof opts !== "object") {
-            throw new InvalidArgumentError("opts must be an object.");
+            throw new InvalidArgumentError2("opts must be an object.");
           }
           if (this[kDestroyed] || this[kOnDestroyed]) {
             throw new ClientDestroyedError();
@@ -6167,7 +6167,7 @@ var require_dispatcher_base = __commonJS({
           return this[kInterceptedDispatch](opts, handler);
         } catch (err) {
           if (typeof handler.onError !== "function") {
-            throw new InvalidArgumentError("invalid onError method");
+            throw new InvalidArgumentError2("invalid onError method");
           }
           handler.onError(err);
           return false;
@@ -6185,7 +6185,7 @@ var require_connect = __commonJS({
     var net = require("net");
     var assert = require("assert");
     var util = require_util();
-    var { InvalidArgumentError, ConnectTimeoutError } = require_errors();
+    var { InvalidArgumentError: InvalidArgumentError2, ConnectTimeoutError } = require_errors();
     var tls;
     var SessionCache;
     if (global.FinalizationRegistry && !process.env.NODE_V8_COVERAGE) {
@@ -6238,7 +6238,7 @@ var require_connect = __commonJS({
     }
     function buildConnector({ allowH2, maxCachedSessions, socketPath, timeout, ...opts }) {
       if (maxCachedSessions != null && (!Number.isInteger(maxCachedSessions) || maxCachedSessions < 0)) {
-        throw new InvalidArgumentError("maxCachedSessions must be a positive integer or zero");
+        throw new InvalidArgumentError2("maxCachedSessions must be a positive integer or zero");
       }
       const options = { path: socketPath, ...opts };
       const sessionCache = new SessionCache(maxCachedSessions == null ? 100 : maxCachedSessions);
@@ -6682,7 +6682,7 @@ var require_RedirectHandler = __commonJS({
     var util = require_util();
     var { kBodyUsed } = require_symbols();
     var assert = require("assert");
-    var { InvalidArgumentError } = require_errors();
+    var { InvalidArgumentError: InvalidArgumentError2 } = require_errors();
     var EE = require("events");
     var redirectableStatusCodes = [300, 301, 302, 303, 307, 308];
     var kBody = Symbol("body");
@@ -6700,7 +6700,7 @@ var require_RedirectHandler = __commonJS({
     var RedirectHandler = class {
       constructor(dispatch, maxRedirections, opts, handler) {
         if (maxRedirections != null && (!Number.isInteger(maxRedirections) || maxRedirections < 0)) {
-          throw new InvalidArgumentError("maxRedirections must be a positive number");
+          throw new InvalidArgumentError2("maxRedirections must be a positive number");
         }
         util.validateHandler(handler, opts.method, opts.upgrade);
         this.dispatch = dispatch;
@@ -6747,9 +6747,9 @@ var require_RedirectHandler = __commonJS({
           return this.handler.onHeaders(statusCode, headers, resume, statusText);
         }
         const { origin, pathname, search } = util.parseURL(new URL(this.location, this.opts.origin && new URL(this.opts.path, this.opts.origin)));
-        const path6 = search ? `${pathname}${search}` : pathname;
+        const path7 = search ? `${pathname}${search}` : pathname;
         this.opts.headers = cleanRequestHeaders(this.opts.headers, statusCode === 303, this.opts.origin !== origin);
-        this.opts.path = path6;
+        this.opts.path = path7;
         this.opts.origin = origin;
         this.opts.maxRedirections = 0;
         this.opts.query = null;
@@ -6878,7 +6878,7 @@ var require_client = __commonJS({
     var {
       RequestContentLengthMismatchError,
       ResponseContentLengthMismatchError,
-      InvalidArgumentError,
+      InvalidArgumentError: InvalidArgumentError2,
       RequestAbortedError,
       HeadersTimeoutError,
       HeadersOverflowError,
@@ -7013,67 +7013,67 @@ var require_client = __commonJS({
       } = {}) {
         super();
         if (keepAlive !== void 0) {
-          throw new InvalidArgumentError("unsupported keepAlive, use pipelining=0 instead");
+          throw new InvalidArgumentError2("unsupported keepAlive, use pipelining=0 instead");
         }
         if (socketTimeout !== void 0) {
-          throw new InvalidArgumentError("unsupported socketTimeout, use headersTimeout & bodyTimeout instead");
+          throw new InvalidArgumentError2("unsupported socketTimeout, use headersTimeout & bodyTimeout instead");
         }
         if (requestTimeout !== void 0) {
-          throw new InvalidArgumentError("unsupported requestTimeout, use headersTimeout & bodyTimeout instead");
+          throw new InvalidArgumentError2("unsupported requestTimeout, use headersTimeout & bodyTimeout instead");
         }
         if (idleTimeout !== void 0) {
-          throw new InvalidArgumentError("unsupported idleTimeout, use keepAliveTimeout instead");
+          throw new InvalidArgumentError2("unsupported idleTimeout, use keepAliveTimeout instead");
         }
         if (maxKeepAliveTimeout !== void 0) {
-          throw new InvalidArgumentError("unsupported maxKeepAliveTimeout, use keepAliveMaxTimeout instead");
+          throw new InvalidArgumentError2("unsupported maxKeepAliveTimeout, use keepAliveMaxTimeout instead");
         }
         if (maxHeaderSize != null && !Number.isFinite(maxHeaderSize)) {
-          throw new InvalidArgumentError("invalid maxHeaderSize");
+          throw new InvalidArgumentError2("invalid maxHeaderSize");
         }
         if (socketPath != null && typeof socketPath !== "string") {
-          throw new InvalidArgumentError("invalid socketPath");
+          throw new InvalidArgumentError2("invalid socketPath");
         }
         if (connectTimeout != null && (!Number.isFinite(connectTimeout) || connectTimeout < 0)) {
-          throw new InvalidArgumentError("invalid connectTimeout");
+          throw new InvalidArgumentError2("invalid connectTimeout");
         }
         if (keepAliveTimeout != null && (!Number.isFinite(keepAliveTimeout) || keepAliveTimeout <= 0)) {
-          throw new InvalidArgumentError("invalid keepAliveTimeout");
+          throw new InvalidArgumentError2("invalid keepAliveTimeout");
         }
         if (keepAliveMaxTimeout != null && (!Number.isFinite(keepAliveMaxTimeout) || keepAliveMaxTimeout <= 0)) {
-          throw new InvalidArgumentError("invalid keepAliveMaxTimeout");
+          throw new InvalidArgumentError2("invalid keepAliveMaxTimeout");
         }
         if (keepAliveTimeoutThreshold != null && !Number.isFinite(keepAliveTimeoutThreshold)) {
-          throw new InvalidArgumentError("invalid keepAliveTimeoutThreshold");
+          throw new InvalidArgumentError2("invalid keepAliveTimeoutThreshold");
         }
         if (headersTimeout != null && (!Number.isInteger(headersTimeout) || headersTimeout < 0)) {
-          throw new InvalidArgumentError("headersTimeout must be a positive integer or zero");
+          throw new InvalidArgumentError2("headersTimeout must be a positive integer or zero");
         }
         if (bodyTimeout != null && (!Number.isInteger(bodyTimeout) || bodyTimeout < 0)) {
-          throw new InvalidArgumentError("bodyTimeout must be a positive integer or zero");
+          throw new InvalidArgumentError2("bodyTimeout must be a positive integer or zero");
         }
         if (connect2 != null && typeof connect2 !== "function" && typeof connect2 !== "object") {
-          throw new InvalidArgumentError("connect must be a function or an object");
+          throw new InvalidArgumentError2("connect must be a function or an object");
         }
         if (maxRedirections != null && (!Number.isInteger(maxRedirections) || maxRedirections < 0)) {
-          throw new InvalidArgumentError("maxRedirections must be a positive number");
+          throw new InvalidArgumentError2("maxRedirections must be a positive number");
         }
         if (maxRequestsPerClient != null && (!Number.isInteger(maxRequestsPerClient) || maxRequestsPerClient < 0)) {
-          throw new InvalidArgumentError("maxRequestsPerClient must be a positive number");
+          throw new InvalidArgumentError2("maxRequestsPerClient must be a positive number");
         }
         if (localAddress != null && (typeof localAddress !== "string" || net.isIP(localAddress) === 0)) {
-          throw new InvalidArgumentError("localAddress must be valid string IP address");
+          throw new InvalidArgumentError2("localAddress must be valid string IP address");
         }
         if (maxResponseSize != null && (!Number.isInteger(maxResponseSize) || maxResponseSize < -1)) {
-          throw new InvalidArgumentError("maxResponseSize must be a positive number");
+          throw new InvalidArgumentError2("maxResponseSize must be a positive number");
         }
         if (autoSelectFamilyAttemptTimeout != null && (!Number.isInteger(autoSelectFamilyAttemptTimeout) || autoSelectFamilyAttemptTimeout < -1)) {
-          throw new InvalidArgumentError("autoSelectFamilyAttemptTimeout must be a positive number");
+          throw new InvalidArgumentError2("autoSelectFamilyAttemptTimeout must be a positive number");
         }
         if (allowH2 != null && typeof allowH2 !== "boolean") {
-          throw new InvalidArgumentError("allowH2 must be a valid boolean value");
+          throw new InvalidArgumentError2("allowH2 must be a valid boolean value");
         }
         if (maxConcurrentStreams != null && (typeof maxConcurrentStreams !== "number" || maxConcurrentStreams < 1)) {
-          throw new InvalidArgumentError("maxConcurrentStreams must be a possitive integer, greater than 0");
+          throw new InvalidArgumentError2("maxConcurrentStreams must be a possitive integer, greater than 0");
         }
         if (typeof connect2 !== "function") {
           connect2 = buildConnector({
@@ -7991,7 +7991,7 @@ var require_client = __commonJS({
         writeH2(client, client[kHTTP2Session], request);
         return;
       }
-      const { body, method, path: path6, host, upgrade, headers, blocking, reset } = request;
+      const { body, method, path: path7, host, upgrade, headers, blocking, reset } = request;
       const expectsPayload = method === "PUT" || method === "POST" || method === "PATCH";
       if (body && typeof body.read === "function") {
         body.read(0);
@@ -8041,7 +8041,7 @@ var require_client = __commonJS({
       if (blocking) {
         socket[kBlocking] = true;
       }
-      let header = `${method} ${path6} HTTP/1.1\r
+      let header = `${method} ${path7} HTTP/1.1\r
 `;
       if (typeof host === "string") {
         header += `host: ${host}\r
@@ -8104,7 +8104,7 @@ upgrade: ${upgrade}\r
       return true;
     }
     function writeH2(client, session, request) {
-      const { body, method, path: path6, host, upgrade, expectContinue, signal, headers: reqHeaders } = request;
+      const { body, method, path: path7, host, upgrade, expectContinue, signal, headers: reqHeaders } = request;
       let headers;
       if (typeof reqHeaders === "string") headers = Request[kHTTP2CopyHeaders](reqHeaders.trim());
       else headers = reqHeaders;
@@ -8147,7 +8147,7 @@ upgrade: ${upgrade}\r
         });
         return true;
       }
-      headers[HTTP2_HEADER_PATH] = path6;
+      headers[HTTP2_HEADER_PATH] = path7;
       headers[HTTP2_HEADER_SCHEME] = "https";
       const expectsPayload = method === "PUT" || method === "POST" || method === "PATCH";
       if (body && typeof body.read === "function") {
@@ -8828,7 +8828,7 @@ var require_pool = __commonJS({
     } = require_pool_base();
     var Client = require_client();
     var {
-      InvalidArgumentError
+      InvalidArgumentError: InvalidArgumentError2
     } = require_errors();
     var util = require_util();
     var { kUrl, kInterceptors } = require_symbols();
@@ -8855,13 +8855,13 @@ var require_pool = __commonJS({
       } = {}) {
         super();
         if (connections != null && (!Number.isFinite(connections) || connections < 0)) {
-          throw new InvalidArgumentError("invalid connections");
+          throw new InvalidArgumentError2("invalid connections");
         }
         if (typeof factory !== "function") {
-          throw new InvalidArgumentError("factory must be a function.");
+          throw new InvalidArgumentError2("factory must be a function.");
         }
         if (connect != null && typeof connect !== "function" && typeof connect !== "object") {
-          throw new InvalidArgumentError("connect must be a function or an object");
+          throw new InvalidArgumentError2("connect must be a function or an object");
         }
         if (typeof connect !== "function") {
           connect = buildConnector({
@@ -8911,7 +8911,7 @@ var require_balanced_pool = __commonJS({
     "use strict";
     var {
       BalancedPoolMissingUpstreamError,
-      InvalidArgumentError
+      InvalidArgumentError: InvalidArgumentError2
     } = require_errors();
     var {
       PoolBase,
@@ -8951,7 +8951,7 @@ var require_balanced_pool = __commonJS({
           upstreams = [upstreams];
         }
         if (typeof factory !== "function") {
-          throw new InvalidArgumentError("factory must be a function.");
+          throw new InvalidArgumentError2("factory must be a function.");
         }
         this[kInterceptors] = opts.interceptors && opts.interceptors.BalancedPool && Array.isArray(opts.interceptors.BalancedPool) ? opts.interceptors.BalancedPool : [];
         this[kFactory] = factory;
@@ -9086,7 +9086,7 @@ var require_dispatcher_weakref = __commonJS({
 var require_agent = __commonJS({
   "../../../node_modules/undici/lib/agent.js"(exports2, module2) {
     "use strict";
-    var { InvalidArgumentError } = require_errors();
+    var { InvalidArgumentError: InvalidArgumentError2 } = require_errors();
     var { kClients, kRunning, kClose, kDestroy, kDispatch, kInterceptors } = require_symbols();
     var DispatcherBase = require_dispatcher_base();
     var Pool = require_pool();
@@ -9109,13 +9109,13 @@ var require_agent = __commonJS({
       constructor({ factory = defaultFactory, maxRedirections = 0, connect, ...options } = {}) {
         super();
         if (typeof factory !== "function") {
-          throw new InvalidArgumentError("factory must be a function.");
+          throw new InvalidArgumentError2("factory must be a function.");
         }
         if (connect != null && typeof connect !== "function" && typeof connect !== "object") {
-          throw new InvalidArgumentError("connect must be a function or an object");
+          throw new InvalidArgumentError2("connect must be a function or an object");
         }
         if (!Number.isInteger(maxRedirections) || maxRedirections < 0) {
-          throw new InvalidArgumentError("maxRedirections must be a positive number");
+          throw new InvalidArgumentError2("maxRedirections must be a positive number");
         }
         if (connect && typeof connect !== "function") {
           connect = { ...connect };
@@ -9164,7 +9164,7 @@ var require_agent = __commonJS({
         if (opts.origin && (typeof opts.origin === "string" || opts.origin instanceof URL)) {
           key = String(opts.origin);
         } else {
-          throw new InvalidArgumentError("opts.origin must be a non-empty string or URL.");
+          throw new InvalidArgumentError2("opts.origin must be a non-empty string or URL.");
         }
         const ref = this[kClients].get(key);
         let dispatcher = ref ? ref.deref() : null;
@@ -9206,7 +9206,7 @@ var require_readable = __commonJS({
     "use strict";
     var assert = require("assert");
     var { Readable } = require("stream");
-    var { RequestAbortedError, NotSupportedError, InvalidArgumentError } = require_errors();
+    var { RequestAbortedError, NotSupportedError, InvalidArgumentError: InvalidArgumentError2 } = require_errors();
     var util = require_util();
     var { ReadableStreamFrom, toUSVString } = require_util();
     var Blob2;
@@ -9324,7 +9324,7 @@ var require_readable = __commonJS({
         if (signal) {
           try {
             if (typeof signal !== "object" || !("aborted" in signal)) {
-              throw new InvalidArgumentError("signal must be an AbortSignal");
+              throw new InvalidArgumentError2("signal must be an AbortSignal");
             }
             util.throwIfAborted(signal);
           } catch (err) {
@@ -9552,7 +9552,7 @@ var require_api_request = __commonJS({
     "use strict";
     var Readable = require_readable();
     var {
-      InvalidArgumentError,
+      InvalidArgumentError: InvalidArgumentError2,
       RequestAbortedError
     } = require_errors();
     var util = require_util();
@@ -9562,24 +9562,24 @@ var require_api_request = __commonJS({
     var RequestHandler = class extends AsyncResource {
       constructor(opts, callback) {
         if (!opts || typeof opts !== "object") {
-          throw new InvalidArgumentError("invalid opts");
+          throw new InvalidArgumentError2("invalid opts");
         }
         const { signal, method, opaque, body, onInfo, responseHeaders, throwOnError, highWaterMark } = opts;
         try {
           if (typeof callback !== "function") {
-            throw new InvalidArgumentError("invalid callback");
+            throw new InvalidArgumentError2("invalid callback");
           }
           if (highWaterMark && (typeof highWaterMark !== "number" || highWaterMark < 0)) {
-            throw new InvalidArgumentError("invalid highWaterMark");
+            throw new InvalidArgumentError2("invalid highWaterMark");
           }
           if (signal && typeof signal.on !== "function" && typeof signal.addEventListener !== "function") {
-            throw new InvalidArgumentError("signal must be an EventEmitter or EventTarget");
+            throw new InvalidArgumentError2("signal must be an EventEmitter or EventTarget");
           }
           if (method === "CONNECT") {
-            throw new InvalidArgumentError("invalid method");
+            throw new InvalidArgumentError2("invalid method");
           }
           if (onInfo && typeof onInfo !== "function") {
-            throw new InvalidArgumentError("invalid onInfo callback");
+            throw new InvalidArgumentError2("invalid onInfo callback");
           }
           super("UNDICI_REQUEST");
         } catch (err) {
@@ -9706,7 +9706,7 @@ var require_api_stream = __commonJS({
     "use strict";
     var { finished, PassThrough } = require("stream");
     var {
-      InvalidArgumentError,
+      InvalidArgumentError: InvalidArgumentError2,
       InvalidReturnValueError,
       RequestAbortedError
     } = require_errors();
@@ -9717,24 +9717,24 @@ var require_api_stream = __commonJS({
     var StreamHandler = class extends AsyncResource {
       constructor(opts, factory, callback) {
         if (!opts || typeof opts !== "object") {
-          throw new InvalidArgumentError("invalid opts");
+          throw new InvalidArgumentError2("invalid opts");
         }
         const { signal, method, opaque, body, onInfo, responseHeaders, throwOnError } = opts;
         try {
           if (typeof callback !== "function") {
-            throw new InvalidArgumentError("invalid callback");
+            throw new InvalidArgumentError2("invalid callback");
           }
           if (typeof factory !== "function") {
-            throw new InvalidArgumentError("invalid factory");
+            throw new InvalidArgumentError2("invalid factory");
           }
           if (signal && typeof signal.on !== "function" && typeof signal.addEventListener !== "function") {
-            throw new InvalidArgumentError("signal must be an EventEmitter or EventTarget");
+            throw new InvalidArgumentError2("signal must be an EventEmitter or EventTarget");
           }
           if (method === "CONNECT") {
-            throw new InvalidArgumentError("invalid method");
+            throw new InvalidArgumentError2("invalid method");
           }
           if (onInfo && typeof onInfo !== "function") {
-            throw new InvalidArgumentError("invalid onInfo callback");
+            throw new InvalidArgumentError2("invalid onInfo callback");
           }
           super("UNDICI_STREAM");
         } catch (err) {
@@ -9884,7 +9884,7 @@ var require_api_pipeline = __commonJS({
       PassThrough
     } = require("stream");
     var {
-      InvalidArgumentError,
+      InvalidArgumentError: InvalidArgumentError2,
       InvalidReturnValueError,
       RequestAbortedError
     } = require_errors();
@@ -9928,20 +9928,20 @@ var require_api_pipeline = __commonJS({
     var PipelineHandler = class extends AsyncResource {
       constructor(opts, handler) {
         if (!opts || typeof opts !== "object") {
-          throw new InvalidArgumentError("invalid opts");
+          throw new InvalidArgumentError2("invalid opts");
         }
         if (typeof handler !== "function") {
-          throw new InvalidArgumentError("invalid handler");
+          throw new InvalidArgumentError2("invalid handler");
         }
         const { signal, method, opaque, onInfo, responseHeaders } = opts;
         if (signal && typeof signal.on !== "function" && typeof signal.addEventListener !== "function") {
-          throw new InvalidArgumentError("signal must be an EventEmitter or EventTarget");
+          throw new InvalidArgumentError2("signal must be an EventEmitter or EventTarget");
         }
         if (method === "CONNECT") {
-          throw new InvalidArgumentError("invalid method");
+          throw new InvalidArgumentError2("invalid method");
         }
         if (onInfo && typeof onInfo !== "function") {
-          throw new InvalidArgumentError("invalid onInfo callback");
+          throw new InvalidArgumentError2("invalid onInfo callback");
         }
         super("UNDICI_PIPELINE");
         this.opaque = opaque || null;
@@ -10076,7 +10076,7 @@ var require_api_pipeline = __commonJS({
 var require_api_upgrade = __commonJS({
   "../../../node_modules/undici/lib/api/api-upgrade.js"(exports2, module2) {
     "use strict";
-    var { InvalidArgumentError, RequestAbortedError, SocketError } = require_errors();
+    var { InvalidArgumentError: InvalidArgumentError2, RequestAbortedError, SocketError } = require_errors();
     var { AsyncResource } = require("async_hooks");
     var util = require_util();
     var { addSignal, removeSignal } = require_abort_signal();
@@ -10084,14 +10084,14 @@ var require_api_upgrade = __commonJS({
     var UpgradeHandler = class extends AsyncResource {
       constructor(opts, callback) {
         if (!opts || typeof opts !== "object") {
-          throw new InvalidArgumentError("invalid opts");
+          throw new InvalidArgumentError2("invalid opts");
         }
         if (typeof callback !== "function") {
-          throw new InvalidArgumentError("invalid callback");
+          throw new InvalidArgumentError2("invalid callback");
         }
         const { signal, opaque, responseHeaders } = opts;
         if (signal && typeof signal.on !== "function" && typeof signal.addEventListener !== "function") {
-          throw new InvalidArgumentError("signal must be an EventEmitter or EventTarget");
+          throw new InvalidArgumentError2("signal must be an EventEmitter or EventTarget");
         }
         super("UNDICI_UPGRADE");
         this.responseHeaders = responseHeaders || null;
@@ -10167,20 +10167,20 @@ var require_api_connect = __commonJS({
   "../../../node_modules/undici/lib/api/api-connect.js"(exports2, module2) {
     "use strict";
     var { AsyncResource } = require("async_hooks");
-    var { InvalidArgumentError, RequestAbortedError, SocketError } = require_errors();
+    var { InvalidArgumentError: InvalidArgumentError2, RequestAbortedError, SocketError } = require_errors();
     var util = require_util();
     var { addSignal, removeSignal } = require_abort_signal();
     var ConnectHandler = class extends AsyncResource {
       constructor(opts, callback) {
         if (!opts || typeof opts !== "object") {
-          throw new InvalidArgumentError("invalid opts");
+          throw new InvalidArgumentError2("invalid opts");
         }
         if (typeof callback !== "function") {
-          throw new InvalidArgumentError("invalid callback");
+          throw new InvalidArgumentError2("invalid callback");
         }
         const { signal, opaque, responseHeaders } = opts;
         if (signal && typeof signal.on !== "function" && typeof signal.addEventListener !== "function") {
-          throw new InvalidArgumentError("signal must be an EventEmitter or EventTarget");
+          throw new InvalidArgumentError2("signal must be an EventEmitter or EventTarget");
         }
         super("UNDICI_CONNECT");
         this.opaque = opaque || null;
@@ -10390,20 +10390,20 @@ var require_mock_utils = __commonJS({
       }
       return true;
     }
-    function safeUrl(path6) {
-      if (typeof path6 !== "string") {
-        return path6;
+    function safeUrl(path7) {
+      if (typeof path7 !== "string") {
+        return path7;
       }
-      const pathSegments = path6.split("?");
+      const pathSegments = path7.split("?");
       if (pathSegments.length !== 2) {
-        return path6;
+        return path7;
       }
       const qp = new URLSearchParams(pathSegments.pop());
       qp.sort();
       return [...pathSegments, qp.toString()].join("?");
     }
-    function matchKey(mockDispatch2, { path: path6, method, body, headers }) {
-      const pathMatch = matchValue(mockDispatch2.path, path6);
+    function matchKey(mockDispatch2, { path: path7, method, body, headers }) {
+      const pathMatch = matchValue(mockDispatch2.path, path7);
       const methodMatch = matchValue(mockDispatch2.method, method);
       const bodyMatch = typeof mockDispatch2.body !== "undefined" ? matchValue(mockDispatch2.body, body) : true;
       const headersMatch = matchHeaders(mockDispatch2, headers);
@@ -10421,7 +10421,7 @@ var require_mock_utils = __commonJS({
     function getMockDispatch(mockDispatches, key) {
       const basePath = key.query ? buildURL(key.path, key.query) : key.path;
       const resolvedPath = typeof basePath === "string" ? safeUrl(basePath) : basePath;
-      let matchedMockDispatches = mockDispatches.filter(({ consumed }) => !consumed).filter(({ path: path6 }) => matchValue(safeUrl(path6), resolvedPath));
+      let matchedMockDispatches = mockDispatches.filter(({ consumed }) => !consumed).filter(({ path: path7 }) => matchValue(safeUrl(path7), resolvedPath));
       if (matchedMockDispatches.length === 0) {
         throw new MockNotMatchedError(`Mock dispatch not matched for path '${resolvedPath}'`);
       }
@@ -10458,9 +10458,9 @@ var require_mock_utils = __commonJS({
       }
     }
     function buildKey(opts) {
-      const { path: path6, method, body, headers, query } = opts;
+      const { path: path7, method, body, headers, query } = opts;
       return {
-        path: path6,
+        path: path7,
         method,
         body,
         headers,
@@ -10602,7 +10602,7 @@ var require_mock_interceptor = __commonJS({
       kContentLength,
       kMockDispatch
     } = require_mock_symbols();
-    var { InvalidArgumentError } = require_errors();
+    var { InvalidArgumentError: InvalidArgumentError2 } = require_errors();
     var { buildURL } = require_util();
     var MockScope = class {
       constructor(mockDispatch) {
@@ -10613,7 +10613,7 @@ var require_mock_interceptor = __commonJS({
        */
       delay(waitInMs) {
         if (typeof waitInMs !== "number" || !Number.isInteger(waitInMs) || waitInMs <= 0) {
-          throw new InvalidArgumentError("waitInMs must be a valid integer > 0");
+          throw new InvalidArgumentError2("waitInMs must be a valid integer > 0");
         }
         this[kMockDispatch].delay = waitInMs;
         return this;
@@ -10630,7 +10630,7 @@ var require_mock_interceptor = __commonJS({
        */
       times(repeatTimes) {
         if (typeof repeatTimes !== "number" || !Number.isInteger(repeatTimes) || repeatTimes <= 0) {
-          throw new InvalidArgumentError("repeatTimes must be a valid integer > 0");
+          throw new InvalidArgumentError2("repeatTimes must be a valid integer > 0");
         }
         this[kMockDispatch].times = repeatTimes;
         return this;
@@ -10639,10 +10639,10 @@ var require_mock_interceptor = __commonJS({
     var MockInterceptor = class {
       constructor(opts, mockDispatches) {
         if (typeof opts !== "object") {
-          throw new InvalidArgumentError("opts must be an object");
+          throw new InvalidArgumentError2("opts must be an object");
         }
         if (typeof opts.path === "undefined") {
-          throw new InvalidArgumentError("opts.path must be defined");
+          throw new InvalidArgumentError2("opts.path must be defined");
         }
         if (typeof opts.method === "undefined") {
           opts.method = "GET";
@@ -10673,13 +10673,13 @@ var require_mock_interceptor = __commonJS({
       }
       validateReplyParameters(statusCode, data, responseOptions) {
         if (typeof statusCode === "undefined") {
-          throw new InvalidArgumentError("statusCode must be defined");
+          throw new InvalidArgumentError2("statusCode must be defined");
         }
         if (typeof data === "undefined") {
-          throw new InvalidArgumentError("data must be defined");
+          throw new InvalidArgumentError2("data must be defined");
         }
         if (typeof responseOptions !== "object") {
-          throw new InvalidArgumentError("responseOptions must be an object");
+          throw new InvalidArgumentError2("responseOptions must be an object");
         }
       }
       /**
@@ -10690,7 +10690,7 @@ var require_mock_interceptor = __commonJS({
           const wrappedDefaultsCallback = (opts) => {
             const resolvedData = replyData(opts);
             if (typeof resolvedData !== "object") {
-              throw new InvalidArgumentError("reply options callback must return an object");
+              throw new InvalidArgumentError2("reply options callback must return an object");
             }
             const { statusCode: statusCode2, data: data2 = "", responseOptions: responseOptions2 = {} } = resolvedData;
             this.validateReplyParameters(statusCode2, data2, responseOptions2);
@@ -10712,7 +10712,7 @@ var require_mock_interceptor = __commonJS({
        */
       replyWithError(error2) {
         if (typeof error2 === "undefined") {
-          throw new InvalidArgumentError("error must be defined");
+          throw new InvalidArgumentError2("error must be defined");
         }
         const newMockDispatch = addMockDispatch(this[kDispatches], this[kDispatchKey], { error: error2 });
         return new MockScope(newMockDispatch);
@@ -10722,7 +10722,7 @@ var require_mock_interceptor = __commonJS({
        */
       defaultReplyHeaders(headers) {
         if (typeof headers === "undefined") {
-          throw new InvalidArgumentError("headers must be defined");
+          throw new InvalidArgumentError2("headers must be defined");
         }
         this[kDefaultHeaders] = headers;
         return this;
@@ -10732,7 +10732,7 @@ var require_mock_interceptor = __commonJS({
        */
       defaultReplyTrailers(trailers) {
         if (typeof trailers === "undefined") {
-          throw new InvalidArgumentError("trailers must be defined");
+          throw new InvalidArgumentError2("trailers must be defined");
         }
         this[kDefaultTrailers] = trailers;
         return this;
@@ -10768,12 +10768,12 @@ var require_mock_client = __commonJS({
     } = require_mock_symbols();
     var { MockInterceptor } = require_mock_interceptor();
     var Symbols = require_symbols();
-    var { InvalidArgumentError } = require_errors();
+    var { InvalidArgumentError: InvalidArgumentError2 } = require_errors();
     var MockClient = class extends Client {
       constructor(origin, opts) {
         super(origin, opts);
         if (!opts || !opts.agent || typeof opts.agent.dispatch !== "function") {
-          throw new InvalidArgumentError("Argument opts.agent must implement Agent");
+          throw new InvalidArgumentError2("Argument opts.agent must implement Agent");
         }
         this[kMockAgent] = opts.agent;
         this[kOrigin] = origin;
@@ -10821,12 +10821,12 @@ var require_mock_pool = __commonJS({
     } = require_mock_symbols();
     var { MockInterceptor } = require_mock_interceptor();
     var Symbols = require_symbols();
-    var { InvalidArgumentError } = require_errors();
+    var { InvalidArgumentError: InvalidArgumentError2 } = require_errors();
     var MockPool = class extends Pool {
       constructor(origin, opts) {
         super(origin, opts);
         if (!opts || !opts.agent || typeof opts.agent.dispatch !== "function") {
-          throw new InvalidArgumentError("Argument opts.agent must implement Agent");
+          throw new InvalidArgumentError2("Argument opts.agent must implement Agent");
         }
         this[kMockAgent] = opts.agent;
         this[kOrigin] = origin;
@@ -10909,10 +10909,10 @@ var require_pending_interceptors_formatter = __commonJS({
       }
       format(pendingInterceptors) {
         const withPrettyHeaders = pendingInterceptors.map(
-          ({ method, path: path6, data: { statusCode }, persist, times, timesInvoked, origin }) => ({
+          ({ method, path: path7, data: { statusCode }, persist, times, timesInvoked, origin }) => ({
             Method: method,
             Origin: origin,
-            Path: path6,
+            Path: path7,
             "Status code": statusCode,
             Persistent: persist ? "\u2705" : "\u274C",
             Invocations: timesInvoked,
@@ -10946,7 +10946,7 @@ var require_mock_agent = __commonJS({
     var MockClient = require_mock_client();
     var MockPool = require_mock_pool();
     var { matchValue, buildMockOptions } = require_mock_utils();
-    var { InvalidArgumentError, UndiciError } = require_errors();
+    var { InvalidArgumentError: InvalidArgumentError2, UndiciError } = require_errors();
     var Dispatcher = require_dispatcher();
     var Pluralizer = require_pluralizer();
     var PendingInterceptorsFormatter = require_pending_interceptors_formatter();
@@ -10964,7 +10964,7 @@ var require_mock_agent = __commonJS({
         this[kNetConnect] = true;
         this[kIsMockActive] = true;
         if (opts && opts.agent && typeof opts.agent.dispatch !== "function") {
-          throw new InvalidArgumentError("Argument opts.agent must implement Agent");
+          throw new InvalidArgumentError2("Argument opts.agent must implement Agent");
         }
         const agent = opts && opts.agent ? opts.agent : new Agent(opts);
         this[kAgent] = agent;
@@ -11003,7 +11003,7 @@ var require_mock_agent = __commonJS({
         } else if (typeof matcher === "undefined") {
           this[kNetConnect] = true;
         } else {
-          throw new InvalidArgumentError("Unsupported matcher. Must be one of String|Function|RegExp.");
+          throw new InvalidArgumentError2("Unsupported matcher. Must be one of String|Function|RegExp.");
         }
       }
       disableNetConnect() {
@@ -11074,7 +11074,7 @@ var require_proxy_agent = __commonJS({
     var Agent = require_agent();
     var Pool = require_pool();
     var DispatcherBase = require_dispatcher_base();
-    var { InvalidArgumentError, RequestAbortedError } = require_errors();
+    var { InvalidArgumentError: InvalidArgumentError2, RequestAbortedError } = require_errors();
     var buildConnector = require_connect();
     var kAgent = Symbol("proxy agent");
     var kClient = Symbol("proxy client");
@@ -11090,7 +11090,7 @@ var require_proxy_agent = __commonJS({
         opts = { uri: opts };
       }
       if (!opts || !opts.uri) {
-        throw new InvalidArgumentError("Proxy opts.uri is mandatory");
+        throw new InvalidArgumentError2("Proxy opts.uri is mandatory");
       }
       return {
         uri: opts.uri,
@@ -11110,11 +11110,11 @@ var require_proxy_agent = __commonJS({
           opts = { uri: opts };
         }
         if (!opts || !opts.uri) {
-          throw new InvalidArgumentError("Proxy opts.uri is mandatory");
+          throw new InvalidArgumentError2("Proxy opts.uri is mandatory");
         }
         const { clientFactory = defaultFactory } = opts;
         if (typeof clientFactory !== "function") {
-          throw new InvalidArgumentError("Proxy opts.clientFactory must be a function.");
+          throw new InvalidArgumentError2("Proxy opts.clientFactory must be a function.");
         }
         this[kRequestTls] = opts.requestTls;
         this[kProxyTls] = opts.proxyTls;
@@ -11122,7 +11122,7 @@ var require_proxy_agent = __commonJS({
         const resolvedUrl = new URL2(opts.uri);
         const { origin, port, host, username, password } = resolvedUrl;
         if (opts.auth && opts.token) {
-          throw new InvalidArgumentError("opts.auth cannot be used in combination with opts.token");
+          throw new InvalidArgumentError2("opts.auth cannot be used in combination with opts.token");
         } else if (opts.auth) {
           this[kProxyHeaders]["proxy-authorization"] = `Basic ${opts.auth}`;
         } else if (opts.token) {
@@ -11210,7 +11210,7 @@ var require_proxy_agent = __commonJS({
     function throwIfProxyAuthIsSent(headers) {
       const existProxyAuth = headers && Object.keys(headers).find((key) => key.toLowerCase() === "proxy-authorization");
       if (existProxyAuth) {
-        throw new InvalidArgumentError("Proxy-Authorization should be sent in ProxyAgent constructor");
+        throw new InvalidArgumentError2("Proxy-Authorization should be sent in ProxyAgent constructor");
       }
     }
     module2.exports = ProxyAgent;
@@ -11490,14 +11490,14 @@ var require_global2 = __commonJS({
   "../../../node_modules/undici/lib/global.js"(exports2, module2) {
     "use strict";
     var globalDispatcher = Symbol.for("undici.globalDispatcher.1");
-    var { InvalidArgumentError } = require_errors();
+    var { InvalidArgumentError: InvalidArgumentError2 } = require_errors();
     var Agent = require_agent();
     if (getGlobalDispatcher() === void 0) {
       setGlobalDispatcher(new Agent());
     }
     function setGlobalDispatcher(agent) {
       if (!agent || typeof agent.dispatch !== "function") {
-        throw new InvalidArgumentError("Argument agent must implement Agent");
+        throw new InvalidArgumentError2("Argument agent must implement Agent");
       }
       Object.defineProperty(globalThis, globalDispatcher, {
         value: agent,
@@ -15533,8 +15533,8 @@ var require_util6 = __commonJS({
         }
       }
     }
-    function validateCookiePath(path6) {
-      for (const char of path6) {
+    function validateCookiePath(path7) {
+      for (const char of path7) {
         const code = char.charCodeAt(0);
         if (code < 33 || char === ";") {
           throw new Error("Invalid cookie path");
@@ -17165,7 +17165,7 @@ var require_undici = __commonJS({
     var BalancedPool = require_balanced_pool();
     var Agent = require_agent();
     var util = require_util();
-    var { InvalidArgumentError } = errors;
+    var { InvalidArgumentError: InvalidArgumentError2 } = errors;
     var api = require_api();
     var buildConnector = require_connect();
     var MockClient = require_mock_client();
@@ -17205,20 +17205,20 @@ var require_undici = __commonJS({
           opts = null;
         }
         if (!url || typeof url !== "string" && typeof url !== "object" && !(url instanceof URL)) {
-          throw new InvalidArgumentError("invalid url");
+          throw new InvalidArgumentError2("invalid url");
         }
         if (opts != null && typeof opts !== "object") {
-          throw new InvalidArgumentError("invalid opts");
+          throw new InvalidArgumentError2("invalid opts");
         }
         if (opts && opts.path != null) {
           if (typeof opts.path !== "string") {
-            throw new InvalidArgumentError("invalid opts.path");
+            throw new InvalidArgumentError2("invalid opts.path");
           }
-          let path6 = opts.path;
+          let path7 = opts.path;
           if (!opts.path.startsWith("/")) {
-            path6 = `/${path6}`;
+            path7 = `/${path7}`;
           }
-          url = new URL(util.parseOrigin(url).origin + path6);
+          url = new URL(util.parseOrigin(url).origin + path7);
         } else {
           if (!opts) {
             opts = typeof url === "object" ? url : {};
@@ -17227,7 +17227,7 @@ var require_undici = __commonJS({
         }
         const { agent, dispatcher = getGlobalDispatcher() } = opts;
         if (agent) {
-          throw new InvalidArgumentError("unsupported opts.agent. Did you mean opts.client?");
+          throw new InvalidArgumentError2("unsupported opts.agent. Did you mean opts.client?");
         }
         return fn.call(dispatcher, {
           ...opts,
@@ -18441,7 +18441,7 @@ var require_path_utils = __commonJS({
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.toPlatformPath = exports2.toWin32Path = exports2.toPosixPath = void 0;
-    var path6 = __importStar(require("path"));
+    var path7 = __importStar(require("path"));
     function toPosixPath(pth) {
       return pth.replace(/[\\]/g, "/");
     }
@@ -18451,7 +18451,7 @@ var require_path_utils = __commonJS({
     }
     exports2.toWin32Path = toWin32Path;
     function toPlatformPath(pth) {
-      return pth.replace(/[/\\]/g, path6.sep);
+      return pth.replace(/[/\\]/g, path7.sep);
     }
     exports2.toPlatformPath = toPlatformPath;
   }
@@ -18514,12 +18514,12 @@ var require_io_util = __commonJS({
     var _a;
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.getCmdPath = exports2.tryGetExecutablePath = exports2.isRooted = exports2.isDirectory = exports2.exists = exports2.READONLY = exports2.UV_FS_O_EXLOCK = exports2.IS_WINDOWS = exports2.unlink = exports2.symlink = exports2.stat = exports2.rmdir = exports2.rm = exports2.rename = exports2.readlink = exports2.readdir = exports2.open = exports2.mkdir = exports2.lstat = exports2.copyFile = exports2.chmod = void 0;
-    var fs4 = __importStar(require("fs"));
-    var path6 = __importStar(require("path"));
-    _a = fs4.promises, exports2.chmod = _a.chmod, exports2.copyFile = _a.copyFile, exports2.lstat = _a.lstat, exports2.mkdir = _a.mkdir, exports2.open = _a.open, exports2.readdir = _a.readdir, exports2.readlink = _a.readlink, exports2.rename = _a.rename, exports2.rm = _a.rm, exports2.rmdir = _a.rmdir, exports2.stat = _a.stat, exports2.symlink = _a.symlink, exports2.unlink = _a.unlink;
+    var fs5 = __importStar(require("fs"));
+    var path7 = __importStar(require("path"));
+    _a = fs5.promises, exports2.chmod = _a.chmod, exports2.copyFile = _a.copyFile, exports2.lstat = _a.lstat, exports2.mkdir = _a.mkdir, exports2.open = _a.open, exports2.readdir = _a.readdir, exports2.readlink = _a.readlink, exports2.rename = _a.rename, exports2.rm = _a.rm, exports2.rmdir = _a.rmdir, exports2.stat = _a.stat, exports2.symlink = _a.symlink, exports2.unlink = _a.unlink;
     exports2.IS_WINDOWS = process.platform === "win32";
     exports2.UV_FS_O_EXLOCK = 268435456;
-    exports2.READONLY = fs4.constants.O_RDONLY;
+    exports2.READONLY = fs5.constants.O_RDONLY;
     function exists(fsPath) {
       return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -18564,7 +18564,7 @@ var require_io_util = __commonJS({
         }
         if (stats && stats.isFile()) {
           if (exports2.IS_WINDOWS) {
-            const upperExt = path6.extname(filePath).toUpperCase();
+            const upperExt = path7.extname(filePath).toUpperCase();
             if (extensions.some((validExt) => validExt.toUpperCase() === upperExt)) {
               return filePath;
             }
@@ -18588,11 +18588,11 @@ var require_io_util = __commonJS({
           if (stats && stats.isFile()) {
             if (exports2.IS_WINDOWS) {
               try {
-                const directory = path6.dirname(filePath);
-                const upperName = path6.basename(filePath).toUpperCase();
+                const directory = path7.dirname(filePath);
+                const upperName = path7.basename(filePath).toUpperCase();
                 for (const actualName of yield exports2.readdir(directory)) {
                   if (upperName === actualName.toUpperCase()) {
-                    filePath = path6.join(directory, actualName);
+                    filePath = path7.join(directory, actualName);
                     break;
                   }
                 }
@@ -18687,7 +18687,7 @@ var require_io = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.findInPath = exports2.which = exports2.mkdirP = exports2.rmRF = exports2.mv = exports2.cp = void 0;
     var assert_1 = require("assert");
-    var path6 = __importStar(require("path"));
+    var path7 = __importStar(require("path"));
     var ioUtil = __importStar(require_io_util());
     function cp(source, dest, options = {}) {
       return __awaiter(this, void 0, void 0, function* () {
@@ -18696,7 +18696,7 @@ var require_io = __commonJS({
         if (destStat && destStat.isFile() && !force) {
           return;
         }
-        const newDest = destStat && destStat.isDirectory() && copySourceDirectory ? path6.join(dest, path6.basename(source)) : dest;
+        const newDest = destStat && destStat.isDirectory() && copySourceDirectory ? path7.join(dest, path7.basename(source)) : dest;
         if (!(yield ioUtil.exists(source))) {
           throw new Error(`no such file or directory: ${source}`);
         }
@@ -18708,7 +18708,7 @@ var require_io = __commonJS({
             yield cpDirRecursive(source, newDest, 0, force);
           }
         } else {
-          if (path6.relative(source, newDest) === "") {
+          if (path7.relative(source, newDest) === "") {
             throw new Error(`'${newDest}' and '${source}' are the same file`);
           }
           yield copyFile(source, newDest, force);
@@ -18721,7 +18721,7 @@ var require_io = __commonJS({
         if (yield ioUtil.exists(dest)) {
           let destExists = true;
           if (yield ioUtil.isDirectory(dest)) {
-            dest = path6.join(dest, path6.basename(source));
+            dest = path7.join(dest, path7.basename(source));
             destExists = yield ioUtil.exists(dest);
           }
           if (destExists) {
@@ -18732,7 +18732,7 @@ var require_io = __commonJS({
             }
           }
         }
-        yield mkdirP(path6.dirname(dest));
+        yield mkdirP(path7.dirname(dest));
         yield ioUtil.rename(source, dest);
       });
     }
@@ -18795,7 +18795,7 @@ var require_io = __commonJS({
         }
         const extensions = [];
         if (ioUtil.IS_WINDOWS && process.env["PATHEXT"]) {
-          for (const extension of process.env["PATHEXT"].split(path6.delimiter)) {
+          for (const extension of process.env["PATHEXT"].split(path7.delimiter)) {
             if (extension) {
               extensions.push(extension);
             }
@@ -18808,12 +18808,12 @@ var require_io = __commonJS({
           }
           return [];
         }
-        if (tool.includes(path6.sep)) {
+        if (tool.includes(path7.sep)) {
           return [];
         }
         const directories = [];
         if (process.env.PATH) {
-          for (const p of process.env.PATH.split(path6.delimiter)) {
+          for (const p of process.env.PATH.split(path7.delimiter)) {
             if (p) {
               directories.push(p);
             }
@@ -18821,7 +18821,7 @@ var require_io = __commonJS({
         }
         const matches = [];
         for (const directory of directories) {
-          const filePath = yield ioUtil.tryGetExecutablePath(path6.join(directory, tool), extensions);
+          const filePath = yield ioUtil.tryGetExecutablePath(path7.join(directory, tool), extensions);
           if (filePath) {
             matches.push(filePath);
           }
@@ -18937,7 +18937,7 @@ var require_toolrunner = __commonJS({
     var os2 = __importStar(require("os"));
     var events = __importStar(require("events"));
     var child = __importStar(require("child_process"));
-    var path6 = __importStar(require("path"));
+    var path7 = __importStar(require("path"));
     var io = __importStar(require_io());
     var ioUtil = __importStar(require_io_util());
     var timers_1 = require("timers");
@@ -19152,7 +19152,7 @@ var require_toolrunner = __commonJS({
       exec() {
         return __awaiter(this, void 0, void 0, function* () {
           if (!ioUtil.isRooted(this.toolPath) && (this.toolPath.includes("/") || IS_WINDOWS && this.toolPath.includes("\\"))) {
-            this.toolPath = path6.resolve(process.cwd(), this.options.cwd || process.cwd(), this.toolPath);
+            this.toolPath = path7.resolve(process.cwd(), this.options.cwd || process.cwd(), this.toolPath);
           }
           this.toolPath = yield io.which(this.toolPath, true);
           return new Promise((resolve2, reject) => __awaiter(this, void 0, void 0, function* () {
@@ -19652,7 +19652,7 @@ var require_core = __commonJS({
     var file_command_1 = require_file_command();
     var utils_1 = require_utils();
     var os2 = __importStar(require("os"));
-    var path6 = __importStar(require("path"));
+    var path7 = __importStar(require("path"));
     var oidc_utils_1 = require_oidc_utils();
     var ExitCode;
     (function(ExitCode2) {
@@ -19680,7 +19680,7 @@ var require_core = __commonJS({
       } else {
         (0, command_1.issueCommand)("add-path", {}, inputPath);
       }
-      process.env["PATH"] = `${inputPath}${path6.delimiter}${process.env["PATH"]}`;
+      process.env["PATH"] = `${inputPath}${path7.delimiter}${process.env["PATH"]}`;
     }
     exports2.addPath = addPath;
     function getInput2(name, options) {
@@ -19827,9 +19827,9 @@ var require_util8 = __commonJS({
     var parse = (u) => new URL(u);
     exports2.swaggerParamRegExp = /\{([^/}]+)}/g;
     var operationsList = ["get", "post", "put", "delete", "patch", "options", "head", "trace"];
-    function fixServers(server, path6) {
+    function fixServers(server, path7) {
       if (server.url && server.url.startsWith("/")) {
-        const inUrl = parse(path6);
+        const inUrl = parse(path7);
         const finalUrl = inUrl.protocol + "//" + inUrl.hostname + server.url;
         server.url = finalUrl;
         return server;
@@ -19841,8 +19841,8 @@ var require_util8 = __commonJS({
           schema.servers.map((server) => fixServers(server, filePath));
         }
         ["paths", "webhooks"].forEach((component) => {
-          Object.keys(schema[component] || []).forEach((path6) => {
-            const pathItem = schema[component][path6];
+          Object.keys(schema[component] || []).forEach((path7) => {
+            const pathItem = schema[component][path7];
             Object.keys(pathItem).forEach((opItem) => {
               if (opItem === "servers") {
                 pathItem[opItem].map((server) => fixServers(server, filePath));
@@ -23054,8 +23054,8 @@ var require_utils3 = __commonJS({
       }
       return ind;
     }
-    function removeDotSegments(path6) {
-      let input = path6;
+    function removeDotSegments(path7) {
+      let input = path7;
       const output = [];
       let nextSlash = -1;
       let len = 0;
@@ -23254,8 +23254,8 @@ var require_schemes = __commonJS({
         wsComponent.secure = void 0;
       }
       if (wsComponent.resourceName) {
-        const [path6, query] = wsComponent.resourceName.split("?");
-        wsComponent.path = path6 && path6 !== "/" ? path6 : void 0;
+        const [path7, query] = wsComponent.resourceName.split("?");
+        wsComponent.path = path7 && path7 !== "/" ? path7 : void 0;
         wsComponent.query = query;
         wsComponent.resourceName = void 0;
       }
@@ -32006,10 +32006,10 @@ var require_spec = __commonJS({
       let paths = Object.keys(api.paths || {});
       let operationIds = [];
       for (let pathName of paths) {
-        let path6 = api.paths[pathName];
+        let path7 = api.paths[pathName];
         let pathId = "/paths" + pathName;
-        if (path6 && pathName.indexOf("/") === 0) {
-          validatePath(api, path6, pathId, operationIds);
+        if (path7 && pathName.indexOf("/") === 0) {
+          validatePath(api, path7, pathId, operationIds);
         }
       }
       let definitions = Object.keys(api.definitions || {});
@@ -32019,9 +32019,9 @@ var require_spec = __commonJS({
         validateRequiredPropertiesExist(definition, definitionId);
       }
     }
-    function validatePath(api, path6, pathId, operationIds) {
+    function validatePath(api, path7, pathId, operationIds) {
       for (let operationName of swaggerMethods) {
-        let operation = path6[operationName];
+        let operation = path7[operationName];
         let operationId = pathId + "/" + operationName;
         if (operation) {
           let declaredOperationId = operation.operationId;
@@ -32032,7 +32032,7 @@ var require_spec = __commonJS({
               throw new SyntaxError(`Validation failed. Duplicate operation id '${declaredOperationId}'`);
             }
           }
-          validateParameters(api, path6, pathId, operation, operationId);
+          validateParameters(api, path7, pathId, operation, operationId);
           let responses = Object.keys(operation.responses || {});
           for (let responseName of responses) {
             let response = operation.responses[responseName];
@@ -32042,8 +32042,8 @@ var require_spec = __commonJS({
         }
       }
     }
-    function validateParameters(api, path6, pathId, operation, operationId) {
-      let pathParams = path6.parameters || [];
+    function validateParameters(api, path7, pathId, operation, operationId) {
+      let pathParams = path7.parameters || [];
       let operationParams = operation.parameters || [];
       try {
         checkForDuplicates(pathParams);
@@ -32357,59 +32357,59 @@ var require_url = __commonJS({
         return href;
       }
       if (typeof process !== "undefined" && process.cwd) {
-        const path6 = process.cwd();
-        const lastChar = path6.slice(-1);
+        const path7 = process.cwd();
+        const lastChar = path7.slice(-1);
         if (lastChar === "/" || lastChar === "\\") {
-          return path6;
+          return path7;
         } else {
-          return path6 + "/";
+          return path7 + "/";
         }
       }
       return "/";
     }
-    function getProtocol(path6) {
-      const match = protocolPattern.exec(path6 || "");
+    function getProtocol(path7) {
+      const match = protocolPattern.exec(path7 || "");
       if (match) {
         return match[1].toLowerCase();
       }
       return void 0;
     }
-    function getExtension(path6) {
-      const lastDot = path6.lastIndexOf(".");
+    function getExtension(path7) {
+      const lastDot = path7.lastIndexOf(".");
       if (lastDot >= 0) {
-        return stripQuery(path6.substr(lastDot).toLowerCase());
+        return stripQuery(path7.substr(lastDot).toLowerCase());
       }
       return "";
     }
-    function stripQuery(path6) {
-      const queryIndex = path6.indexOf("?");
+    function stripQuery(path7) {
+      const queryIndex = path7.indexOf("?");
       if (queryIndex >= 0) {
-        path6 = path6.substr(0, queryIndex);
+        path7 = path7.substr(0, queryIndex);
       }
-      return path6;
+      return path7;
     }
-    function getHash(path6) {
-      if (!path6) {
+    function getHash(path7) {
+      if (!path7) {
         return "#";
       }
-      const hashIndex = path6.indexOf("#");
+      const hashIndex = path7.indexOf("#");
       if (hashIndex >= 0) {
-        return path6.substring(hashIndex);
+        return path7.substring(hashIndex);
       }
       return "#";
     }
-    function stripHash(path6) {
-      if (!path6) {
+    function stripHash(path7) {
+      if (!path7) {
         return "";
       }
-      const hashIndex = path6.indexOf("#");
+      const hashIndex = path7.indexOf("#");
       if (hashIndex >= 0) {
-        path6 = path6.substring(0, hashIndex);
+        path7 = path7.substring(0, hashIndex);
       }
-      return path6;
+      return path7;
     }
-    function isHttp(path6) {
-      const protocol = getProtocol(path6);
+    function isHttp(path7) {
+      const protocol = getProtocol(path7);
       if (protocol === "http" || protocol === "https") {
         return true;
       } else if (protocol === void 0) {
@@ -32418,11 +32418,11 @@ var require_url = __commonJS({
         return false;
       }
     }
-    function isUnsafeUrl(path6) {
-      if (!path6 || typeof path6 !== "string") {
+    function isUnsafeUrl(path7) {
+      if (!path7 || typeof path7 !== "string") {
         return true;
       }
-      const normalizedPath = path6.trim().toLowerCase();
+      const normalizedPath = path7.trim().toLowerCase();
       if (!normalizedPath) {
         return true;
       }
@@ -32553,58 +32553,58 @@ var require_url = __commonJS({
       ];
       return internalPorts.includes(port);
     }
-    function isFileSystemPath(path6) {
+    function isFileSystemPath(path7) {
       if (typeof window !== "undefined" || typeof process !== "undefined" && process.browser) {
         return false;
       }
-      const protocol = getProtocol(path6);
+      const protocol = getProtocol(path7);
       return protocol === void 0 || protocol === "file";
     }
-    function fromFileSystemPath(path6) {
+    function fromFileSystemPath(path7) {
       if ((0, is_windows_1.isWindows)()) {
         const projectDir = cwd();
-        const upperPath = path6.toUpperCase();
+        const upperPath = path7.toUpperCase();
         const projectDirPosixPath = (0, convert_path_to_posix_1.default)(projectDir);
         const posixUpper = projectDirPosixPath.toUpperCase();
         const hasProjectDir = upperPath.includes(posixUpper);
         const hasProjectUri = upperPath.includes(posixUpper);
-        const isAbsolutePath = path_1.win32?.isAbsolute(path6) || path6.startsWith("http://") || path6.startsWith("https://") || path6.startsWith("file://");
+        const isAbsolutePath = path_1.win32?.isAbsolute(path7) || path7.startsWith("http://") || path7.startsWith("https://") || path7.startsWith("file://");
         if (!(hasProjectDir || hasProjectUri || isAbsolutePath) && !projectDir.startsWith("http")) {
-          path6 = (0, path_2.join)(projectDir, path6);
+          path7 = (0, path_2.join)(projectDir, path7);
         }
-        path6 = (0, convert_path_to_posix_1.default)(path6);
+        path7 = (0, convert_path_to_posix_1.default)(path7);
       }
-      path6 = encodeURI(path6);
+      path7 = encodeURI(path7);
       for (const pattern of urlEncodePatterns) {
-        path6 = path6.replace(pattern[0], pattern[1]);
+        path7 = path7.replace(pattern[0], pattern[1]);
       }
-      return path6;
+      return path7;
     }
-    function toFileSystemPath(path6, keepFileProtocol) {
-      path6 = decodeURI(path6);
+    function toFileSystemPath(path7, keepFileProtocol) {
+      path7 = decodeURI(path7);
       for (let i = 0; i < urlDecodePatterns.length; i += 2) {
-        path6 = path6.replace(urlDecodePatterns[i], urlDecodePatterns[i + 1]);
+        path7 = path7.replace(urlDecodePatterns[i], urlDecodePatterns[i + 1]);
       }
-      let isFileUrl = path6.substr(0, 7).toLowerCase() === "file://";
+      let isFileUrl = path7.substr(0, 7).toLowerCase() === "file://";
       if (isFileUrl) {
-        path6 = path6[7] === "/" ? path6.substr(8) : path6.substr(7);
-        if ((0, is_windows_1.isWindows)() && path6[1] === "/") {
-          path6 = path6[0] + ":" + path6.substr(1);
+        path7 = path7[7] === "/" ? path7.substr(8) : path7.substr(7);
+        if ((0, is_windows_1.isWindows)() && path7[1] === "/") {
+          path7 = path7[0] + ":" + path7.substr(1);
         }
         if (keepFileProtocol) {
-          path6 = "file:///" + path6;
+          path7 = "file:///" + path7;
         } else {
           isFileUrl = false;
-          path6 = (0, is_windows_1.isWindows)() ? path6 : "/" + path6;
+          path7 = (0, is_windows_1.isWindows)() ? path7 : "/" + path7;
         }
       }
       if ((0, is_windows_1.isWindows)() && !isFileUrl) {
-        path6 = path6.replace(forwardSlashPattern, "\\");
-        if (path6.substr(1, 2) === ":\\") {
-          path6 = path6[0].toUpperCase() + path6.substr(1);
+        path7 = path7.replace(forwardSlashPattern, "\\");
+        if (path7.substr(1, 2) === ":\\") {
+          path7 = path7[0].toUpperCase() + path7.substr(1);
         }
       }
-      return path6;
+      return path7;
     }
     function safePointerToPath(pointer) {
       if (pointer.length <= 1 || pointer[0] !== "#" || pointer[1] !== "/") {
@@ -32739,8 +32739,8 @@ var require_errors3 = __commonJS({
     };
     exports2.UnmatchedResolverError = UnmatchedResolverError;
     var MissingPointerError = class extends JSONParserError {
-      constructor(token, path6, targetRef, targetFound, parentPath) {
-        super(`Missing $ref pointer "${(0, url_js_1.getHash)(path6)}". Token "${token}" does not exist.`, (0, url_js_1.stripHash)(path6));
+      constructor(token, path7, targetRef, targetFound, parentPath) {
+        super(`Missing $ref pointer "${(0, url_js_1.getHash)(path7)}". Token "${token}" does not exist.`, (0, url_js_1.stripHash)(path7));
         this.code = "EMISSINGPOINTER";
         this.name = "MissingPointerError";
         this.targetToken = token;
@@ -32759,8 +32759,8 @@ var require_errors3 = __commonJS({
     };
     exports2.TimeoutError = TimeoutError;
     var InvalidPointerError = class extends JSONParserError {
-      constructor(pointer, path6) {
-        super(`Invalid $ref pointer "${pointer}". Pointers must begin with "#/"`, (0, url_js_1.stripHash)(path6));
+      constructor(pointer, path7) {
+        super(`Invalid $ref pointer "${pointer}". Pointers must begin with "#/"`, (0, url_js_1.stripHash)(path7));
         this.code = "EUNMATCHEDRESOLVER";
         this.name = "InvalidPointerError";
       }
@@ -32840,10 +32840,10 @@ var require_pointer = __commonJS({
       }
     };
     var Pointer = class _Pointer {
-      constructor($ref, path6, friendlyPath) {
+      constructor($ref, path7, friendlyPath) {
         this.$ref = $ref;
-        this.path = path6;
-        this.originalPath = friendlyPath || path6;
+        this.path = path7;
+        this.originalPath = friendlyPath || path7;
         this.value = void 0;
         this.circular = false;
         this.indirections = 0;
@@ -32889,10 +32889,10 @@ var require_pointer = __commonJS({
               continue;
             }
             this.value = null;
-            const path6 = this.$ref.path || "";
-            const targetRef = this.path.replace(path6, "");
+            const path7 = this.$ref.path || "";
+            const targetRef = this.path.replace(path7, "");
             const targetFound = _Pointer.join("", found);
-            const parentPath = pathFromRoot?.replace(path6, "");
+            const parentPath = pathFromRoot?.replace(path7, "");
             throw new errors_js_1.MissingPointerError(token, decodeURI(this.originalPath), targetRef, targetFound, parentPath);
           } else {
             this.value = this.value[token];
@@ -32948,8 +32948,8 @@ var require_pointer = __commonJS({
        * @param [originalPath]
        * @returns
        */
-      static parse(path6, originalPath) {
-        const pointer = url.getHash(path6).substring(1);
+      static parse(path7, originalPath) {
+        const pointer = url.getHash(path7).substring(1);
         if (!pointer) {
           return [];
         }
@@ -32958,7 +32958,7 @@ var require_pointer = __commonJS({
           split[i] = safeDecodeURIComponent(split[i].replace(escapedSlash, "/").replace(escapedTilde, "~"));
         }
         if (split[0] !== "") {
-          throw new errors_js_1.InvalidPointerError(pointer, originalPath === void 0 ? path6 : originalPath);
+          throw new errors_js_1.InvalidPointerError(pointer, originalPath === void 0 ? path7 : originalPath);
         }
         return split.slice(1);
       }
@@ -33105,9 +33105,9 @@ var require_ref2 = __commonJS({
        * @param options
        * @returns
        */
-      exists(path6, options) {
+      exists(path7, options) {
         try {
-          this.resolve(path6, options);
+          this.resolve(path7, options);
           return true;
         } catch {
           return false;
@@ -33120,8 +33120,8 @@ var require_ref2 = __commonJS({
        * @param options
        * @returns - Returns the resolved value
        */
-      get(path6, options) {
-        return this.resolve(path6, options)?.value;
+      get(path7, options) {
+        return this.resolve(path7, options)?.value;
       }
       /**
        * Resolves the given JSON reference within this {@link $Ref#value}.
@@ -33132,8 +33132,8 @@ var require_ref2 = __commonJS({
        * @param pathFromRoot - The path of `obj` from the schema root
        * @returns
        */
-      resolve(path6, options, friendlyPath, pathFromRoot) {
-        const pointer = new pointer_js_1.default(this, path6, friendlyPath);
+      resolve(path7, options, friendlyPath, pathFromRoot) {
+        const pointer = new pointer_js_1.default(this, path7, friendlyPath);
         try {
           const resolved = pointer.resolve(this.value, options, pathFromRoot);
           if (resolved.value === pointer_js_1.nullSymbol) {
@@ -33161,8 +33161,8 @@ var require_ref2 = __commonJS({
        * @param path - The full path of the property to set, optionally with a JSON pointer in the hash
        * @param value - The value to assign
        */
-      set(path6, value) {
-        const pointer = new pointer_js_1.default(this, path6);
+      set(path7, value) {
+        const pointer = new pointer_js_1.default(this, path7);
         this.value = pointer.set(this.value, value);
         if (this.value === pointer_js_1.nullSymbol) {
           this.value = null;
@@ -33353,8 +33353,8 @@ var require_refs = __commonJS({
        */
       paths(...types) {
         const paths = getPaths(this._$refs, types.flat());
-        return paths.map((path6) => {
-          return (0, convert_path_to_posix_1.default)(path6.decoded);
+        return paths.map((path7) => {
+          return (0, convert_path_to_posix_1.default)(path7.decoded);
         });
       }
       /**
@@ -33367,8 +33367,8 @@ var require_refs = __commonJS({
       values(...types) {
         const $refs = this._$refs;
         const paths = getPaths($refs, types.flat());
-        return paths.reduce((obj, path6) => {
-          obj[(0, convert_path_to_posix_1.default)(path6.decoded)] = $refs[path6.encoded].value;
+        return paths.reduce((obj, path7) => {
+          obj[(0, convert_path_to_posix_1.default)(path7.decoded)] = $refs[path7.encoded].value;
           return obj;
         }, {});
       }
@@ -33386,9 +33386,9 @@ var require_refs = __commonJS({
        * @param [options]
        * @returns
        */
-      exists(path6, options) {
+      exists(path7, options) {
         try {
-          this._resolve(path6, "", options);
+          this._resolve(path7, "", options);
           return true;
         } catch {
           return false;
@@ -33401,8 +33401,8 @@ var require_refs = __commonJS({
        * @param [options]
        * @returns - Returns the resolved value
        */
-      get(path6, options) {
-        return this._resolve(path6, "", options).value;
+      get(path7, options) {
+        return this._resolve(path7, "", options).value;
       }
       /**
        * Sets the value at the given path in the schema. If the property, or any of its parents, don't exist, they will be created.
@@ -33410,12 +33410,12 @@ var require_refs = __commonJS({
        * @param path The JSON Reference path, optionally with a JSON Pointer in the hash
        * @param value The value to assign. Can be anything (object, string, number, etc.)
        */
-      set(path6, value) {
-        const absPath = url.resolve(this._root$Ref.path, path6);
+      set(path7, value) {
+        const absPath = url.resolve(this._root$Ref.path, path7);
         const withoutHash = url.stripHash(absPath);
         const $ref = this._$refs[withoutHash];
         if (!$ref) {
-          throw new Error(`Error resolving $ref pointer "${path6}". 
+          throw new Error(`Error resolving $ref pointer "${path7}". 
 "${withoutHash}" not found.`);
         }
         $ref.set(absPath, value);
@@ -33427,9 +33427,9 @@ var require_refs = __commonJS({
        * @returns
        * @protected
        */
-      _get$Ref(path6) {
-        path6 = url.resolve(this._root$Ref.path, path6);
-        const withoutHash = url.stripHash(path6);
+      _get$Ref(path7) {
+        path7 = url.resolve(this._root$Ref.path, path7);
+        const withoutHash = url.stripHash(path7);
         return this._$refs[withoutHash];
       }
       /**
@@ -33437,8 +33437,8 @@ var require_refs = __commonJS({
        *
        * @param path  - The file path or URL of the referenced file
        */
-      _add(path6) {
-        const withoutHash = url.stripHash(path6);
+      _add(path7) {
+        const withoutHash = url.stripHash(path7);
         const $ref = new ref_js_1.default(this);
         $ref.path = withoutHash;
         this._$refs[withoutHash] = $ref;
@@ -33454,15 +33454,15 @@ var require_refs = __commonJS({
        * @returns
        * @protected
        */
-      _resolve(path6, pathFromRoot, options) {
-        const absPath = url.resolve(this._root$Ref.path, path6);
+      _resolve(path7, pathFromRoot, options) {
+        const absPath = url.resolve(this._root$Ref.path, path7);
         const withoutHash = url.stripHash(absPath);
         const $ref = this._$refs[withoutHash];
         if (!$ref) {
-          throw new Error(`Error resolving $ref pointer "${path6}". 
+          throw new Error(`Error resolving $ref pointer "${path7}". 
 "${withoutHash}" not found.`);
         }
-        return $ref.resolve(absPath, options, path6, pathFromRoot);
+        return $ref.resolve(absPath, options, path7, pathFromRoot);
       }
       constructor() {
         this._$refs = {};
@@ -33481,10 +33481,10 @@ var require_refs = __commonJS({
           return types.includes($refs[key].pathType);
         });
       }
-      return paths.map((path6) => {
+      return paths.map((path7) => {
         return {
-          encoded: path6,
-          decoded: $refs[path6].pathType === "file" ? url.toFileSystemPath(path6, true) : path6
+          encoded: path7,
+          decoded: $refs[path7].pathType === "file" ? url.toFileSystemPath(path7, true) : path7
         };
       });
     }
@@ -33631,18 +33631,18 @@ var require_parse2 = __commonJS({
     var url = __importStar(require_url());
     var plugins = __importStar(require_plugins());
     var errors_js_1 = require_errors3();
-    async function parse(path6, $refs, options) {
-      const hashIndex = path6.indexOf("#");
+    async function parse(path7, $refs, options) {
+      const hashIndex = path7.indexOf("#");
       let hash = "";
       if (hashIndex >= 0) {
-        hash = path6.substring(hashIndex);
-        path6 = path6.substring(0, hashIndex);
+        hash = path7.substring(hashIndex);
+        path7 = path7.substring(0, hashIndex);
       }
-      const $ref = $refs._add(path6);
+      const $ref = $refs._add(path7);
       const file = {
-        url: path6,
+        url: path7,
         hash,
-        extension: url.getExtension(path6)
+        extension: url.getExtension(path7)
       };
       try {
         const resolver = await readFile2(file, options, $refs);
@@ -36768,20 +36768,20 @@ var require_file2 = __commonJS({
        * Reads the given file and returns its raw contents as a Buffer.
        */
       async read(file) {
-        let path6;
+        let path7;
         try {
-          path6 = url.toFileSystemPath(file.url);
+          path7 = url.toFileSystemPath(file.url);
         } catch (err) {
           const e = err;
           e.message = `Malformed URI: ${file.url}: ${e.message}`;
           throw new errors_js_1.ResolverError(e, file.url);
         }
         try {
-          return await fs_1.default.promises.readFile(path6);
+          return await fs_1.default.promises.readFile(path7);
         } catch (err) {
           const e = err;
-          e.message = `Error opening file ${path6}: ${e.message}`;
-          throw new errors_js_1.ResolverError(e, path6);
+          e.message = `Error opening file ${path7}: ${e.message}`;
+          throw new errors_js_1.ResolverError(e, path7);
         }
       }
     };
@@ -37062,7 +37062,7 @@ var require_normalize_args = __commonJS({
     exports2.normalizeArgs = normalizeArgs;
     var options_js_1 = require_options();
     function normalizeArgs(_args) {
-      let path6;
+      let path7;
       let schema;
       let options;
       let callback;
@@ -37071,7 +37071,7 @@ var require_normalize_args = __commonJS({
         callback = args.pop();
       }
       if (typeof args[0] === "string") {
-        path6 = args[0];
+        path7 = args[0];
         if (typeof args[2] === "object") {
           schema = args[1];
           options = args[2];
@@ -37080,7 +37080,7 @@ var require_normalize_args = __commonJS({
           options = args[1];
         }
       } else {
-        path6 = "";
+        path7 = "";
         schema = args[0];
         options = args[1];
       }
@@ -37093,7 +37093,7 @@ var require_normalize_args = __commonJS({
         schema = JSON.parse(JSON.stringify(schema));
       }
       return {
-        path: path6,
+        path: path7,
         schema,
         options,
         callback
@@ -37164,26 +37164,26 @@ var require_resolve_external = __commonJS({
         return Promise.reject(e);
       }
     }
-    function crawl(obj, path6, $refs, options, seen, external) {
+    function crawl(obj, path7, $refs, options, seen, external) {
       seen || (seen = /* @__PURE__ */ new Set());
       let promises = [];
       if (obj && typeof obj === "object" && !ArrayBuffer.isView(obj) && !seen.has(obj)) {
         seen.add(obj);
         if (ref_js_1.default.isExternal$Ref(obj)) {
-          promises.push(resolve$Ref(obj, path6, $refs, options));
+          promises.push(resolve$Ref(obj, path7, $refs, options));
         }
         const keys = Object.keys(obj);
         for (const key of keys) {
-          const keyPath = pointer_js_1.default.join(path6, key);
+          const keyPath = pointer_js_1.default.join(path7, key);
           const value = obj[key];
           promises = promises.concat(crawl(value, keyPath, $refs, options, seen, external));
         }
       }
       return promises;
     }
-    async function resolve$Ref($ref, path6, $refs, options) {
+    async function resolve$Ref($ref, path7, $refs, options) {
       const shouldResolveOnCwd = options.dereference?.externalReferenceResolution === "root";
-      const resolvedPath = url.resolve(shouldResolveOnCwd ? url.cwd() : path6, $ref.$ref);
+      const resolvedPath = url.resolve(shouldResolveOnCwd ? url.cwd() : path7, $ref.$ref);
       const withoutHash = url.stripHash(resolvedPath);
       const ref = $refs._$refs[withoutHash];
       if (ref) {
@@ -37198,8 +37198,8 @@ var require_resolve_external = __commonJS({
           throw err;
         }
         if ($refs._$refs[withoutHash]) {
-          err.source = decodeURI(url.stripHash(path6));
-          err.path = url.safePointerToPath(url.getHash(path6));
+          err.source = decodeURI(url.stripHash(path7));
+          err.path = url.safePointerToPath(url.getHash(path7));
         }
         return [];
       }
@@ -37261,11 +37261,11 @@ var require_bundle = __commonJS({
       crawl(parser, "schema", parser.$refs._root$Ref.path + "#", "#", 0, inventory, parser.$refs, options);
       remap(inventory);
     }
-    function crawl(parent, key, path6, pathFromRoot, indirections, inventory, $refs, options) {
+    function crawl(parent, key, path7, pathFromRoot, indirections, inventory, $refs, options) {
       const obj = key === null ? parent : parent[key];
       if (obj && typeof obj === "object" && !ArrayBuffer.isView(obj)) {
         if (ref_js_1.default.isAllowed$Ref(obj)) {
-          inventory$Ref(parent, key, path6, pathFromRoot, indirections, inventory, $refs, options);
+          inventory$Ref(parent, key, path7, pathFromRoot, indirections, inventory, $refs, options);
         } else {
           const keys = Object.keys(obj).sort((a, b) => {
             if (a === "definitions" || a === "$defs") {
@@ -37277,11 +37277,11 @@ var require_bundle = __commonJS({
             }
           });
           for (const key2 of keys) {
-            const keyPath = pointer_js_1.default.join(path6, key2);
+            const keyPath = pointer_js_1.default.join(path7, key2);
             const keyPathFromRoot = pointer_js_1.default.join(pathFromRoot, key2);
             const value = obj[key2];
             if (ref_js_1.default.isAllowed$Ref(value)) {
-              inventory$Ref(obj, key2, path6, keyPathFromRoot, indirections, inventory, $refs, options);
+              inventory$Ref(obj, key2, path7, keyPathFromRoot, indirections, inventory, $refs, options);
             } else {
               crawl(obj, key2, keyPath, keyPathFromRoot, indirections, inventory, $refs, options);
             }
@@ -37289,9 +37289,9 @@ var require_bundle = __commonJS({
         }
       }
     }
-    function inventory$Ref($refParent, $refKey, path6, pathFromRoot, indirections, inventory, $refs, options) {
+    function inventory$Ref($refParent, $refKey, path7, pathFromRoot, indirections, inventory, $refs, options) {
       const $ref = $refKey === null ? $refParent : $refParent[$refKey];
-      const $refPath = url.resolve(path6, $ref.$ref);
+      const $refPath = url.resolve(path7, $ref.$ref);
       const pointer = $refs._resolve($refPath, pathFromRoot, options);
       if (pointer === null) {
         return;
@@ -37456,7 +37456,7 @@ var require_dereference = __commonJS({
       parser.$refs.circular = dereferenced.circular;
       parser.schema = dereferenced.value;
     }
-    function crawl(obj, path6, pathFromRoot, parents, processedObjects, dereferencedCache, $refs, options, startTime) {
+    function crawl(obj, path7, pathFromRoot, parents, processedObjects, dereferencedCache, $refs, options, startTime) {
       let dereferenced;
       const result = {
         value: obj,
@@ -37470,13 +37470,13 @@ var require_dereference = __commonJS({
           parents.add(obj);
           processedObjects.add(obj);
           if (ref_js_1.default.isAllowed$Ref(obj, options)) {
-            dereferenced = dereference$Ref(obj, path6, pathFromRoot, parents, processedObjects, dereferencedCache, $refs, options, startTime);
+            dereferenced = dereference$Ref(obj, path7, pathFromRoot, parents, processedObjects, dereferencedCache, $refs, options, startTime);
             result.circular = dereferenced.circular;
             result.value = dereferenced.value;
           } else {
             for (const key of Object.keys(obj)) {
               checkDereferenceTimeout(startTime, options);
-              const keyPath = pointer_js_1.default.join(path6, key);
+              const keyPath = pointer_js_1.default.join(path7, key);
               const keyPathFromRoot = pointer_js_1.default.join(pathFromRoot, key);
               if (isExcludedPath(keyPathFromRoot)) {
                 continue;
@@ -37526,10 +37526,10 @@ var require_dereference = __commonJS({
       }
       return result;
     }
-    function dereference$Ref($ref, path6, pathFromRoot, parents, processedObjects, dereferencedCache, $refs, options, startTime) {
+    function dereference$Ref($ref, path7, pathFromRoot, parents, processedObjects, dereferencedCache, $refs, options, startTime) {
       const isExternalRef = ref_js_1.default.isExternal$Ref($ref);
       const shouldResolveOnCwd = isExternalRef && options?.dereference?.externalReferenceResolution === "root";
-      const $refPath = url.resolve(shouldResolveOnCwd ? url.cwd() : path6, $ref.$ref);
+      const $refPath = url.resolve(shouldResolveOnCwd ? url.cwd() : path7, $ref.$ref);
       const cache = dereferencedCache.get($refPath);
       if (cache) {
         if (!cache.circular) {
@@ -37557,7 +37557,7 @@ var require_dereference = __commonJS({
           return cache;
         }
       }
-      const pointer = $refs._resolve($refPath, path6, options);
+      const pointer = $refs._resolve($refPath, path7, options);
       if (pointer === null) {
         return {
           circular: false,
@@ -37567,7 +37567,7 @@ var require_dereference = __commonJS({
       const directCircular = pointer.circular;
       let circular = directCircular || parents.has(pointer.value);
       if (circular) {
-        foundCircularReference(path6, $refs, options);
+        foundCircularReference(path7, $refs, options);
       }
       let dereferencedValue = ref_js_1.default.dereference($ref, pointer.value);
       if (!circular) {
@@ -37988,7 +37988,7 @@ var require_lib5 = __commonJS({
        * @param {Function} [callback] - An error-first callback. The second parameter is the parsed API object.
        * @returns {Promise} - The returned promise resolves with the parsed API object.
        */
-      async parse(path6, api, options, callback) {
+      async parse(path7, api, options, callback) {
         let args = normalizeArgs(arguments);
         args.options = new Options(args.options);
         try {
@@ -38036,7 +38036,7 @@ var require_lib5 = __commonJS({
        * @param {Function} [callback] - An error-first callback. The second parameter is the parsed API object.
        * @returns {Promise} - The returned promise resolves with the parsed API object.
        */
-      async validate(path6, api, options, callback) {
+      async validate(path7, api, options, callback) {
         let me = this;
         let args = normalizeArgs(arguments);
         args.options = new Options(args.options);
@@ -38175,17 +38175,17 @@ var require_visit = __commonJS({
     visit.BREAK = BREAK;
     visit.SKIP = SKIP;
     visit.REMOVE = REMOVE;
-    function visit_(key, node, visitor, path6) {
-      const ctrl = callVisitor(key, node, visitor, path6);
+    function visit_(key, node, visitor, path7) {
+      const ctrl = callVisitor(key, node, visitor, path7);
       if (identity.isNode(ctrl) || identity.isPair(ctrl)) {
-        replaceNode(key, path6, ctrl);
-        return visit_(key, ctrl, visitor, path6);
+        replaceNode(key, path7, ctrl);
+        return visit_(key, ctrl, visitor, path7);
       }
       if (typeof ctrl !== "symbol") {
         if (identity.isCollection(node)) {
-          path6 = Object.freeze(path6.concat(node));
+          path7 = Object.freeze(path7.concat(node));
           for (let i = 0; i < node.items.length; ++i) {
-            const ci = visit_(i, node.items[i], visitor, path6);
+            const ci = visit_(i, node.items[i], visitor, path7);
             if (typeof ci === "number")
               i = ci - 1;
             else if (ci === BREAK)
@@ -38196,13 +38196,13 @@ var require_visit = __commonJS({
             }
           }
         } else if (identity.isPair(node)) {
-          path6 = Object.freeze(path6.concat(node));
-          const ck = visit_("key", node.key, visitor, path6);
+          path7 = Object.freeze(path7.concat(node));
+          const ck = visit_("key", node.key, visitor, path7);
           if (ck === BREAK)
             return BREAK;
           else if (ck === REMOVE)
             node.key = null;
-          const cv = visit_("value", node.value, visitor, path6);
+          const cv = visit_("value", node.value, visitor, path7);
           if (cv === BREAK)
             return BREAK;
           else if (cv === REMOVE)
@@ -38223,17 +38223,17 @@ var require_visit = __commonJS({
     visitAsync.BREAK = BREAK;
     visitAsync.SKIP = SKIP;
     visitAsync.REMOVE = REMOVE;
-    async function visitAsync_(key, node, visitor, path6) {
-      const ctrl = await callVisitor(key, node, visitor, path6);
+    async function visitAsync_(key, node, visitor, path7) {
+      const ctrl = await callVisitor(key, node, visitor, path7);
       if (identity.isNode(ctrl) || identity.isPair(ctrl)) {
-        replaceNode(key, path6, ctrl);
-        return visitAsync_(key, ctrl, visitor, path6);
+        replaceNode(key, path7, ctrl);
+        return visitAsync_(key, ctrl, visitor, path7);
       }
       if (typeof ctrl !== "symbol") {
         if (identity.isCollection(node)) {
-          path6 = Object.freeze(path6.concat(node));
+          path7 = Object.freeze(path7.concat(node));
           for (let i = 0; i < node.items.length; ++i) {
-            const ci = await visitAsync_(i, node.items[i], visitor, path6);
+            const ci = await visitAsync_(i, node.items[i], visitor, path7);
             if (typeof ci === "number")
               i = ci - 1;
             else if (ci === BREAK)
@@ -38244,13 +38244,13 @@ var require_visit = __commonJS({
             }
           }
         } else if (identity.isPair(node)) {
-          path6 = Object.freeze(path6.concat(node));
-          const ck = await visitAsync_("key", node.key, visitor, path6);
+          path7 = Object.freeze(path7.concat(node));
+          const ck = await visitAsync_("key", node.key, visitor, path7);
           if (ck === BREAK)
             return BREAK;
           else if (ck === REMOVE)
             node.key = null;
-          const cv = await visitAsync_("value", node.value, visitor, path6);
+          const cv = await visitAsync_("value", node.value, visitor, path7);
           if (cv === BREAK)
             return BREAK;
           else if (cv === REMOVE)
@@ -38277,23 +38277,23 @@ var require_visit = __commonJS({
       }
       return visitor;
     }
-    function callVisitor(key, node, visitor, path6) {
+    function callVisitor(key, node, visitor, path7) {
       if (typeof visitor === "function")
-        return visitor(key, node, path6);
+        return visitor(key, node, path7);
       if (identity.isMap(node))
-        return visitor.Map?.(key, node, path6);
+        return visitor.Map?.(key, node, path7);
       if (identity.isSeq(node))
-        return visitor.Seq?.(key, node, path6);
+        return visitor.Seq?.(key, node, path7);
       if (identity.isPair(node))
-        return visitor.Pair?.(key, node, path6);
+        return visitor.Pair?.(key, node, path7);
       if (identity.isScalar(node))
-        return visitor.Scalar?.(key, node, path6);
+        return visitor.Scalar?.(key, node, path7);
       if (identity.isAlias(node))
-        return visitor.Alias?.(key, node, path6);
+        return visitor.Alias?.(key, node, path7);
       return void 0;
     }
-    function replaceNode(key, path6, node) {
-      const parent = path6[path6.length - 1];
+    function replaceNode(key, path7, node) {
+      const parent = path7[path7.length - 1];
       if (identity.isCollection(parent)) {
         parent.items[key] = node;
       } else if (identity.isPair(parent)) {
@@ -38901,10 +38901,10 @@ var require_Collection = __commonJS({
     var createNode = require_createNode();
     var identity = require_identity();
     var Node = require_Node();
-    function collectionFromPath(schema, path6, value) {
+    function collectionFromPath(schema, path7, value) {
       let v = value;
-      for (let i = path6.length - 1; i >= 0; --i) {
-        const k = path6[i];
+      for (let i = path7.length - 1; i >= 0; --i) {
+        const k = path7[i];
         if (typeof k === "number" && Number.isInteger(k) && k >= 0) {
           const a = [];
           a[k] = v;
@@ -38923,7 +38923,7 @@ var require_Collection = __commonJS({
         sourceObjects: /* @__PURE__ */ new Map()
       });
     }
-    var isEmptyPath = (path6) => path6 == null || typeof path6 === "object" && !!path6[Symbol.iterator]().next().done;
+    var isEmptyPath = (path7) => path7 == null || typeof path7 === "object" && !!path7[Symbol.iterator]().next().done;
     var Collection = class extends Node.NodeBase {
       constructor(type, schema) {
         super(type);
@@ -38953,11 +38953,11 @@ var require_Collection = __commonJS({
        * be a Pair instance or a `{ key, value }` object, which may not have a key
        * that already exists in the map.
        */
-      addIn(path6, value) {
-        if (isEmptyPath(path6))
+      addIn(path7, value) {
+        if (isEmptyPath(path7))
           this.add(value);
         else {
-          const [key, ...rest] = path6;
+          const [key, ...rest] = path7;
           const node = this.get(key, true);
           if (identity.isCollection(node))
             node.addIn(rest, value);
@@ -38971,8 +38971,8 @@ var require_Collection = __commonJS({
        * Removes a value from the collection.
        * @returns `true` if the item was found and removed.
        */
-      deleteIn(path6) {
-        const [key, ...rest] = path6;
+      deleteIn(path7) {
+        const [key, ...rest] = path7;
         if (rest.length === 0)
           return this.delete(key);
         const node = this.get(key, true);
@@ -38986,8 +38986,8 @@ var require_Collection = __commonJS({
        * scalar values from their surrounding node; to disable set `keepScalar` to
        * `true` (collections are always returned intact).
        */
-      getIn(path6, keepScalar) {
-        const [key, ...rest] = path6;
+      getIn(path7, keepScalar) {
+        const [key, ...rest] = path7;
         const node = this.get(key, true);
         if (rest.length === 0)
           return !keepScalar && identity.isScalar(node) ? node.value : node;
@@ -39005,8 +39005,8 @@ var require_Collection = __commonJS({
       /**
        * Checks if the collection includes a value with the key `key`.
        */
-      hasIn(path6) {
-        const [key, ...rest] = path6;
+      hasIn(path7) {
+        const [key, ...rest] = path7;
         if (rest.length === 0)
           return this.has(key);
         const node = this.get(key, true);
@@ -39016,8 +39016,8 @@ var require_Collection = __commonJS({
        * Sets a value in this collection. For `!!set`, `value` needs to be a
        * boolean to add/remove the item from the set.
        */
-      setIn(path6, value) {
-        const [key, ...rest] = path6;
+      setIn(path7, value) {
+        const [key, ...rest] = path7;
         if (rest.length === 0) {
           this.set(key, value);
         } else {
@@ -41521,9 +41521,9 @@ var require_Document = __commonJS({
           this.contents.add(value);
       }
       /** Adds a value to the document. */
-      addIn(path6, value) {
+      addIn(path7, value) {
         if (assertCollection(this.contents))
-          this.contents.addIn(path6, value);
+          this.contents.addIn(path7, value);
       }
       /**
        * Create a new `Alias` node, ensuring that the target `node` has the required anchor.
@@ -41598,14 +41598,14 @@ var require_Document = __commonJS({
        * Removes a value from the document.
        * @returns `true` if the item was found and removed.
        */
-      deleteIn(path6) {
-        if (Collection.isEmptyPath(path6)) {
+      deleteIn(path7) {
+        if (Collection.isEmptyPath(path7)) {
           if (this.contents == null)
             return false;
           this.contents = null;
           return true;
         }
-        return assertCollection(this.contents) ? this.contents.deleteIn(path6) : false;
+        return assertCollection(this.contents) ? this.contents.deleteIn(path7) : false;
       }
       /**
        * Returns item at `key`, or `undefined` if not found. By default unwraps
@@ -41620,10 +41620,10 @@ var require_Document = __commonJS({
        * scalar values from their surrounding node; to disable set `keepScalar` to
        * `true` (collections are always returned intact).
        */
-      getIn(path6, keepScalar) {
-        if (Collection.isEmptyPath(path6))
+      getIn(path7, keepScalar) {
+        if (Collection.isEmptyPath(path7))
           return !keepScalar && identity.isScalar(this.contents) ? this.contents.value : this.contents;
-        return identity.isCollection(this.contents) ? this.contents.getIn(path6, keepScalar) : void 0;
+        return identity.isCollection(this.contents) ? this.contents.getIn(path7, keepScalar) : void 0;
       }
       /**
        * Checks if the document includes a value with the key `key`.
@@ -41634,10 +41634,10 @@ var require_Document = __commonJS({
       /**
        * Checks if the document includes a value at `path`.
        */
-      hasIn(path6) {
-        if (Collection.isEmptyPath(path6))
+      hasIn(path7) {
+        if (Collection.isEmptyPath(path7))
           return this.contents !== void 0;
-        return identity.isCollection(this.contents) ? this.contents.hasIn(path6) : false;
+        return identity.isCollection(this.contents) ? this.contents.hasIn(path7) : false;
       }
       /**
        * Sets a value in this document. For `!!set`, `value` needs to be a
@@ -41654,13 +41654,13 @@ var require_Document = __commonJS({
        * Sets a value in this document. For `!!set`, `value` needs to be a
        * boolean to add/remove the item from the set.
        */
-      setIn(path6, value) {
-        if (Collection.isEmptyPath(path6)) {
+      setIn(path7, value) {
+        if (Collection.isEmptyPath(path7)) {
           this.contents = value;
         } else if (this.contents == null) {
-          this.contents = Collection.collectionFromPath(this.schema, Array.from(path6), value);
+          this.contents = Collection.collectionFromPath(this.schema, Array.from(path7), value);
         } else if (assertCollection(this.contents)) {
-          this.contents.setIn(path6, value);
+          this.contents.setIn(path7, value);
         }
       }
       /**
@@ -43612,9 +43612,9 @@ var require_cst_visit = __commonJS({
     visit.BREAK = BREAK;
     visit.SKIP = SKIP;
     visit.REMOVE = REMOVE;
-    visit.itemAtPath = (cst, path6) => {
+    visit.itemAtPath = (cst, path7) => {
       let item = cst;
-      for (const [field, index] of path6) {
+      for (const [field, index] of path7) {
         const tok = item?.[field];
         if (tok && "items" in tok) {
           item = tok.items[index];
@@ -43623,23 +43623,23 @@ var require_cst_visit = __commonJS({
       }
       return item;
     };
-    visit.parentCollection = (cst, path6) => {
-      const parent = visit.itemAtPath(cst, path6.slice(0, -1));
-      const field = path6[path6.length - 1][0];
+    visit.parentCollection = (cst, path7) => {
+      const parent = visit.itemAtPath(cst, path7.slice(0, -1));
+      const field = path7[path7.length - 1][0];
       const coll = parent?.[field];
       if (coll && "items" in coll)
         return coll;
       throw new Error("Parent collection not found");
     };
-    function _visit(path6, item, visitor) {
-      let ctrl = visitor(item, path6);
+    function _visit(path7, item, visitor) {
+      let ctrl = visitor(item, path7);
       if (typeof ctrl === "symbol")
         return ctrl;
       for (const field of ["key", "value"]) {
         const token = item[field];
         if (token && "items" in token) {
           for (let i = 0; i < token.items.length; ++i) {
-            const ci = _visit(Object.freeze(path6.concat([[field, i]])), token.items[i], visitor);
+            const ci = _visit(Object.freeze(path7.concat([[field, i]])), token.items[i], visitor);
             if (typeof ci === "number")
               i = ci - 1;
             else if (ci === BREAK)
@@ -43650,10 +43650,10 @@ var require_cst_visit = __commonJS({
             }
           }
           if (typeof ctrl === "function" && field === "key")
-            ctrl = ctrl(item, path6);
+            ctrl = ctrl(item, path7);
         }
       }
-      return typeof ctrl === "function" ? ctrl(item, path6) : ctrl;
+      return typeof ctrl === "function" ? ctrl(item, path7) : ctrl;
     }
     exports2.visit = visit;
   }
@@ -44938,14 +44938,14 @@ var require_parser = __commonJS({
             case "scalar":
             case "single-quoted-scalar":
             case "double-quoted-scalar": {
-              const fs4 = this.flowScalar(this.type);
+              const fs5 = this.flowScalar(this.type);
               if (atNextItem || it.value) {
-                map.items.push({ start, key: fs4, sep: [] });
+                map.items.push({ start, key: fs5, sep: [] });
                 this.onKeyLine = true;
               } else if (it.sep) {
-                this.stack.push(fs4);
+                this.stack.push(fs5);
               } else {
-                Object.assign(it, { key: fs4, sep: [] });
+                Object.assign(it, { key: fs5, sep: [] });
                 this.onKeyLine = true;
               }
               return;
@@ -45073,13 +45073,13 @@ var require_parser = __commonJS({
             case "scalar":
             case "single-quoted-scalar":
             case "double-quoted-scalar": {
-              const fs4 = this.flowScalar(this.type);
+              const fs5 = this.flowScalar(this.type);
               if (!it || it.value)
-                fc.items.push({ start: [], key: fs4, sep: [] });
+                fc.items.push({ start: [], key: fs5, sep: [] });
               else if (it.sep)
-                this.stack.push(fs4);
+                this.stack.push(fs5);
               else
-                Object.assign(it, { key: fs4, sep: [] });
+                Object.assign(it, { key: fs5, sep: [] });
               return;
             }
             case "flow-map-end":
@@ -45387,30 +45387,3023 @@ var require_dist2 = __commonJS({
   }
 });
 
+// ../../../packages/proxmox-openapi/node_modules/commander/lib/error.js
+var require_error = __commonJS({
+  "../../../packages/proxmox-openapi/node_modules/commander/lib/error.js"(exports2) {
+    "use strict";
+    var CommanderError2 = class extends Error {
+      /**
+       * Constructs the CommanderError class
+       * @param {number} exitCode suggested exit code which could be used with process.exit
+       * @param {string} code an id string representing the error
+       * @param {string} message human-readable description of the error
+       */
+      constructor(exitCode, code, message) {
+        super(message);
+        Error.captureStackTrace(this, this.constructor);
+        this.name = this.constructor.name;
+        this.code = code;
+        this.exitCode = exitCode;
+        this.nestedError = void 0;
+      }
+    };
+    var InvalidArgumentError2 = class extends CommanderError2 {
+      /**
+       * Constructs the InvalidArgumentError class
+       * @param {string} [message] explanation of why argument is invalid
+       */
+      constructor(message) {
+        super(1, "commander.invalidArgument", message);
+        Error.captureStackTrace(this, this.constructor);
+        this.name = this.constructor.name;
+      }
+    };
+    exports2.CommanderError = CommanderError2;
+    exports2.InvalidArgumentError = InvalidArgumentError2;
+  }
+});
+
+// ../../../packages/proxmox-openapi/node_modules/commander/lib/argument.js
+var require_argument = __commonJS({
+  "../../../packages/proxmox-openapi/node_modules/commander/lib/argument.js"(exports2) {
+    "use strict";
+    var { InvalidArgumentError: InvalidArgumentError2 } = require_error();
+    var Argument2 = class {
+      /**
+       * Initialize a new command argument with the given name and description.
+       * The default is that the argument is required, and you can explicitly
+       * indicate this with <> around the name. Put [] around the name for an optional argument.
+       *
+       * @param {string} name
+       * @param {string} [description]
+       */
+      constructor(name, description) {
+        this.description = description || "";
+        this.variadic = false;
+        this.parseArg = void 0;
+        this.defaultValue = void 0;
+        this.defaultValueDescription = void 0;
+        this.argChoices = void 0;
+        switch (name[0]) {
+          case "<":
+            this.required = true;
+            this._name = name.slice(1, -1);
+            break;
+          case "[":
+            this.required = false;
+            this._name = name.slice(1, -1);
+            break;
+          default:
+            this.required = true;
+            this._name = name;
+            break;
+        }
+        if (this._name.length > 3 && this._name.slice(-3) === "...") {
+          this.variadic = true;
+          this._name = this._name.slice(0, -3);
+        }
+      }
+      /**
+       * Return argument name.
+       *
+       * @return {string}
+       */
+      name() {
+        return this._name;
+      }
+      /**
+       * @package
+       */
+      _concatValue(value, previous) {
+        if (previous === this.defaultValue || !Array.isArray(previous)) {
+          return [value];
+        }
+        return previous.concat(value);
+      }
+      /**
+       * Set the default value, and optionally supply the description to be displayed in the help.
+       *
+       * @param {*} value
+       * @param {string} [description]
+       * @return {Argument}
+       */
+      default(value, description) {
+        this.defaultValue = value;
+        this.defaultValueDescription = description;
+        return this;
+      }
+      /**
+       * Set the custom handler for processing CLI command arguments into argument values.
+       *
+       * @param {Function} [fn]
+       * @return {Argument}
+       */
+      argParser(fn) {
+        this.parseArg = fn;
+        return this;
+      }
+      /**
+       * Only allow argument value to be one of choices.
+       *
+       * @param {string[]} values
+       * @return {Argument}
+       */
+      choices(values) {
+        this.argChoices = values.slice();
+        this.parseArg = (arg, previous) => {
+          if (!this.argChoices.includes(arg)) {
+            throw new InvalidArgumentError2(
+              `Allowed choices are ${this.argChoices.join(", ")}.`
+            );
+          }
+          if (this.variadic) {
+            return this._concatValue(arg, previous);
+          }
+          return arg;
+        };
+        return this;
+      }
+      /**
+       * Make argument required.
+       *
+       * @returns {Argument}
+       */
+      argRequired() {
+        this.required = true;
+        return this;
+      }
+      /**
+       * Make argument optional.
+       *
+       * @returns {Argument}
+       */
+      argOptional() {
+        this.required = false;
+        return this;
+      }
+    };
+    function humanReadableArgName(arg) {
+      const nameOutput = arg.name() + (arg.variadic === true ? "..." : "");
+      return arg.required ? "<" + nameOutput + ">" : "[" + nameOutput + "]";
+    }
+    exports2.Argument = Argument2;
+    exports2.humanReadableArgName = humanReadableArgName;
+  }
+});
+
+// ../../../packages/proxmox-openapi/node_modules/commander/lib/help.js
+var require_help = __commonJS({
+  "../../../packages/proxmox-openapi/node_modules/commander/lib/help.js"(exports2) {
+    "use strict";
+    var { humanReadableArgName } = require_argument();
+    var Help2 = class {
+      constructor() {
+        this.helpWidth = void 0;
+        this.sortSubcommands = false;
+        this.sortOptions = false;
+        this.showGlobalOptions = false;
+      }
+      /**
+       * Get an array of the visible subcommands. Includes a placeholder for the implicit help command, if there is one.
+       *
+       * @param {Command} cmd
+       * @returns {Command[]}
+       */
+      visibleCommands(cmd) {
+        const visibleCommands = cmd.commands.filter((cmd2) => !cmd2._hidden);
+        const helpCommand = cmd._getHelpCommand();
+        if (helpCommand && !helpCommand._hidden) {
+          visibleCommands.push(helpCommand);
+        }
+        if (this.sortSubcommands) {
+          visibleCommands.sort((a, b) => {
+            return a.name().localeCompare(b.name());
+          });
+        }
+        return visibleCommands;
+      }
+      /**
+       * Compare options for sort.
+       *
+       * @param {Option} a
+       * @param {Option} b
+       * @returns {number}
+       */
+      compareOptions(a, b) {
+        const getSortKey = (option) => {
+          return option.short ? option.short.replace(/^-/, "") : option.long.replace(/^--/, "");
+        };
+        return getSortKey(a).localeCompare(getSortKey(b));
+      }
+      /**
+       * Get an array of the visible options. Includes a placeholder for the implicit help option, if there is one.
+       *
+       * @param {Command} cmd
+       * @returns {Option[]}
+       */
+      visibleOptions(cmd) {
+        const visibleOptions = cmd.options.filter((option) => !option.hidden);
+        const helpOption = cmd._getHelpOption();
+        if (helpOption && !helpOption.hidden) {
+          const removeShort = helpOption.short && cmd._findOption(helpOption.short);
+          const removeLong = helpOption.long && cmd._findOption(helpOption.long);
+          if (!removeShort && !removeLong) {
+            visibleOptions.push(helpOption);
+          } else if (helpOption.long && !removeLong) {
+            visibleOptions.push(
+              cmd.createOption(helpOption.long, helpOption.description)
+            );
+          } else if (helpOption.short && !removeShort) {
+            visibleOptions.push(
+              cmd.createOption(helpOption.short, helpOption.description)
+            );
+          }
+        }
+        if (this.sortOptions) {
+          visibleOptions.sort(this.compareOptions);
+        }
+        return visibleOptions;
+      }
+      /**
+       * Get an array of the visible global options. (Not including help.)
+       *
+       * @param {Command} cmd
+       * @returns {Option[]}
+       */
+      visibleGlobalOptions(cmd) {
+        if (!this.showGlobalOptions) return [];
+        const globalOptions = [];
+        for (let ancestorCmd = cmd.parent; ancestorCmd; ancestorCmd = ancestorCmd.parent) {
+          const visibleOptions = ancestorCmd.options.filter(
+            (option) => !option.hidden
+          );
+          globalOptions.push(...visibleOptions);
+        }
+        if (this.sortOptions) {
+          globalOptions.sort(this.compareOptions);
+        }
+        return globalOptions;
+      }
+      /**
+       * Get an array of the arguments if any have a description.
+       *
+       * @param {Command} cmd
+       * @returns {Argument[]}
+       */
+      visibleArguments(cmd) {
+        if (cmd._argsDescription) {
+          cmd.registeredArguments.forEach((argument) => {
+            argument.description = argument.description || cmd._argsDescription[argument.name()] || "";
+          });
+        }
+        if (cmd.registeredArguments.find((argument) => argument.description)) {
+          return cmd.registeredArguments;
+        }
+        return [];
+      }
+      /**
+       * Get the command term to show in the list of subcommands.
+       *
+       * @param {Command} cmd
+       * @returns {string}
+       */
+      subcommandTerm(cmd) {
+        const args = cmd.registeredArguments.map((arg) => humanReadableArgName(arg)).join(" ");
+        return cmd._name + (cmd._aliases[0] ? "|" + cmd._aliases[0] : "") + (cmd.options.length ? " [options]" : "") + // simplistic check for non-help option
+        (args ? " " + args : "");
+      }
+      /**
+       * Get the option term to show in the list of options.
+       *
+       * @param {Option} option
+       * @returns {string}
+       */
+      optionTerm(option) {
+        return option.flags;
+      }
+      /**
+       * Get the argument term to show in the list of arguments.
+       *
+       * @param {Argument} argument
+       * @returns {string}
+       */
+      argumentTerm(argument) {
+        return argument.name();
+      }
+      /**
+       * Get the longest command term length.
+       *
+       * @param {Command} cmd
+       * @param {Help} helper
+       * @returns {number}
+       */
+      longestSubcommandTermLength(cmd, helper) {
+        return helper.visibleCommands(cmd).reduce((max, command) => {
+          return Math.max(max, helper.subcommandTerm(command).length);
+        }, 0);
+      }
+      /**
+       * Get the longest option term length.
+       *
+       * @param {Command} cmd
+       * @param {Help} helper
+       * @returns {number}
+       */
+      longestOptionTermLength(cmd, helper) {
+        return helper.visibleOptions(cmd).reduce((max, option) => {
+          return Math.max(max, helper.optionTerm(option).length);
+        }, 0);
+      }
+      /**
+       * Get the longest global option term length.
+       *
+       * @param {Command} cmd
+       * @param {Help} helper
+       * @returns {number}
+       */
+      longestGlobalOptionTermLength(cmd, helper) {
+        return helper.visibleGlobalOptions(cmd).reduce((max, option) => {
+          return Math.max(max, helper.optionTerm(option).length);
+        }, 0);
+      }
+      /**
+       * Get the longest argument term length.
+       *
+       * @param {Command} cmd
+       * @param {Help} helper
+       * @returns {number}
+       */
+      longestArgumentTermLength(cmd, helper) {
+        return helper.visibleArguments(cmd).reduce((max, argument) => {
+          return Math.max(max, helper.argumentTerm(argument).length);
+        }, 0);
+      }
+      /**
+       * Get the command usage to be displayed at the top of the built-in help.
+       *
+       * @param {Command} cmd
+       * @returns {string}
+       */
+      commandUsage(cmd) {
+        let cmdName = cmd._name;
+        if (cmd._aliases[0]) {
+          cmdName = cmdName + "|" + cmd._aliases[0];
+        }
+        let ancestorCmdNames = "";
+        for (let ancestorCmd = cmd.parent; ancestorCmd; ancestorCmd = ancestorCmd.parent) {
+          ancestorCmdNames = ancestorCmd.name() + " " + ancestorCmdNames;
+        }
+        return ancestorCmdNames + cmdName + " " + cmd.usage();
+      }
+      /**
+       * Get the description for the command.
+       *
+       * @param {Command} cmd
+       * @returns {string}
+       */
+      commandDescription(cmd) {
+        return cmd.description();
+      }
+      /**
+       * Get the subcommand summary to show in the list of subcommands.
+       * (Fallback to description for backwards compatibility.)
+       *
+       * @param {Command} cmd
+       * @returns {string}
+       */
+      subcommandDescription(cmd) {
+        return cmd.summary() || cmd.description();
+      }
+      /**
+       * Get the option description to show in the list of options.
+       *
+       * @param {Option} option
+       * @return {string}
+       */
+      optionDescription(option) {
+        const extraInfo = [];
+        if (option.argChoices) {
+          extraInfo.push(
+            // use stringify to match the display of the default value
+            `choices: ${option.argChoices.map((choice) => JSON.stringify(choice)).join(", ")}`
+          );
+        }
+        if (option.defaultValue !== void 0) {
+          const showDefault = option.required || option.optional || option.isBoolean() && typeof option.defaultValue === "boolean";
+          if (showDefault) {
+            extraInfo.push(
+              `default: ${option.defaultValueDescription || JSON.stringify(option.defaultValue)}`
+            );
+          }
+        }
+        if (option.presetArg !== void 0 && option.optional) {
+          extraInfo.push(`preset: ${JSON.stringify(option.presetArg)}`);
+        }
+        if (option.envVar !== void 0) {
+          extraInfo.push(`env: ${option.envVar}`);
+        }
+        if (extraInfo.length > 0) {
+          return `${option.description} (${extraInfo.join(", ")})`;
+        }
+        return option.description;
+      }
+      /**
+       * Get the argument description to show in the list of arguments.
+       *
+       * @param {Argument} argument
+       * @return {string}
+       */
+      argumentDescription(argument) {
+        const extraInfo = [];
+        if (argument.argChoices) {
+          extraInfo.push(
+            // use stringify to match the display of the default value
+            `choices: ${argument.argChoices.map((choice) => JSON.stringify(choice)).join(", ")}`
+          );
+        }
+        if (argument.defaultValue !== void 0) {
+          extraInfo.push(
+            `default: ${argument.defaultValueDescription || JSON.stringify(argument.defaultValue)}`
+          );
+        }
+        if (extraInfo.length > 0) {
+          const extraDescripton = `(${extraInfo.join(", ")})`;
+          if (argument.description) {
+            return `${argument.description} ${extraDescripton}`;
+          }
+          return extraDescripton;
+        }
+        return argument.description;
+      }
+      /**
+       * Generate the built-in help text.
+       *
+       * @param {Command} cmd
+       * @param {Help} helper
+       * @returns {string}
+       */
+      formatHelp(cmd, helper) {
+        const termWidth = helper.padWidth(cmd, helper);
+        const helpWidth = helper.helpWidth || 80;
+        const itemIndentWidth = 2;
+        const itemSeparatorWidth = 2;
+        function formatItem(term, description) {
+          if (description) {
+            const fullText = `${term.padEnd(termWidth + itemSeparatorWidth)}${description}`;
+            return helper.wrap(
+              fullText,
+              helpWidth - itemIndentWidth,
+              termWidth + itemSeparatorWidth
+            );
+          }
+          return term;
+        }
+        function formatList(textArray) {
+          return textArray.join("\n").replace(/^/gm, " ".repeat(itemIndentWidth));
+        }
+        let output = [`Usage: ${helper.commandUsage(cmd)}`, ""];
+        const commandDescription = helper.commandDescription(cmd);
+        if (commandDescription.length > 0) {
+          output = output.concat([
+            helper.wrap(commandDescription, helpWidth, 0),
+            ""
+          ]);
+        }
+        const argumentList = helper.visibleArguments(cmd).map((argument) => {
+          return formatItem(
+            helper.argumentTerm(argument),
+            helper.argumentDescription(argument)
+          );
+        });
+        if (argumentList.length > 0) {
+          output = output.concat(["Arguments:", formatList(argumentList), ""]);
+        }
+        const optionList = helper.visibleOptions(cmd).map((option) => {
+          return formatItem(
+            helper.optionTerm(option),
+            helper.optionDescription(option)
+          );
+        });
+        if (optionList.length > 0) {
+          output = output.concat(["Options:", formatList(optionList), ""]);
+        }
+        if (this.showGlobalOptions) {
+          const globalOptionList = helper.visibleGlobalOptions(cmd).map((option) => {
+            return formatItem(
+              helper.optionTerm(option),
+              helper.optionDescription(option)
+            );
+          });
+          if (globalOptionList.length > 0) {
+            output = output.concat([
+              "Global Options:",
+              formatList(globalOptionList),
+              ""
+            ]);
+          }
+        }
+        const commandList = helper.visibleCommands(cmd).map((cmd2) => {
+          return formatItem(
+            helper.subcommandTerm(cmd2),
+            helper.subcommandDescription(cmd2)
+          );
+        });
+        if (commandList.length > 0) {
+          output = output.concat(["Commands:", formatList(commandList), ""]);
+        }
+        return output.join("\n");
+      }
+      /**
+       * Calculate the pad width from the maximum term length.
+       *
+       * @param {Command} cmd
+       * @param {Help} helper
+       * @returns {number}
+       */
+      padWidth(cmd, helper) {
+        return Math.max(
+          helper.longestOptionTermLength(cmd, helper),
+          helper.longestGlobalOptionTermLength(cmd, helper),
+          helper.longestSubcommandTermLength(cmd, helper),
+          helper.longestArgumentTermLength(cmd, helper)
+        );
+      }
+      /**
+       * Wrap the given string to width characters per line, with lines after the first indented.
+       * Do not wrap if insufficient room for wrapping (minColumnWidth), or string is manually formatted.
+       *
+       * @param {string} str
+       * @param {number} width
+       * @param {number} indent
+       * @param {number} [minColumnWidth=40]
+       * @return {string}
+       *
+       */
+      wrap(str, width, indent, minColumnWidth = 40) {
+        const indents = " \\f\\t\\v\xA0\u1680\u2000-\u200A\u202F\u205F\u3000\uFEFF";
+        const manualIndent = new RegExp(`[\\n][${indents}]+`);
+        if (str.match(manualIndent)) return str;
+        const columnWidth = width - indent;
+        if (columnWidth < minColumnWidth) return str;
+        const leadingStr = str.slice(0, indent);
+        const columnText = str.slice(indent).replace("\r\n", "\n");
+        const indentString = " ".repeat(indent);
+        const zeroWidthSpace = "\u200B";
+        const breaks = `\\s${zeroWidthSpace}`;
+        const regex = new RegExp(
+          `
+|.{1,${columnWidth - 1}}([${breaks}]|$)|[^${breaks}]+?([${breaks}]|$)`,
+          "g"
+        );
+        const lines = columnText.match(regex) || [];
+        return leadingStr + lines.map((line, i) => {
+          if (line === "\n") return "";
+          return (i > 0 ? indentString : "") + line.trimEnd();
+        }).join("\n");
+      }
+    };
+    exports2.Help = Help2;
+  }
+});
+
+// ../../../packages/proxmox-openapi/node_modules/commander/lib/option.js
+var require_option = __commonJS({
+  "../../../packages/proxmox-openapi/node_modules/commander/lib/option.js"(exports2) {
+    "use strict";
+    var { InvalidArgumentError: InvalidArgumentError2 } = require_error();
+    var Option2 = class {
+      /**
+       * Initialize a new `Option` with the given `flags` and `description`.
+       *
+       * @param {string} flags
+       * @param {string} [description]
+       */
+      constructor(flags, description) {
+        this.flags = flags;
+        this.description = description || "";
+        this.required = flags.includes("<");
+        this.optional = flags.includes("[");
+        this.variadic = /\w\.\.\.[>\]]$/.test(flags);
+        this.mandatory = false;
+        const optionFlags = splitOptionFlags(flags);
+        this.short = optionFlags.shortFlag;
+        this.long = optionFlags.longFlag;
+        this.negate = false;
+        if (this.long) {
+          this.negate = this.long.startsWith("--no-");
+        }
+        this.defaultValue = void 0;
+        this.defaultValueDescription = void 0;
+        this.presetArg = void 0;
+        this.envVar = void 0;
+        this.parseArg = void 0;
+        this.hidden = false;
+        this.argChoices = void 0;
+        this.conflictsWith = [];
+        this.implied = void 0;
+      }
+      /**
+       * Set the default value, and optionally supply the description to be displayed in the help.
+       *
+       * @param {*} value
+       * @param {string} [description]
+       * @return {Option}
+       */
+      default(value, description) {
+        this.defaultValue = value;
+        this.defaultValueDescription = description;
+        return this;
+      }
+      /**
+       * Preset to use when option used without option-argument, especially optional but also boolean and negated.
+       * The custom processing (parseArg) is called.
+       *
+       * @example
+       * new Option('--color').default('GREYSCALE').preset('RGB');
+       * new Option('--donate [amount]').preset('20').argParser(parseFloat);
+       *
+       * @param {*} arg
+       * @return {Option}
+       */
+      preset(arg) {
+        this.presetArg = arg;
+        return this;
+      }
+      /**
+       * Add option name(s) that conflict with this option.
+       * An error will be displayed if conflicting options are found during parsing.
+       *
+       * @example
+       * new Option('--rgb').conflicts('cmyk');
+       * new Option('--js').conflicts(['ts', 'jsx']);
+       *
+       * @param {(string | string[])} names
+       * @return {Option}
+       */
+      conflicts(names) {
+        this.conflictsWith = this.conflictsWith.concat(names);
+        return this;
+      }
+      /**
+       * Specify implied option values for when this option is set and the implied options are not.
+       *
+       * The custom processing (parseArg) is not called on the implied values.
+       *
+       * @example
+       * program
+       *   .addOption(new Option('--log', 'write logging information to file'))
+       *   .addOption(new Option('--trace', 'log extra details').implies({ log: 'trace.txt' }));
+       *
+       * @param {object} impliedOptionValues
+       * @return {Option}
+       */
+      implies(impliedOptionValues) {
+        let newImplied = impliedOptionValues;
+        if (typeof impliedOptionValues === "string") {
+          newImplied = { [impliedOptionValues]: true };
+        }
+        this.implied = Object.assign(this.implied || {}, newImplied);
+        return this;
+      }
+      /**
+       * Set environment variable to check for option value.
+       *
+       * An environment variable is only used if when processed the current option value is
+       * undefined, or the source of the current value is 'default' or 'config' or 'env'.
+       *
+       * @param {string} name
+       * @return {Option}
+       */
+      env(name) {
+        this.envVar = name;
+        return this;
+      }
+      /**
+       * Set the custom handler for processing CLI option arguments into option values.
+       *
+       * @param {Function} [fn]
+       * @return {Option}
+       */
+      argParser(fn) {
+        this.parseArg = fn;
+        return this;
+      }
+      /**
+       * Whether the option is mandatory and must have a value after parsing.
+       *
+       * @param {boolean} [mandatory=true]
+       * @return {Option}
+       */
+      makeOptionMandatory(mandatory = true) {
+        this.mandatory = !!mandatory;
+        return this;
+      }
+      /**
+       * Hide option in help.
+       *
+       * @param {boolean} [hide=true]
+       * @return {Option}
+       */
+      hideHelp(hide = true) {
+        this.hidden = !!hide;
+        return this;
+      }
+      /**
+       * @package
+       */
+      _concatValue(value, previous) {
+        if (previous === this.defaultValue || !Array.isArray(previous)) {
+          return [value];
+        }
+        return previous.concat(value);
+      }
+      /**
+       * Only allow option value to be one of choices.
+       *
+       * @param {string[]} values
+       * @return {Option}
+       */
+      choices(values) {
+        this.argChoices = values.slice();
+        this.parseArg = (arg, previous) => {
+          if (!this.argChoices.includes(arg)) {
+            throw new InvalidArgumentError2(
+              `Allowed choices are ${this.argChoices.join(", ")}.`
+            );
+          }
+          if (this.variadic) {
+            return this._concatValue(arg, previous);
+          }
+          return arg;
+        };
+        return this;
+      }
+      /**
+       * Return option name.
+       *
+       * @return {string}
+       */
+      name() {
+        if (this.long) {
+          return this.long.replace(/^--/, "");
+        }
+        return this.short.replace(/^-/, "");
+      }
+      /**
+       * Return option name, in a camelcase format that can be used
+       * as a object attribute key.
+       *
+       * @return {string}
+       */
+      attributeName() {
+        return camelcase(this.name().replace(/^no-/, ""));
+      }
+      /**
+       * Check if `arg` matches the short or long flag.
+       *
+       * @param {string} arg
+       * @return {boolean}
+       * @package
+       */
+      is(arg) {
+        return this.short === arg || this.long === arg;
+      }
+      /**
+       * Return whether a boolean option.
+       *
+       * Options are one of boolean, negated, required argument, or optional argument.
+       *
+       * @return {boolean}
+       * @package
+       */
+      isBoolean() {
+        return !this.required && !this.optional && !this.negate;
+      }
+    };
+    var DualOptions = class {
+      /**
+       * @param {Option[]} options
+       */
+      constructor(options) {
+        this.positiveOptions = /* @__PURE__ */ new Map();
+        this.negativeOptions = /* @__PURE__ */ new Map();
+        this.dualOptions = /* @__PURE__ */ new Set();
+        options.forEach((option) => {
+          if (option.negate) {
+            this.negativeOptions.set(option.attributeName(), option);
+          } else {
+            this.positiveOptions.set(option.attributeName(), option);
+          }
+        });
+        this.negativeOptions.forEach((value, key) => {
+          if (this.positiveOptions.has(key)) {
+            this.dualOptions.add(key);
+          }
+        });
+      }
+      /**
+       * Did the value come from the option, and not from possible matching dual option?
+       *
+       * @param {*} value
+       * @param {Option} option
+       * @returns {boolean}
+       */
+      valueFromOption(value, option) {
+        const optionKey = option.attributeName();
+        if (!this.dualOptions.has(optionKey)) return true;
+        const preset = this.negativeOptions.get(optionKey).presetArg;
+        const negativeValue = preset !== void 0 ? preset : false;
+        return option.negate === (negativeValue === value);
+      }
+    };
+    function camelcase(str) {
+      return str.split("-").reduce((str2, word) => {
+        return str2 + word[0].toUpperCase() + word.slice(1);
+      });
+    }
+    function splitOptionFlags(flags) {
+      let shortFlag;
+      let longFlag;
+      const flagParts = flags.split(/[ |,]+/);
+      if (flagParts.length > 1 && !/^[[<]/.test(flagParts[1]))
+        shortFlag = flagParts.shift();
+      longFlag = flagParts.shift();
+      if (!shortFlag && /^-[^-]$/.test(longFlag)) {
+        shortFlag = longFlag;
+        longFlag = void 0;
+      }
+      return { shortFlag, longFlag };
+    }
+    exports2.Option = Option2;
+    exports2.DualOptions = DualOptions;
+  }
+});
+
+// ../../../packages/proxmox-openapi/node_modules/commander/lib/suggestSimilar.js
+var require_suggestSimilar = __commonJS({
+  "../../../packages/proxmox-openapi/node_modules/commander/lib/suggestSimilar.js"(exports2) {
+    "use strict";
+    var maxDistance = 3;
+    function editDistance(a, b) {
+      if (Math.abs(a.length - b.length) > maxDistance)
+        return Math.max(a.length, b.length);
+      const d = [];
+      for (let i = 0; i <= a.length; i++) {
+        d[i] = [i];
+      }
+      for (let j = 0; j <= b.length; j++) {
+        d[0][j] = j;
+      }
+      for (let j = 1; j <= b.length; j++) {
+        for (let i = 1; i <= a.length; i++) {
+          let cost = 1;
+          if (a[i - 1] === b[j - 1]) {
+            cost = 0;
+          } else {
+            cost = 1;
+          }
+          d[i][j] = Math.min(
+            d[i - 1][j] + 1,
+            // deletion
+            d[i][j - 1] + 1,
+            // insertion
+            d[i - 1][j - 1] + cost
+            // substitution
+          );
+          if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+            d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+          }
+        }
+      }
+      return d[a.length][b.length];
+    }
+    function suggestSimilar(word, candidates) {
+      if (!candidates || candidates.length === 0) return "";
+      candidates = Array.from(new Set(candidates));
+      const searchingOptions = word.startsWith("--");
+      if (searchingOptions) {
+        word = word.slice(2);
+        candidates = candidates.map((candidate) => candidate.slice(2));
+      }
+      let similar = [];
+      let bestDistance = maxDistance;
+      const minSimilarity = 0.4;
+      candidates.forEach((candidate) => {
+        if (candidate.length <= 1) return;
+        const distance = editDistance(word, candidate);
+        const length = Math.max(word.length, candidate.length);
+        const similarity = (length - distance) / length;
+        if (similarity > minSimilarity) {
+          if (distance < bestDistance) {
+            bestDistance = distance;
+            similar = [candidate];
+          } else if (distance === bestDistance) {
+            similar.push(candidate);
+          }
+        }
+      });
+      similar.sort((a, b) => a.localeCompare(b));
+      if (searchingOptions) {
+        similar = similar.map((candidate) => `--${candidate}`);
+      }
+      if (similar.length > 1) {
+        return `
+(Did you mean one of ${similar.join(", ")}?)`;
+      }
+      if (similar.length === 1) {
+        return `
+(Did you mean ${similar[0]}?)`;
+      }
+      return "";
+    }
+    exports2.suggestSimilar = suggestSimilar;
+  }
+});
+
+// ../../../packages/proxmox-openapi/node_modules/commander/lib/command.js
+var require_command2 = __commonJS({
+  "../../../packages/proxmox-openapi/node_modules/commander/lib/command.js"(exports2) {
+    "use strict";
+    var EventEmitter = require("events").EventEmitter;
+    var childProcess = require("child_process");
+    var path7 = require("path");
+    var fs5 = require("fs");
+    var process5 = require("process");
+    var { Argument: Argument2, humanReadableArgName } = require_argument();
+    var { CommanderError: CommanderError2 } = require_error();
+    var { Help: Help2 } = require_help();
+    var { Option: Option2, DualOptions } = require_option();
+    var { suggestSimilar } = require_suggestSimilar();
+    var Command2 = class _Command extends EventEmitter {
+      /**
+       * Initialize a new `Command`.
+       *
+       * @param {string} [name]
+       */
+      constructor(name) {
+        super();
+        this.commands = [];
+        this.options = [];
+        this.parent = null;
+        this._allowUnknownOption = false;
+        this._allowExcessArguments = true;
+        this.registeredArguments = [];
+        this._args = this.registeredArguments;
+        this.args = [];
+        this.rawArgs = [];
+        this.processedArgs = [];
+        this._scriptPath = null;
+        this._name = name || "";
+        this._optionValues = {};
+        this._optionValueSources = {};
+        this._storeOptionsAsProperties = false;
+        this._actionHandler = null;
+        this._executableHandler = false;
+        this._executableFile = null;
+        this._executableDir = null;
+        this._defaultCommandName = null;
+        this._exitCallback = null;
+        this._aliases = [];
+        this._combineFlagAndOptionalValue = true;
+        this._description = "";
+        this._summary = "";
+        this._argsDescription = void 0;
+        this._enablePositionalOptions = false;
+        this._passThroughOptions = false;
+        this._lifeCycleHooks = {};
+        this._showHelpAfterError = false;
+        this._showSuggestionAfterError = true;
+        this._outputConfiguration = {
+          writeOut: (str) => process5.stdout.write(str),
+          writeErr: (str) => process5.stderr.write(str),
+          getOutHelpWidth: () => process5.stdout.isTTY ? process5.stdout.columns : void 0,
+          getErrHelpWidth: () => process5.stderr.isTTY ? process5.stderr.columns : void 0,
+          outputError: (str, write) => write(str)
+        };
+        this._hidden = false;
+        this._helpOption = void 0;
+        this._addImplicitHelpCommand = void 0;
+        this._helpCommand = void 0;
+        this._helpConfiguration = {};
+      }
+      /**
+       * Copy settings that are useful to have in common across root command and subcommands.
+       *
+       * (Used internally when adding a command using `.command()` so subcommands inherit parent settings.)
+       *
+       * @param {Command} sourceCommand
+       * @return {Command} `this` command for chaining
+       */
+      copyInheritedSettings(sourceCommand) {
+        this._outputConfiguration = sourceCommand._outputConfiguration;
+        this._helpOption = sourceCommand._helpOption;
+        this._helpCommand = sourceCommand._helpCommand;
+        this._helpConfiguration = sourceCommand._helpConfiguration;
+        this._exitCallback = sourceCommand._exitCallback;
+        this._storeOptionsAsProperties = sourceCommand._storeOptionsAsProperties;
+        this._combineFlagAndOptionalValue = sourceCommand._combineFlagAndOptionalValue;
+        this._allowExcessArguments = sourceCommand._allowExcessArguments;
+        this._enablePositionalOptions = sourceCommand._enablePositionalOptions;
+        this._showHelpAfterError = sourceCommand._showHelpAfterError;
+        this._showSuggestionAfterError = sourceCommand._showSuggestionAfterError;
+        return this;
+      }
+      /**
+       * @returns {Command[]}
+       * @private
+       */
+      _getCommandAndAncestors() {
+        const result = [];
+        for (let command = this; command; command = command.parent) {
+          result.push(command);
+        }
+        return result;
+      }
+      /**
+       * Define a command.
+       *
+       * There are two styles of command: pay attention to where to put the description.
+       *
+       * @example
+       * // Command implemented using action handler (description is supplied separately to `.command`)
+       * program
+       *   .command('clone <source> [destination]')
+       *   .description('clone a repository into a newly created directory')
+       *   .action((source, destination) => {
+       *     console.log('clone command called');
+       *   });
+       *
+       * // Command implemented using separate executable file (description is second parameter to `.command`)
+       * program
+       *   .command('start <service>', 'start named service')
+       *   .command('stop [service]', 'stop named service, or all if no name supplied');
+       *
+       * @param {string} nameAndArgs - command name and arguments, args are `<required>` or `[optional]` and last may also be `variadic...`
+       * @param {(object | string)} [actionOptsOrExecDesc] - configuration options (for action), or description (for executable)
+       * @param {object} [execOpts] - configuration options (for executable)
+       * @return {Command} returns new command for action handler, or `this` for executable command
+       */
+      command(nameAndArgs, actionOptsOrExecDesc, execOpts) {
+        let desc = actionOptsOrExecDesc;
+        let opts = execOpts;
+        if (typeof desc === "object" && desc !== null) {
+          opts = desc;
+          desc = null;
+        }
+        opts = opts || {};
+        const [, name, args] = nameAndArgs.match(/([^ ]+) *(.*)/);
+        const cmd = this.createCommand(name);
+        if (desc) {
+          cmd.description(desc);
+          cmd._executableHandler = true;
+        }
+        if (opts.isDefault) this._defaultCommandName = cmd._name;
+        cmd._hidden = !!(opts.noHelp || opts.hidden);
+        cmd._executableFile = opts.executableFile || null;
+        if (args) cmd.arguments(args);
+        this._registerCommand(cmd);
+        cmd.parent = this;
+        cmd.copyInheritedSettings(this);
+        if (desc) return this;
+        return cmd;
+      }
+      /**
+       * Factory routine to create a new unattached command.
+       *
+       * See .command() for creating an attached subcommand, which uses this routine to
+       * create the command. You can override createCommand to customise subcommands.
+       *
+       * @param {string} [name]
+       * @return {Command} new command
+       */
+      createCommand(name) {
+        return new _Command(name);
+      }
+      /**
+       * You can customise the help with a subclass of Help by overriding createHelp,
+       * or by overriding Help properties using configureHelp().
+       *
+       * @return {Help}
+       */
+      createHelp() {
+        return Object.assign(new Help2(), this.configureHelp());
+      }
+      /**
+       * You can customise the help by overriding Help properties using configureHelp(),
+       * or with a subclass of Help by overriding createHelp().
+       *
+       * @param {object} [configuration] - configuration options
+       * @return {(Command | object)} `this` command for chaining, or stored configuration
+       */
+      configureHelp(configuration) {
+        if (configuration === void 0) return this._helpConfiguration;
+        this._helpConfiguration = configuration;
+        return this;
+      }
+      /**
+       * The default output goes to stdout and stderr. You can customise this for special
+       * applications. You can also customise the display of errors by overriding outputError.
+       *
+       * The configuration properties are all functions:
+       *
+       *     // functions to change where being written, stdout and stderr
+       *     writeOut(str)
+       *     writeErr(str)
+       *     // matching functions to specify width for wrapping help
+       *     getOutHelpWidth()
+       *     getErrHelpWidth()
+       *     // functions based on what is being written out
+       *     outputError(str, write) // used for displaying errors, and not used for displaying help
+       *
+       * @param {object} [configuration] - configuration options
+       * @return {(Command | object)} `this` command for chaining, or stored configuration
+       */
+      configureOutput(configuration) {
+        if (configuration === void 0) return this._outputConfiguration;
+        Object.assign(this._outputConfiguration, configuration);
+        return this;
+      }
+      /**
+       * Display the help or a custom message after an error occurs.
+       *
+       * @param {(boolean|string)} [displayHelp]
+       * @return {Command} `this` command for chaining
+       */
+      showHelpAfterError(displayHelp = true) {
+        if (typeof displayHelp !== "string") displayHelp = !!displayHelp;
+        this._showHelpAfterError = displayHelp;
+        return this;
+      }
+      /**
+       * Display suggestion of similar commands for unknown commands, or options for unknown options.
+       *
+       * @param {boolean} [displaySuggestion]
+       * @return {Command} `this` command for chaining
+       */
+      showSuggestionAfterError(displaySuggestion = true) {
+        this._showSuggestionAfterError = !!displaySuggestion;
+        return this;
+      }
+      /**
+       * Add a prepared subcommand.
+       *
+       * See .command() for creating an attached subcommand which inherits settings from its parent.
+       *
+       * @param {Command} cmd - new subcommand
+       * @param {object} [opts] - configuration options
+       * @return {Command} `this` command for chaining
+       */
+      addCommand(cmd, opts) {
+        if (!cmd._name) {
+          throw new Error(`Command passed to .addCommand() must have a name
+- specify the name in Command constructor or using .name()`);
+        }
+        opts = opts || {};
+        if (opts.isDefault) this._defaultCommandName = cmd._name;
+        if (opts.noHelp || opts.hidden) cmd._hidden = true;
+        this._registerCommand(cmd);
+        cmd.parent = this;
+        cmd._checkForBrokenPassThrough();
+        return this;
+      }
+      /**
+       * Factory routine to create a new unattached argument.
+       *
+       * See .argument() for creating an attached argument, which uses this routine to
+       * create the argument. You can override createArgument to return a custom argument.
+       *
+       * @param {string} name
+       * @param {string} [description]
+       * @return {Argument} new argument
+       */
+      createArgument(name, description) {
+        return new Argument2(name, description);
+      }
+      /**
+       * Define argument syntax for command.
+       *
+       * The default is that the argument is required, and you can explicitly
+       * indicate this with <> around the name. Put [] around the name for an optional argument.
+       *
+       * @example
+       * program.argument('<input-file>');
+       * program.argument('[output-file]');
+       *
+       * @param {string} name
+       * @param {string} [description]
+       * @param {(Function|*)} [fn] - custom argument processing function
+       * @param {*} [defaultValue]
+       * @return {Command} `this` command for chaining
+       */
+      argument(name, description, fn, defaultValue) {
+        const argument = this.createArgument(name, description);
+        if (typeof fn === "function") {
+          argument.default(defaultValue).argParser(fn);
+        } else {
+          argument.default(fn);
+        }
+        this.addArgument(argument);
+        return this;
+      }
+      /**
+       * Define argument syntax for command, adding multiple at once (without descriptions).
+       *
+       * See also .argument().
+       *
+       * @example
+       * program.arguments('<cmd> [env]');
+       *
+       * @param {string} names
+       * @return {Command} `this` command for chaining
+       */
+      arguments(names) {
+        names.trim().split(/ +/).forEach((detail) => {
+          this.argument(detail);
+        });
+        return this;
+      }
+      /**
+       * Define argument syntax for command, adding a prepared argument.
+       *
+       * @param {Argument} argument
+       * @return {Command} `this` command for chaining
+       */
+      addArgument(argument) {
+        const previousArgument = this.registeredArguments.slice(-1)[0];
+        if (previousArgument && previousArgument.variadic) {
+          throw new Error(
+            `only the last argument can be variadic '${previousArgument.name()}'`
+          );
+        }
+        if (argument.required && argument.defaultValue !== void 0 && argument.parseArg === void 0) {
+          throw new Error(
+            `a default value for a required argument is never used: '${argument.name()}'`
+          );
+        }
+        this.registeredArguments.push(argument);
+        return this;
+      }
+      /**
+       * Customise or override default help command. By default a help command is automatically added if your command has subcommands.
+       *
+       * @example
+       *    program.helpCommand('help [cmd]');
+       *    program.helpCommand('help [cmd]', 'show help');
+       *    program.helpCommand(false); // suppress default help command
+       *    program.helpCommand(true); // add help command even if no subcommands
+       *
+       * @param {string|boolean} enableOrNameAndArgs - enable with custom name and/or arguments, or boolean to override whether added
+       * @param {string} [description] - custom description
+       * @return {Command} `this` command for chaining
+       */
+      helpCommand(enableOrNameAndArgs, description) {
+        if (typeof enableOrNameAndArgs === "boolean") {
+          this._addImplicitHelpCommand = enableOrNameAndArgs;
+          return this;
+        }
+        enableOrNameAndArgs = enableOrNameAndArgs ?? "help [command]";
+        const [, helpName, helpArgs] = enableOrNameAndArgs.match(/([^ ]+) *(.*)/);
+        const helpDescription = description ?? "display help for command";
+        const helpCommand = this.createCommand(helpName);
+        helpCommand.helpOption(false);
+        if (helpArgs) helpCommand.arguments(helpArgs);
+        if (helpDescription) helpCommand.description(helpDescription);
+        this._addImplicitHelpCommand = true;
+        this._helpCommand = helpCommand;
+        return this;
+      }
+      /**
+       * Add prepared custom help command.
+       *
+       * @param {(Command|string|boolean)} helpCommand - custom help command, or deprecated enableOrNameAndArgs as for `.helpCommand()`
+       * @param {string} [deprecatedDescription] - deprecated custom description used with custom name only
+       * @return {Command} `this` command for chaining
+       */
+      addHelpCommand(helpCommand, deprecatedDescription) {
+        if (typeof helpCommand !== "object") {
+          this.helpCommand(helpCommand, deprecatedDescription);
+          return this;
+        }
+        this._addImplicitHelpCommand = true;
+        this._helpCommand = helpCommand;
+        return this;
+      }
+      /**
+       * Lazy create help command.
+       *
+       * @return {(Command|null)}
+       * @package
+       */
+      _getHelpCommand() {
+        const hasImplicitHelpCommand = this._addImplicitHelpCommand ?? (this.commands.length && !this._actionHandler && !this._findCommand("help"));
+        if (hasImplicitHelpCommand) {
+          if (this._helpCommand === void 0) {
+            this.helpCommand(void 0, void 0);
+          }
+          return this._helpCommand;
+        }
+        return null;
+      }
+      /**
+       * Add hook for life cycle event.
+       *
+       * @param {string} event
+       * @param {Function} listener
+       * @return {Command} `this` command for chaining
+       */
+      hook(event, listener) {
+        const allowedValues = ["preSubcommand", "preAction", "postAction"];
+        if (!allowedValues.includes(event)) {
+          throw new Error(`Unexpected value for event passed to hook : '${event}'.
+Expecting one of '${allowedValues.join("', '")}'`);
+        }
+        if (this._lifeCycleHooks[event]) {
+          this._lifeCycleHooks[event].push(listener);
+        } else {
+          this._lifeCycleHooks[event] = [listener];
+        }
+        return this;
+      }
+      /**
+       * Register callback to use as replacement for calling process.exit.
+       *
+       * @param {Function} [fn] optional callback which will be passed a CommanderError, defaults to throwing
+       * @return {Command} `this` command for chaining
+       */
+      exitOverride(fn) {
+        if (fn) {
+          this._exitCallback = fn;
+        } else {
+          this._exitCallback = (err) => {
+            if (err.code !== "commander.executeSubCommandAsync") {
+              throw err;
+            } else {
+            }
+          };
+        }
+        return this;
+      }
+      /**
+       * Call process.exit, and _exitCallback if defined.
+       *
+       * @param {number} exitCode exit code for using with process.exit
+       * @param {string} code an id string representing the error
+       * @param {string} message human-readable description of the error
+       * @return never
+       * @private
+       */
+      _exit(exitCode, code, message) {
+        if (this._exitCallback) {
+          this._exitCallback(new CommanderError2(exitCode, code, message));
+        }
+        process5.exit(exitCode);
+      }
+      /**
+       * Register callback `fn` for the command.
+       *
+       * @example
+       * program
+       *   .command('serve')
+       *   .description('start service')
+       *   .action(function() {
+       *      // do work here
+       *   });
+       *
+       * @param {Function} fn
+       * @return {Command} `this` command for chaining
+       */
+      action(fn) {
+        const listener = (args) => {
+          const expectedArgsCount = this.registeredArguments.length;
+          const actionArgs = args.slice(0, expectedArgsCount);
+          if (this._storeOptionsAsProperties) {
+            actionArgs[expectedArgsCount] = this;
+          } else {
+            actionArgs[expectedArgsCount] = this.opts();
+          }
+          actionArgs.push(this);
+          return fn.apply(this, actionArgs);
+        };
+        this._actionHandler = listener;
+        return this;
+      }
+      /**
+       * Factory routine to create a new unattached option.
+       *
+       * See .option() for creating an attached option, which uses this routine to
+       * create the option. You can override createOption to return a custom option.
+       *
+       * @param {string} flags
+       * @param {string} [description]
+       * @return {Option} new option
+       */
+      createOption(flags, description) {
+        return new Option2(flags, description);
+      }
+      /**
+       * Wrap parseArgs to catch 'commander.invalidArgument'.
+       *
+       * @param {(Option | Argument)} target
+       * @param {string} value
+       * @param {*} previous
+       * @param {string} invalidArgumentMessage
+       * @private
+       */
+      _callParseArg(target, value, previous, invalidArgumentMessage) {
+        try {
+          return target.parseArg(value, previous);
+        } catch (err) {
+          if (err.code === "commander.invalidArgument") {
+            const message = `${invalidArgumentMessage} ${err.message}`;
+            this.error(message, { exitCode: err.exitCode, code: err.code });
+          }
+          throw err;
+        }
+      }
+      /**
+       * Check for option flag conflicts.
+       * Register option if no conflicts found, or throw on conflict.
+       *
+       * @param {Option} option
+       * @private
+       */
+      _registerOption(option) {
+        const matchingOption = option.short && this._findOption(option.short) || option.long && this._findOption(option.long);
+        if (matchingOption) {
+          const matchingFlag = option.long && this._findOption(option.long) ? option.long : option.short;
+          throw new Error(`Cannot add option '${option.flags}'${this._name && ` to command '${this._name}'`} due to conflicting flag '${matchingFlag}'
+-  already used by option '${matchingOption.flags}'`);
+        }
+        this.options.push(option);
+      }
+      /**
+       * Check for command name and alias conflicts with existing commands.
+       * Register command if no conflicts found, or throw on conflict.
+       *
+       * @param {Command} command
+       * @private
+       */
+      _registerCommand(command) {
+        const knownBy = (cmd) => {
+          return [cmd.name()].concat(cmd.aliases());
+        };
+        const alreadyUsed = knownBy(command).find(
+          (name) => this._findCommand(name)
+        );
+        if (alreadyUsed) {
+          const existingCmd = knownBy(this._findCommand(alreadyUsed)).join("|");
+          const newCmd = knownBy(command).join("|");
+          throw new Error(
+            `cannot add command '${newCmd}' as already have command '${existingCmd}'`
+          );
+        }
+        this.commands.push(command);
+      }
+      /**
+       * Add an option.
+       *
+       * @param {Option} option
+       * @return {Command} `this` command for chaining
+       */
+      addOption(option) {
+        this._registerOption(option);
+        const oname = option.name();
+        const name = option.attributeName();
+        if (option.negate) {
+          const positiveLongFlag = option.long.replace(/^--no-/, "--");
+          if (!this._findOption(positiveLongFlag)) {
+            this.setOptionValueWithSource(
+              name,
+              option.defaultValue === void 0 ? true : option.defaultValue,
+              "default"
+            );
+          }
+        } else if (option.defaultValue !== void 0) {
+          this.setOptionValueWithSource(name, option.defaultValue, "default");
+        }
+        const handleOptionValue = (val, invalidValueMessage, valueSource) => {
+          if (val == null && option.presetArg !== void 0) {
+            val = option.presetArg;
+          }
+          const oldValue = this.getOptionValue(name);
+          if (val !== null && option.parseArg) {
+            val = this._callParseArg(option, val, oldValue, invalidValueMessage);
+          } else if (val !== null && option.variadic) {
+            val = option._concatValue(val, oldValue);
+          }
+          if (val == null) {
+            if (option.negate) {
+              val = false;
+            } else if (option.isBoolean() || option.optional) {
+              val = true;
+            } else {
+              val = "";
+            }
+          }
+          this.setOptionValueWithSource(name, val, valueSource);
+        };
+        this.on("option:" + oname, (val) => {
+          const invalidValueMessage = `error: option '${option.flags}' argument '${val}' is invalid.`;
+          handleOptionValue(val, invalidValueMessage, "cli");
+        });
+        if (option.envVar) {
+          this.on("optionEnv:" + oname, (val) => {
+            const invalidValueMessage = `error: option '${option.flags}' value '${val}' from env '${option.envVar}' is invalid.`;
+            handleOptionValue(val, invalidValueMessage, "env");
+          });
+        }
+        return this;
+      }
+      /**
+       * Internal implementation shared by .option() and .requiredOption()
+       *
+       * @return {Command} `this` command for chaining
+       * @private
+       */
+      _optionEx(config, flags, description, fn, defaultValue) {
+        if (typeof flags === "object" && flags instanceof Option2) {
+          throw new Error(
+            "To add an Option object use addOption() instead of option() or requiredOption()"
+          );
+        }
+        const option = this.createOption(flags, description);
+        option.makeOptionMandatory(!!config.mandatory);
+        if (typeof fn === "function") {
+          option.default(defaultValue).argParser(fn);
+        } else if (fn instanceof RegExp) {
+          const regex = fn;
+          fn = (val, def) => {
+            const m = regex.exec(val);
+            return m ? m[0] : def;
+          };
+          option.default(defaultValue).argParser(fn);
+        } else {
+          option.default(fn);
+        }
+        return this.addOption(option);
+      }
+      /**
+       * Define option with `flags`, `description`, and optional argument parsing function or `defaultValue` or both.
+       *
+       * The `flags` string contains the short and/or long flags, separated by comma, a pipe or space. A required
+       * option-argument is indicated by `<>` and an optional option-argument by `[]`.
+       *
+       * See the README for more details, and see also addOption() and requiredOption().
+       *
+       * @example
+       * program
+       *     .option('-p, --pepper', 'add pepper')
+       *     .option('-p, --pizza-type <TYPE>', 'type of pizza') // required option-argument
+       *     .option('-c, --cheese [CHEESE]', 'add extra cheese', 'mozzarella') // optional option-argument with default
+       *     .option('-t, --tip <VALUE>', 'add tip to purchase cost', parseFloat) // custom parse function
+       *
+       * @param {string} flags
+       * @param {string} [description]
+       * @param {(Function|*)} [parseArg] - custom option processing function or default value
+       * @param {*} [defaultValue]
+       * @return {Command} `this` command for chaining
+       */
+      option(flags, description, parseArg, defaultValue) {
+        return this._optionEx({}, flags, description, parseArg, defaultValue);
+      }
+      /**
+       * Add a required option which must have a value after parsing. This usually means
+       * the option must be specified on the command line. (Otherwise the same as .option().)
+       *
+       * The `flags` string contains the short and/or long flags, separated by comma, a pipe or space.
+       *
+       * @param {string} flags
+       * @param {string} [description]
+       * @param {(Function|*)} [parseArg] - custom option processing function or default value
+       * @param {*} [defaultValue]
+       * @return {Command} `this` command for chaining
+       */
+      requiredOption(flags, description, parseArg, defaultValue) {
+        return this._optionEx(
+          { mandatory: true },
+          flags,
+          description,
+          parseArg,
+          defaultValue
+        );
+      }
+      /**
+       * Alter parsing of short flags with optional values.
+       *
+       * @example
+       * // for `.option('-f,--flag [value]'):
+       * program.combineFlagAndOptionalValue(true);  // `-f80` is treated like `--flag=80`, this is the default behaviour
+       * program.combineFlagAndOptionalValue(false) // `-fb` is treated like `-f -b`
+       *
+       * @param {boolean} [combine] - if `true` or omitted, an optional value can be specified directly after the flag.
+       * @return {Command} `this` command for chaining
+       */
+      combineFlagAndOptionalValue(combine = true) {
+        this._combineFlagAndOptionalValue = !!combine;
+        return this;
+      }
+      /**
+       * Allow unknown options on the command line.
+       *
+       * @param {boolean} [allowUnknown] - if `true` or omitted, no error will be thrown for unknown options.
+       * @return {Command} `this` command for chaining
+       */
+      allowUnknownOption(allowUnknown = true) {
+        this._allowUnknownOption = !!allowUnknown;
+        return this;
+      }
+      /**
+       * Allow excess command-arguments on the command line. Pass false to make excess arguments an error.
+       *
+       * @param {boolean} [allowExcess] - if `true` or omitted, no error will be thrown for excess arguments.
+       * @return {Command} `this` command for chaining
+       */
+      allowExcessArguments(allowExcess = true) {
+        this._allowExcessArguments = !!allowExcess;
+        return this;
+      }
+      /**
+       * Enable positional options. Positional means global options are specified before subcommands which lets
+       * subcommands reuse the same option names, and also enables subcommands to turn on passThroughOptions.
+       * The default behaviour is non-positional and global options may appear anywhere on the command line.
+       *
+       * @param {boolean} [positional]
+       * @return {Command} `this` command for chaining
+       */
+      enablePositionalOptions(positional = true) {
+        this._enablePositionalOptions = !!positional;
+        return this;
+      }
+      /**
+       * Pass through options that come after command-arguments rather than treat them as command-options,
+       * so actual command-options come before command-arguments. Turning this on for a subcommand requires
+       * positional options to have been enabled on the program (parent commands).
+       * The default behaviour is non-positional and options may appear before or after command-arguments.
+       *
+       * @param {boolean} [passThrough] for unknown options.
+       * @return {Command} `this` command for chaining
+       */
+      passThroughOptions(passThrough = true) {
+        this._passThroughOptions = !!passThrough;
+        this._checkForBrokenPassThrough();
+        return this;
+      }
+      /**
+       * @private
+       */
+      _checkForBrokenPassThrough() {
+        if (this.parent && this._passThroughOptions && !this.parent._enablePositionalOptions) {
+          throw new Error(
+            `passThroughOptions cannot be used for '${this._name}' without turning on enablePositionalOptions for parent command(s)`
+          );
+        }
+      }
+      /**
+       * Whether to store option values as properties on command object,
+       * or store separately (specify false). In both cases the option values can be accessed using .opts().
+       *
+       * @param {boolean} [storeAsProperties=true]
+       * @return {Command} `this` command for chaining
+       */
+      storeOptionsAsProperties(storeAsProperties = true) {
+        if (this.options.length) {
+          throw new Error("call .storeOptionsAsProperties() before adding options");
+        }
+        if (Object.keys(this._optionValues).length) {
+          throw new Error(
+            "call .storeOptionsAsProperties() before setting option values"
+          );
+        }
+        this._storeOptionsAsProperties = !!storeAsProperties;
+        return this;
+      }
+      /**
+       * Retrieve option value.
+       *
+       * @param {string} key
+       * @return {object} value
+       */
+      getOptionValue(key) {
+        if (this._storeOptionsAsProperties) {
+          return this[key];
+        }
+        return this._optionValues[key];
+      }
+      /**
+       * Store option value.
+       *
+       * @param {string} key
+       * @param {object} value
+       * @return {Command} `this` command for chaining
+       */
+      setOptionValue(key, value) {
+        return this.setOptionValueWithSource(key, value, void 0);
+      }
+      /**
+       * Store option value and where the value came from.
+       *
+       * @param {string} key
+       * @param {object} value
+       * @param {string} source - expected values are default/config/env/cli/implied
+       * @return {Command} `this` command for chaining
+       */
+      setOptionValueWithSource(key, value, source) {
+        if (this._storeOptionsAsProperties) {
+          this[key] = value;
+        } else {
+          this._optionValues[key] = value;
+        }
+        this._optionValueSources[key] = source;
+        return this;
+      }
+      /**
+       * Get source of option value.
+       * Expected values are default | config | env | cli | implied
+       *
+       * @param {string} key
+       * @return {string}
+       */
+      getOptionValueSource(key) {
+        return this._optionValueSources[key];
+      }
+      /**
+       * Get source of option value. See also .optsWithGlobals().
+       * Expected values are default | config | env | cli | implied
+       *
+       * @param {string} key
+       * @return {string}
+       */
+      getOptionValueSourceWithGlobals(key) {
+        let source;
+        this._getCommandAndAncestors().forEach((cmd) => {
+          if (cmd.getOptionValueSource(key) !== void 0) {
+            source = cmd.getOptionValueSource(key);
+          }
+        });
+        return source;
+      }
+      /**
+       * Get user arguments from implied or explicit arguments.
+       * Side-effects: set _scriptPath if args included script. Used for default program name, and subcommand searches.
+       *
+       * @private
+       */
+      _prepareUserArgs(argv, parseOptions) {
+        if (argv !== void 0 && !Array.isArray(argv)) {
+          throw new Error("first parameter to parse must be array or undefined");
+        }
+        parseOptions = parseOptions || {};
+        if (argv === void 0 && parseOptions.from === void 0) {
+          if (process5.versions?.electron) {
+            parseOptions.from = "electron";
+          }
+          const execArgv = process5.execArgv ?? [];
+          if (execArgv.includes("-e") || execArgv.includes("--eval") || execArgv.includes("-p") || execArgv.includes("--print")) {
+            parseOptions.from = "eval";
+          }
+        }
+        if (argv === void 0) {
+          argv = process5.argv;
+        }
+        this.rawArgs = argv.slice();
+        let userArgs;
+        switch (parseOptions.from) {
+          case void 0:
+          case "node":
+            this._scriptPath = argv[1];
+            userArgs = argv.slice(2);
+            break;
+          case "electron":
+            if (process5.defaultApp) {
+              this._scriptPath = argv[1];
+              userArgs = argv.slice(2);
+            } else {
+              userArgs = argv.slice(1);
+            }
+            break;
+          case "user":
+            userArgs = argv.slice(0);
+            break;
+          case "eval":
+            userArgs = argv.slice(1);
+            break;
+          default:
+            throw new Error(
+              `unexpected parse option { from: '${parseOptions.from}' }`
+            );
+        }
+        if (!this._name && this._scriptPath)
+          this.nameFromFilename(this._scriptPath);
+        this._name = this._name || "program";
+        return userArgs;
+      }
+      /**
+       * Parse `argv`, setting options and invoking commands when defined.
+       *
+       * Use parseAsync instead of parse if any of your action handlers are async.
+       *
+       * Call with no parameters to parse `process.argv`. Detects Electron and special node options like `node --eval`. Easy mode!
+       *
+       * Or call with an array of strings to parse, and optionally where the user arguments start by specifying where the arguments are `from`:
+       * - `'node'`: default, `argv[0]` is the application and `argv[1]` is the script being run, with user arguments after that
+       * - `'electron'`: `argv[0]` is the application and `argv[1]` varies depending on whether the electron application is packaged
+       * - `'user'`: just user arguments
+       *
+       * @example
+       * program.parse(); // parse process.argv and auto-detect electron and special node flags
+       * program.parse(process.argv); // assume argv[0] is app and argv[1] is script
+       * program.parse(my-args, { from: 'user' }); // just user supplied arguments, nothing special about argv[0]
+       *
+       * @param {string[]} [argv] - optional, defaults to process.argv
+       * @param {object} [parseOptions] - optionally specify style of options with from: node/user/electron
+       * @param {string} [parseOptions.from] - where the args are from: 'node', 'user', 'electron'
+       * @return {Command} `this` command for chaining
+       */
+      parse(argv, parseOptions) {
+        const userArgs = this._prepareUserArgs(argv, parseOptions);
+        this._parseCommand([], userArgs);
+        return this;
+      }
+      /**
+       * Parse `argv`, setting options and invoking commands when defined.
+       *
+       * Call with no parameters to parse `process.argv`. Detects Electron and special node options like `node --eval`. Easy mode!
+       *
+       * Or call with an array of strings to parse, and optionally where the user arguments start by specifying where the arguments are `from`:
+       * - `'node'`: default, `argv[0]` is the application and `argv[1]` is the script being run, with user arguments after that
+       * - `'electron'`: `argv[0]` is the application and `argv[1]` varies depending on whether the electron application is packaged
+       * - `'user'`: just user arguments
+       *
+       * @example
+       * await program.parseAsync(); // parse process.argv and auto-detect electron and special node flags
+       * await program.parseAsync(process.argv); // assume argv[0] is app and argv[1] is script
+       * await program.parseAsync(my-args, { from: 'user' }); // just user supplied arguments, nothing special about argv[0]
+       *
+       * @param {string[]} [argv]
+       * @param {object} [parseOptions]
+       * @param {string} parseOptions.from - where the args are from: 'node', 'user', 'electron'
+       * @return {Promise}
+       */
+      async parseAsync(argv, parseOptions) {
+        const userArgs = this._prepareUserArgs(argv, parseOptions);
+        await this._parseCommand([], userArgs);
+        return this;
+      }
+      /**
+       * Execute a sub-command executable.
+       *
+       * @private
+       */
+      _executeSubCommand(subcommand, args) {
+        args = args.slice();
+        let launchWithNode = false;
+        const sourceExt = [".js", ".ts", ".tsx", ".mjs", ".cjs"];
+        function findFile(baseDir, baseName) {
+          const localBin = path7.resolve(baseDir, baseName);
+          if (fs5.existsSync(localBin)) return localBin;
+          if (sourceExt.includes(path7.extname(baseName))) return void 0;
+          const foundExt = sourceExt.find(
+            (ext) => fs5.existsSync(`${localBin}${ext}`)
+          );
+          if (foundExt) return `${localBin}${foundExt}`;
+          return void 0;
+        }
+        this._checkForMissingMandatoryOptions();
+        this._checkForConflictingOptions();
+        let executableFile = subcommand._executableFile || `${this._name}-${subcommand._name}`;
+        let executableDir = this._executableDir || "";
+        if (this._scriptPath) {
+          let resolvedScriptPath;
+          try {
+            resolvedScriptPath = fs5.realpathSync(this._scriptPath);
+          } catch (err) {
+            resolvedScriptPath = this._scriptPath;
+          }
+          executableDir = path7.resolve(
+            path7.dirname(resolvedScriptPath),
+            executableDir
+          );
+        }
+        if (executableDir) {
+          let localFile = findFile(executableDir, executableFile);
+          if (!localFile && !subcommand._executableFile && this._scriptPath) {
+            const legacyName = path7.basename(
+              this._scriptPath,
+              path7.extname(this._scriptPath)
+            );
+            if (legacyName !== this._name) {
+              localFile = findFile(
+                executableDir,
+                `${legacyName}-${subcommand._name}`
+              );
+            }
+          }
+          executableFile = localFile || executableFile;
+        }
+        launchWithNode = sourceExt.includes(path7.extname(executableFile));
+        let proc;
+        if (process5.platform !== "win32") {
+          if (launchWithNode) {
+            args.unshift(executableFile);
+            args = incrementNodeInspectorPort(process5.execArgv).concat(args);
+            proc = childProcess.spawn(process5.argv[0], args, { stdio: "inherit" });
+          } else {
+            proc = childProcess.spawn(executableFile, args, { stdio: "inherit" });
+          }
+        } else {
+          args.unshift(executableFile);
+          args = incrementNodeInspectorPort(process5.execArgv).concat(args);
+          proc = childProcess.spawn(process5.execPath, args, { stdio: "inherit" });
+        }
+        if (!proc.killed) {
+          const signals = ["SIGUSR1", "SIGUSR2", "SIGTERM", "SIGINT", "SIGHUP"];
+          signals.forEach((signal) => {
+            process5.on(signal, () => {
+              if (proc.killed === false && proc.exitCode === null) {
+                proc.kill(signal);
+              }
+            });
+          });
+        }
+        const exitCallback = this._exitCallback;
+        proc.on("close", (code) => {
+          code = code ?? 1;
+          if (!exitCallback) {
+            process5.exit(code);
+          } else {
+            exitCallback(
+              new CommanderError2(
+                code,
+                "commander.executeSubCommandAsync",
+                "(close)"
+              )
+            );
+          }
+        });
+        proc.on("error", (err) => {
+          if (err.code === "ENOENT") {
+            const executableDirMessage = executableDir ? `searched for local subcommand relative to directory '${executableDir}'` : "no directory for search for local subcommand, use .executableDir() to supply a custom directory";
+            const executableMissing = `'${executableFile}' does not exist
+ - if '${subcommand._name}' is not meant to be an executable command, remove description parameter from '.command()' and use '.description()' instead
+ - if the default executable name is not suitable, use the executableFile option to supply a custom name or path
+ - ${executableDirMessage}`;
+            throw new Error(executableMissing);
+          } else if (err.code === "EACCES") {
+            throw new Error(`'${executableFile}' not executable`);
+          }
+          if (!exitCallback) {
+            process5.exit(1);
+          } else {
+            const wrappedError = new CommanderError2(
+              1,
+              "commander.executeSubCommandAsync",
+              "(error)"
+            );
+            wrappedError.nestedError = err;
+            exitCallback(wrappedError);
+          }
+        });
+        this.runningCommand = proc;
+      }
+      /**
+       * @private
+       */
+      _dispatchSubcommand(commandName, operands, unknown) {
+        const subCommand = this._findCommand(commandName);
+        if (!subCommand) this.help({ error: true });
+        let promiseChain;
+        promiseChain = this._chainOrCallSubCommandHook(
+          promiseChain,
+          subCommand,
+          "preSubcommand"
+        );
+        promiseChain = this._chainOrCall(promiseChain, () => {
+          if (subCommand._executableHandler) {
+            this._executeSubCommand(subCommand, operands.concat(unknown));
+          } else {
+            return subCommand._parseCommand(operands, unknown);
+          }
+        });
+        return promiseChain;
+      }
+      /**
+       * Invoke help directly if possible, or dispatch if necessary.
+       * e.g. help foo
+       *
+       * @private
+       */
+      _dispatchHelpCommand(subcommandName) {
+        if (!subcommandName) {
+          this.help();
+        }
+        const subCommand = this._findCommand(subcommandName);
+        if (subCommand && !subCommand._executableHandler) {
+          subCommand.help();
+        }
+        return this._dispatchSubcommand(
+          subcommandName,
+          [],
+          [this._getHelpOption()?.long ?? this._getHelpOption()?.short ?? "--help"]
+        );
+      }
+      /**
+       * Check this.args against expected this.registeredArguments.
+       *
+       * @private
+       */
+      _checkNumberOfArguments() {
+        this.registeredArguments.forEach((arg, i) => {
+          if (arg.required && this.args[i] == null) {
+            this.missingArgument(arg.name());
+          }
+        });
+        if (this.registeredArguments.length > 0 && this.registeredArguments[this.registeredArguments.length - 1].variadic) {
+          return;
+        }
+        if (this.args.length > this.registeredArguments.length) {
+          this._excessArguments(this.args);
+        }
+      }
+      /**
+       * Process this.args using this.registeredArguments and save as this.processedArgs!
+       *
+       * @private
+       */
+      _processArguments() {
+        const myParseArg = (argument, value, previous) => {
+          let parsedValue = value;
+          if (value !== null && argument.parseArg) {
+            const invalidValueMessage = `error: command-argument value '${value}' is invalid for argument '${argument.name()}'.`;
+            parsedValue = this._callParseArg(
+              argument,
+              value,
+              previous,
+              invalidValueMessage
+            );
+          }
+          return parsedValue;
+        };
+        this._checkNumberOfArguments();
+        const processedArgs = [];
+        this.registeredArguments.forEach((declaredArg, index) => {
+          let value = declaredArg.defaultValue;
+          if (declaredArg.variadic) {
+            if (index < this.args.length) {
+              value = this.args.slice(index);
+              if (declaredArg.parseArg) {
+                value = value.reduce((processed, v) => {
+                  return myParseArg(declaredArg, v, processed);
+                }, declaredArg.defaultValue);
+              }
+            } else if (value === void 0) {
+              value = [];
+            }
+          } else if (index < this.args.length) {
+            value = this.args[index];
+            if (declaredArg.parseArg) {
+              value = myParseArg(declaredArg, value, declaredArg.defaultValue);
+            }
+          }
+          processedArgs[index] = value;
+        });
+        this.processedArgs = processedArgs;
+      }
+      /**
+       * Once we have a promise we chain, but call synchronously until then.
+       *
+       * @param {(Promise|undefined)} promise
+       * @param {Function} fn
+       * @return {(Promise|undefined)}
+       * @private
+       */
+      _chainOrCall(promise, fn) {
+        if (promise && promise.then && typeof promise.then === "function") {
+          return promise.then(() => fn());
+        }
+        return fn();
+      }
+      /**
+       *
+       * @param {(Promise|undefined)} promise
+       * @param {string} event
+       * @return {(Promise|undefined)}
+       * @private
+       */
+      _chainOrCallHooks(promise, event) {
+        let result = promise;
+        const hooks = [];
+        this._getCommandAndAncestors().reverse().filter((cmd) => cmd._lifeCycleHooks[event] !== void 0).forEach((hookedCommand) => {
+          hookedCommand._lifeCycleHooks[event].forEach((callback) => {
+            hooks.push({ hookedCommand, callback });
+          });
+        });
+        if (event === "postAction") {
+          hooks.reverse();
+        }
+        hooks.forEach((hookDetail) => {
+          result = this._chainOrCall(result, () => {
+            return hookDetail.callback(hookDetail.hookedCommand, this);
+          });
+        });
+        return result;
+      }
+      /**
+       *
+       * @param {(Promise|undefined)} promise
+       * @param {Command} subCommand
+       * @param {string} event
+       * @return {(Promise|undefined)}
+       * @private
+       */
+      _chainOrCallSubCommandHook(promise, subCommand, event) {
+        let result = promise;
+        if (this._lifeCycleHooks[event] !== void 0) {
+          this._lifeCycleHooks[event].forEach((hook) => {
+            result = this._chainOrCall(result, () => {
+              return hook(this, subCommand);
+            });
+          });
+        }
+        return result;
+      }
+      /**
+       * Process arguments in context of this command.
+       * Returns action result, in case it is a promise.
+       *
+       * @private
+       */
+      _parseCommand(operands, unknown) {
+        const parsed = this.parseOptions(unknown);
+        this._parseOptionsEnv();
+        this._parseOptionsImplied();
+        operands = operands.concat(parsed.operands);
+        unknown = parsed.unknown;
+        this.args = operands.concat(unknown);
+        if (operands && this._findCommand(operands[0])) {
+          return this._dispatchSubcommand(operands[0], operands.slice(1), unknown);
+        }
+        if (this._getHelpCommand() && operands[0] === this._getHelpCommand().name()) {
+          return this._dispatchHelpCommand(operands[1]);
+        }
+        if (this._defaultCommandName) {
+          this._outputHelpIfRequested(unknown);
+          return this._dispatchSubcommand(
+            this._defaultCommandName,
+            operands,
+            unknown
+          );
+        }
+        if (this.commands.length && this.args.length === 0 && !this._actionHandler && !this._defaultCommandName) {
+          this.help({ error: true });
+        }
+        this._outputHelpIfRequested(parsed.unknown);
+        this._checkForMissingMandatoryOptions();
+        this._checkForConflictingOptions();
+        const checkForUnknownOptions = () => {
+          if (parsed.unknown.length > 0) {
+            this.unknownOption(parsed.unknown[0]);
+          }
+        };
+        const commandEvent = `command:${this.name()}`;
+        if (this._actionHandler) {
+          checkForUnknownOptions();
+          this._processArguments();
+          let promiseChain;
+          promiseChain = this._chainOrCallHooks(promiseChain, "preAction");
+          promiseChain = this._chainOrCall(
+            promiseChain,
+            () => this._actionHandler(this.processedArgs)
+          );
+          if (this.parent) {
+            promiseChain = this._chainOrCall(promiseChain, () => {
+              this.parent.emit(commandEvent, operands, unknown);
+            });
+          }
+          promiseChain = this._chainOrCallHooks(promiseChain, "postAction");
+          return promiseChain;
+        }
+        if (this.parent && this.parent.listenerCount(commandEvent)) {
+          checkForUnknownOptions();
+          this._processArguments();
+          this.parent.emit(commandEvent, operands, unknown);
+        } else if (operands.length) {
+          if (this._findCommand("*")) {
+            return this._dispatchSubcommand("*", operands, unknown);
+          }
+          if (this.listenerCount("command:*")) {
+            this.emit("command:*", operands, unknown);
+          } else if (this.commands.length) {
+            this.unknownCommand();
+          } else {
+            checkForUnknownOptions();
+            this._processArguments();
+          }
+        } else if (this.commands.length) {
+          checkForUnknownOptions();
+          this.help({ error: true });
+        } else {
+          checkForUnknownOptions();
+          this._processArguments();
+        }
+      }
+      /**
+       * Find matching command.
+       *
+       * @private
+       * @return {Command | undefined}
+       */
+      _findCommand(name) {
+        if (!name) return void 0;
+        return this.commands.find(
+          (cmd) => cmd._name === name || cmd._aliases.includes(name)
+        );
+      }
+      /**
+       * Return an option matching `arg` if any.
+       *
+       * @param {string} arg
+       * @return {Option}
+       * @package
+       */
+      _findOption(arg) {
+        return this.options.find((option) => option.is(arg));
+      }
+      /**
+       * Display an error message if a mandatory option does not have a value.
+       * Called after checking for help flags in leaf subcommand.
+       *
+       * @private
+       */
+      _checkForMissingMandatoryOptions() {
+        this._getCommandAndAncestors().forEach((cmd) => {
+          cmd.options.forEach((anOption) => {
+            if (anOption.mandatory && cmd.getOptionValue(anOption.attributeName()) === void 0) {
+              cmd.missingMandatoryOptionValue(anOption);
+            }
+          });
+        });
+      }
+      /**
+       * Display an error message if conflicting options are used together in this.
+       *
+       * @private
+       */
+      _checkForConflictingLocalOptions() {
+        const definedNonDefaultOptions = this.options.filter((option) => {
+          const optionKey = option.attributeName();
+          if (this.getOptionValue(optionKey) === void 0) {
+            return false;
+          }
+          return this.getOptionValueSource(optionKey) !== "default";
+        });
+        const optionsWithConflicting = definedNonDefaultOptions.filter(
+          (option) => option.conflictsWith.length > 0
+        );
+        optionsWithConflicting.forEach((option) => {
+          const conflictingAndDefined = definedNonDefaultOptions.find(
+            (defined) => option.conflictsWith.includes(defined.attributeName())
+          );
+          if (conflictingAndDefined) {
+            this._conflictingOption(option, conflictingAndDefined);
+          }
+        });
+      }
+      /**
+       * Display an error message if conflicting options are used together.
+       * Called after checking for help flags in leaf subcommand.
+       *
+       * @private
+       */
+      _checkForConflictingOptions() {
+        this._getCommandAndAncestors().forEach((cmd) => {
+          cmd._checkForConflictingLocalOptions();
+        });
+      }
+      /**
+       * Parse options from `argv` removing known options,
+       * and return argv split into operands and unknown arguments.
+       *
+       * Examples:
+       *
+       *     argv => operands, unknown
+       *     --known kkk op => [op], []
+       *     op --known kkk => [op], []
+       *     sub --unknown uuu op => [sub], [--unknown uuu op]
+       *     sub -- --unknown uuu op => [sub --unknown uuu op], []
+       *
+       * @param {string[]} argv
+       * @return {{operands: string[], unknown: string[]}}
+       */
+      parseOptions(argv) {
+        const operands = [];
+        const unknown = [];
+        let dest = operands;
+        const args = argv.slice();
+        function maybeOption(arg) {
+          return arg.length > 1 && arg[0] === "-";
+        }
+        let activeVariadicOption = null;
+        while (args.length) {
+          const arg = args.shift();
+          if (arg === "--") {
+            if (dest === unknown) dest.push(arg);
+            dest.push(...args);
+            break;
+          }
+          if (activeVariadicOption && !maybeOption(arg)) {
+            this.emit(`option:${activeVariadicOption.name()}`, arg);
+            continue;
+          }
+          activeVariadicOption = null;
+          if (maybeOption(arg)) {
+            const option = this._findOption(arg);
+            if (option) {
+              if (option.required) {
+                const value = args.shift();
+                if (value === void 0) this.optionMissingArgument(option);
+                this.emit(`option:${option.name()}`, value);
+              } else if (option.optional) {
+                let value = null;
+                if (args.length > 0 && !maybeOption(args[0])) {
+                  value = args.shift();
+                }
+                this.emit(`option:${option.name()}`, value);
+              } else {
+                this.emit(`option:${option.name()}`);
+              }
+              activeVariadicOption = option.variadic ? option : null;
+              continue;
+            }
+          }
+          if (arg.length > 2 && arg[0] === "-" && arg[1] !== "-") {
+            const option = this._findOption(`-${arg[1]}`);
+            if (option) {
+              if (option.required || option.optional && this._combineFlagAndOptionalValue) {
+                this.emit(`option:${option.name()}`, arg.slice(2));
+              } else {
+                this.emit(`option:${option.name()}`);
+                args.unshift(`-${arg.slice(2)}`);
+              }
+              continue;
+            }
+          }
+          if (/^--[^=]+=/.test(arg)) {
+            const index = arg.indexOf("=");
+            const option = this._findOption(arg.slice(0, index));
+            if (option && (option.required || option.optional)) {
+              this.emit(`option:${option.name()}`, arg.slice(index + 1));
+              continue;
+            }
+          }
+          if (maybeOption(arg)) {
+            dest = unknown;
+          }
+          if ((this._enablePositionalOptions || this._passThroughOptions) && operands.length === 0 && unknown.length === 0) {
+            if (this._findCommand(arg)) {
+              operands.push(arg);
+              if (args.length > 0) unknown.push(...args);
+              break;
+            } else if (this._getHelpCommand() && arg === this._getHelpCommand().name()) {
+              operands.push(arg);
+              if (args.length > 0) operands.push(...args);
+              break;
+            } else if (this._defaultCommandName) {
+              unknown.push(arg);
+              if (args.length > 0) unknown.push(...args);
+              break;
+            }
+          }
+          if (this._passThroughOptions) {
+            dest.push(arg);
+            if (args.length > 0) dest.push(...args);
+            break;
+          }
+          dest.push(arg);
+        }
+        return { operands, unknown };
+      }
+      /**
+       * Return an object containing local option values as key-value pairs.
+       *
+       * @return {object}
+       */
+      opts() {
+        if (this._storeOptionsAsProperties) {
+          const result = {};
+          const len = this.options.length;
+          for (let i = 0; i < len; i++) {
+            const key = this.options[i].attributeName();
+            result[key] = key === this._versionOptionName ? this._version : this[key];
+          }
+          return result;
+        }
+        return this._optionValues;
+      }
+      /**
+       * Return an object containing merged local and global option values as key-value pairs.
+       *
+       * @return {object}
+       */
+      optsWithGlobals() {
+        return this._getCommandAndAncestors().reduce(
+          (combinedOptions, cmd) => Object.assign(combinedOptions, cmd.opts()),
+          {}
+        );
+      }
+      /**
+       * Display error message and exit (or call exitOverride).
+       *
+       * @param {string} message
+       * @param {object} [errorOptions]
+       * @param {string} [errorOptions.code] - an id string representing the error
+       * @param {number} [errorOptions.exitCode] - used with process.exit
+       */
+      error(message, errorOptions) {
+        this._outputConfiguration.outputError(
+          `${message}
+`,
+          this._outputConfiguration.writeErr
+        );
+        if (typeof this._showHelpAfterError === "string") {
+          this._outputConfiguration.writeErr(`${this._showHelpAfterError}
+`);
+        } else if (this._showHelpAfterError) {
+          this._outputConfiguration.writeErr("\n");
+          this.outputHelp({ error: true });
+        }
+        const config = errorOptions || {};
+        const exitCode = config.exitCode || 1;
+        const code = config.code || "commander.error";
+        this._exit(exitCode, code, message);
+      }
+      /**
+       * Apply any option related environment variables, if option does
+       * not have a value from cli or client code.
+       *
+       * @private
+       */
+      _parseOptionsEnv() {
+        this.options.forEach((option) => {
+          if (option.envVar && option.envVar in process5.env) {
+            const optionKey = option.attributeName();
+            if (this.getOptionValue(optionKey) === void 0 || ["default", "config", "env"].includes(
+              this.getOptionValueSource(optionKey)
+            )) {
+              if (option.required || option.optional) {
+                this.emit(`optionEnv:${option.name()}`, process5.env[option.envVar]);
+              } else {
+                this.emit(`optionEnv:${option.name()}`);
+              }
+            }
+          }
+        });
+      }
+      /**
+       * Apply any implied option values, if option is undefined or default value.
+       *
+       * @private
+       */
+      _parseOptionsImplied() {
+        const dualHelper = new DualOptions(this.options);
+        const hasCustomOptionValue = (optionKey) => {
+          return this.getOptionValue(optionKey) !== void 0 && !["default", "implied"].includes(this.getOptionValueSource(optionKey));
+        };
+        this.options.filter(
+          (option) => option.implied !== void 0 && hasCustomOptionValue(option.attributeName()) && dualHelper.valueFromOption(
+            this.getOptionValue(option.attributeName()),
+            option
+          )
+        ).forEach((option) => {
+          Object.keys(option.implied).filter((impliedKey) => !hasCustomOptionValue(impliedKey)).forEach((impliedKey) => {
+            this.setOptionValueWithSource(
+              impliedKey,
+              option.implied[impliedKey],
+              "implied"
+            );
+          });
+        });
+      }
+      /**
+       * Argument `name` is missing.
+       *
+       * @param {string} name
+       * @private
+       */
+      missingArgument(name) {
+        const message = `error: missing required argument '${name}'`;
+        this.error(message, { code: "commander.missingArgument" });
+      }
+      /**
+       * `Option` is missing an argument.
+       *
+       * @param {Option} option
+       * @private
+       */
+      optionMissingArgument(option) {
+        const message = `error: option '${option.flags}' argument missing`;
+        this.error(message, { code: "commander.optionMissingArgument" });
+      }
+      /**
+       * `Option` does not have a value, and is a mandatory option.
+       *
+       * @param {Option} option
+       * @private
+       */
+      missingMandatoryOptionValue(option) {
+        const message = `error: required option '${option.flags}' not specified`;
+        this.error(message, { code: "commander.missingMandatoryOptionValue" });
+      }
+      /**
+       * `Option` conflicts with another option.
+       *
+       * @param {Option} option
+       * @param {Option} conflictingOption
+       * @private
+       */
+      _conflictingOption(option, conflictingOption) {
+        const findBestOptionFromValue = (option2) => {
+          const optionKey = option2.attributeName();
+          const optionValue = this.getOptionValue(optionKey);
+          const negativeOption = this.options.find(
+            (target) => target.negate && optionKey === target.attributeName()
+          );
+          const positiveOption = this.options.find(
+            (target) => !target.negate && optionKey === target.attributeName()
+          );
+          if (negativeOption && (negativeOption.presetArg === void 0 && optionValue === false || negativeOption.presetArg !== void 0 && optionValue === negativeOption.presetArg)) {
+            return negativeOption;
+          }
+          return positiveOption || option2;
+        };
+        const getErrorMessage = (option2) => {
+          const bestOption = findBestOptionFromValue(option2);
+          const optionKey = bestOption.attributeName();
+          const source = this.getOptionValueSource(optionKey);
+          if (source === "env") {
+            return `environment variable '${bestOption.envVar}'`;
+          }
+          return `option '${bestOption.flags}'`;
+        };
+        const message = `error: ${getErrorMessage(option)} cannot be used with ${getErrorMessage(conflictingOption)}`;
+        this.error(message, { code: "commander.conflictingOption" });
+      }
+      /**
+       * Unknown option `flag`.
+       *
+       * @param {string} flag
+       * @private
+       */
+      unknownOption(flag) {
+        if (this._allowUnknownOption) return;
+        let suggestion = "";
+        if (flag.startsWith("--") && this._showSuggestionAfterError) {
+          let candidateFlags = [];
+          let command = this;
+          do {
+            const moreFlags = command.createHelp().visibleOptions(command).filter((option) => option.long).map((option) => option.long);
+            candidateFlags = candidateFlags.concat(moreFlags);
+            command = command.parent;
+          } while (command && !command._enablePositionalOptions);
+          suggestion = suggestSimilar(flag, candidateFlags);
+        }
+        const message = `error: unknown option '${flag}'${suggestion}`;
+        this.error(message, { code: "commander.unknownOption" });
+      }
+      /**
+       * Excess arguments, more than expected.
+       *
+       * @param {string[]} receivedArgs
+       * @private
+       */
+      _excessArguments(receivedArgs) {
+        if (this._allowExcessArguments) return;
+        const expected = this.registeredArguments.length;
+        const s = expected === 1 ? "" : "s";
+        const forSubcommand = this.parent ? ` for '${this.name()}'` : "";
+        const message = `error: too many arguments${forSubcommand}. Expected ${expected} argument${s} but got ${receivedArgs.length}.`;
+        this.error(message, { code: "commander.excessArguments" });
+      }
+      /**
+       * Unknown command.
+       *
+       * @private
+       */
+      unknownCommand() {
+        const unknownName = this.args[0];
+        let suggestion = "";
+        if (this._showSuggestionAfterError) {
+          const candidateNames = [];
+          this.createHelp().visibleCommands(this).forEach((command) => {
+            candidateNames.push(command.name());
+            if (command.alias()) candidateNames.push(command.alias());
+          });
+          suggestion = suggestSimilar(unknownName, candidateNames);
+        }
+        const message = `error: unknown command '${unknownName}'${suggestion}`;
+        this.error(message, { code: "commander.unknownCommand" });
+      }
+      /**
+       * Get or set the program version.
+       *
+       * This method auto-registers the "-V, --version" option which will print the version number.
+       *
+       * You can optionally supply the flags and description to override the defaults.
+       *
+       * @param {string} [str]
+       * @param {string} [flags]
+       * @param {string} [description]
+       * @return {(this | string | undefined)} `this` command for chaining, or version string if no arguments
+       */
+      version(str, flags, description) {
+        if (str === void 0) return this._version;
+        this._version = str;
+        flags = flags || "-V, --version";
+        description = description || "output the version number";
+        const versionOption = this.createOption(flags, description);
+        this._versionOptionName = versionOption.attributeName();
+        this._registerOption(versionOption);
+        this.on("option:" + versionOption.name(), () => {
+          this._outputConfiguration.writeOut(`${str}
+`);
+          this._exit(0, "commander.version", str);
+        });
+        return this;
+      }
+      /**
+       * Set the description.
+       *
+       * @param {string} [str]
+       * @param {object} [argsDescription]
+       * @return {(string|Command)}
+       */
+      description(str, argsDescription) {
+        if (str === void 0 && argsDescription === void 0)
+          return this._description;
+        this._description = str;
+        if (argsDescription) {
+          this._argsDescription = argsDescription;
+        }
+        return this;
+      }
+      /**
+       * Set the summary. Used when listed as subcommand of parent.
+       *
+       * @param {string} [str]
+       * @return {(string|Command)}
+       */
+      summary(str) {
+        if (str === void 0) return this._summary;
+        this._summary = str;
+        return this;
+      }
+      /**
+       * Set an alias for the command.
+       *
+       * You may call more than once to add multiple aliases. Only the first alias is shown in the auto-generated help.
+       *
+       * @param {string} [alias]
+       * @return {(string|Command)}
+       */
+      alias(alias) {
+        if (alias === void 0) return this._aliases[0];
+        let command = this;
+        if (this.commands.length !== 0 && this.commands[this.commands.length - 1]._executableHandler) {
+          command = this.commands[this.commands.length - 1];
+        }
+        if (alias === command._name)
+          throw new Error("Command alias can't be the same as its name");
+        const matchingCommand = this.parent?._findCommand(alias);
+        if (matchingCommand) {
+          const existingCmd = [matchingCommand.name()].concat(matchingCommand.aliases()).join("|");
+          throw new Error(
+            `cannot add alias '${alias}' to command '${this.name()}' as already have command '${existingCmd}'`
+          );
+        }
+        command._aliases.push(alias);
+        return this;
+      }
+      /**
+       * Set aliases for the command.
+       *
+       * Only the first alias is shown in the auto-generated help.
+       *
+       * @param {string[]} [aliases]
+       * @return {(string[]|Command)}
+       */
+      aliases(aliases) {
+        if (aliases === void 0) return this._aliases;
+        aliases.forEach((alias) => this.alias(alias));
+        return this;
+      }
+      /**
+       * Set / get the command usage `str`.
+       *
+       * @param {string} [str]
+       * @return {(string|Command)}
+       */
+      usage(str) {
+        if (str === void 0) {
+          if (this._usage) return this._usage;
+          const args = this.registeredArguments.map((arg) => {
+            return humanReadableArgName(arg);
+          });
+          return [].concat(
+            this.options.length || this._helpOption !== null ? "[options]" : [],
+            this.commands.length ? "[command]" : [],
+            this.registeredArguments.length ? args : []
+          ).join(" ");
+        }
+        this._usage = str;
+        return this;
+      }
+      /**
+       * Get or set the name of the command.
+       *
+       * @param {string} [str]
+       * @return {(string|Command)}
+       */
+      name(str) {
+        if (str === void 0) return this._name;
+        this._name = str;
+        return this;
+      }
+      /**
+       * Set the name of the command from script filename, such as process.argv[1],
+       * or require.main.filename, or __filename.
+       *
+       * (Used internally and public although not documented in README.)
+       *
+       * @example
+       * program.nameFromFilename(require.main.filename);
+       *
+       * @param {string} filename
+       * @return {Command}
+       */
+      nameFromFilename(filename) {
+        this._name = path7.basename(filename, path7.extname(filename));
+        return this;
+      }
+      /**
+       * Get or set the directory for searching for executable subcommands of this command.
+       *
+       * @example
+       * program.executableDir(__dirname);
+       * // or
+       * program.executableDir('subcommands');
+       *
+       * @param {string} [path]
+       * @return {(string|null|Command)}
+       */
+      executableDir(path8) {
+        if (path8 === void 0) return this._executableDir;
+        this._executableDir = path8;
+        return this;
+      }
+      /**
+       * Return program help documentation.
+       *
+       * @param {{ error: boolean }} [contextOptions] - pass {error:true} to wrap for stderr instead of stdout
+       * @return {string}
+       */
+      helpInformation(contextOptions) {
+        const helper = this.createHelp();
+        if (helper.helpWidth === void 0) {
+          helper.helpWidth = contextOptions && contextOptions.error ? this._outputConfiguration.getErrHelpWidth() : this._outputConfiguration.getOutHelpWidth();
+        }
+        return helper.formatHelp(this, helper);
+      }
+      /**
+       * @private
+       */
+      _getHelpContext(contextOptions) {
+        contextOptions = contextOptions || {};
+        const context = { error: !!contextOptions.error };
+        let write;
+        if (context.error) {
+          write = (arg) => this._outputConfiguration.writeErr(arg);
+        } else {
+          write = (arg) => this._outputConfiguration.writeOut(arg);
+        }
+        context.write = contextOptions.write || write;
+        context.command = this;
+        return context;
+      }
+      /**
+       * Output help information for this command.
+       *
+       * Outputs built-in help, and custom text added using `.addHelpText()`.
+       *
+       * @param {{ error: boolean } | Function} [contextOptions] - pass {error:true} to write to stderr instead of stdout
+       */
+      outputHelp(contextOptions) {
+        let deprecatedCallback;
+        if (typeof contextOptions === "function") {
+          deprecatedCallback = contextOptions;
+          contextOptions = void 0;
+        }
+        const context = this._getHelpContext(contextOptions);
+        this._getCommandAndAncestors().reverse().forEach((command) => command.emit("beforeAllHelp", context));
+        this.emit("beforeHelp", context);
+        let helpInformation = this.helpInformation(context);
+        if (deprecatedCallback) {
+          helpInformation = deprecatedCallback(helpInformation);
+          if (typeof helpInformation !== "string" && !Buffer.isBuffer(helpInformation)) {
+            throw new Error("outputHelp callback must return a string or a Buffer");
+          }
+        }
+        context.write(helpInformation);
+        if (this._getHelpOption()?.long) {
+          this.emit(this._getHelpOption().long);
+        }
+        this.emit("afterHelp", context);
+        this._getCommandAndAncestors().forEach(
+          (command) => command.emit("afterAllHelp", context)
+        );
+      }
+      /**
+       * You can pass in flags and a description to customise the built-in help option.
+       * Pass in false to disable the built-in help option.
+       *
+       * @example
+       * program.helpOption('-?, --help' 'show help'); // customise
+       * program.helpOption(false); // disable
+       *
+       * @param {(string | boolean)} flags
+       * @param {string} [description]
+       * @return {Command} `this` command for chaining
+       */
+      helpOption(flags, description) {
+        if (typeof flags === "boolean") {
+          if (flags) {
+            this._helpOption = this._helpOption ?? void 0;
+          } else {
+            this._helpOption = null;
+          }
+          return this;
+        }
+        flags = flags ?? "-h, --help";
+        description = description ?? "display help for command";
+        this._helpOption = this.createOption(flags, description);
+        return this;
+      }
+      /**
+       * Lazy create help option.
+       * Returns null if has been disabled with .helpOption(false).
+       *
+       * @returns {(Option | null)} the help option
+       * @package
+       */
+      _getHelpOption() {
+        if (this._helpOption === void 0) {
+          this.helpOption(void 0, void 0);
+        }
+        return this._helpOption;
+      }
+      /**
+       * Supply your own option to use for the built-in help option.
+       * This is an alternative to using helpOption() to customise the flags and description etc.
+       *
+       * @param {Option} option
+       * @return {Command} `this` command for chaining
+       */
+      addHelpOption(option) {
+        this._helpOption = option;
+        return this;
+      }
+      /**
+       * Output help information and exit.
+       *
+       * Outputs built-in help, and custom text added using `.addHelpText()`.
+       *
+       * @param {{ error: boolean }} [contextOptions] - pass {error:true} to write to stderr instead of stdout
+       */
+      help(contextOptions) {
+        this.outputHelp(contextOptions);
+        let exitCode = process5.exitCode || 0;
+        if (exitCode === 0 && contextOptions && typeof contextOptions !== "function" && contextOptions.error) {
+          exitCode = 1;
+        }
+        this._exit(exitCode, "commander.help", "(outputHelp)");
+      }
+      /**
+       * Add additional text to be displayed with the built-in help.
+       *
+       * Position is 'before' or 'after' to affect just this command,
+       * and 'beforeAll' or 'afterAll' to affect this command and all its subcommands.
+       *
+       * @param {string} position - before or after built-in help
+       * @param {(string | Function)} text - string to add, or a function returning a string
+       * @return {Command} `this` command for chaining
+       */
+      addHelpText(position, text) {
+        const allowedValues = ["beforeAll", "before", "after", "afterAll"];
+        if (!allowedValues.includes(position)) {
+          throw new Error(`Unexpected value for position to addHelpText.
+Expecting one of '${allowedValues.join("', '")}'`);
+        }
+        const helpEvent = `${position}Help`;
+        this.on(helpEvent, (context) => {
+          let helpStr;
+          if (typeof text === "function") {
+            helpStr = text({ error: context.error, command: context.command });
+          } else {
+            helpStr = text;
+          }
+          if (helpStr) {
+            context.write(`${helpStr}
+`);
+          }
+        });
+        return this;
+      }
+      /**
+       * Output help information if help flags specified
+       *
+       * @param {Array} args - array of options to search for help flags
+       * @private
+       */
+      _outputHelpIfRequested(args) {
+        const helpOption = this._getHelpOption();
+        const helpRequested = helpOption && args.find((arg) => helpOption.is(arg));
+        if (helpRequested) {
+          this.outputHelp();
+          this._exit(0, "commander.helpDisplayed", "(outputHelp)");
+        }
+      }
+    };
+    function incrementNodeInspectorPort(args) {
+      return args.map((arg) => {
+        if (!arg.startsWith("--inspect")) {
+          return arg;
+        }
+        let debugOption;
+        let debugHost = "127.0.0.1";
+        let debugPort = "9229";
+        let match;
+        if ((match = arg.match(/^(--inspect(-brk)?)$/)) !== null) {
+          debugOption = match[1];
+        } else if ((match = arg.match(/^(--inspect(-brk|-port)?)=([^:]+)$/)) !== null) {
+          debugOption = match[1];
+          if (/^\d+$/.test(match[3])) {
+            debugPort = match[3];
+          } else {
+            debugHost = match[3];
+          }
+        } else if ((match = arg.match(/^(--inspect(-brk|-port)?)=([^:]+):(\d+)$/)) !== null) {
+          debugOption = match[1];
+          debugHost = match[3];
+          debugPort = match[4];
+        }
+        if (debugOption && debugPort !== "0") {
+          return `${debugOption}=${debugHost}:${parseInt(debugPort) + 1}`;
+        }
+        return arg;
+      });
+    }
+    exports2.Command = Command2;
+  }
+});
+
+// ../../../packages/proxmox-openapi/node_modules/commander/index.js
+var require_commander = __commonJS({
+  "../../../packages/proxmox-openapi/node_modules/commander/index.js"(exports2) {
+    "use strict";
+    var { Argument: Argument2 } = require_argument();
+    var { Command: Command2 } = require_command2();
+    var { CommanderError: CommanderError2, InvalidArgumentError: InvalidArgumentError2 } = require_error();
+    var { Help: Help2 } = require_help();
+    var { Option: Option2 } = require_option();
+    exports2.program = new Command2();
+    exports2.createCommand = (name) => new Command2(name);
+    exports2.createOption = (flags, description) => new Option2(flags, description);
+    exports2.createArgument = (name, description) => new Argument2(name, description);
+    exports2.Command = Command2;
+    exports2.Option = Option2;
+    exports2.Argument = Argument2;
+    exports2.Help = Help2;
+    exports2.CommanderError = CommanderError2;
+    exports2.InvalidArgumentError = InvalidArgumentError2;
+    exports2.InvalidOptionArgumentError = InvalidArgumentError2;
+  }
+});
+
 // src/main.ts
 var core = __toESM(require_core(), 1);
 var import_exec = __toESM(require_exec(), 1);
 var import_node_fs4 = require("fs");
-var import_node_path6 = __toESM(require("path"), 1);
+var import_node_path7 = __toESM(require("path"), 1);
 var import_node_os = __toESM(require("os"), 1);
 
-// ../../../tools/automation/src/pipeline.ts
-var import_node_fs3 = require("fs");
-var import_node_path5 = __toESM(require("path"), 1);
-var import_node_process3 = __toESM(require("process"), 1);
-var import_swagger_parser = __toESM(require_lib5(), 1);
-var import_yaml2 = __toESM(require_dist2(), 1);
-
-// ../../../tools/api-scraper/src/scraper.ts
+// ../../../packages/proxmox-openapi/src/internal/api-scraper/scraper.ts
 var import_playwright = require("playwright");
 
-// ../../../tools/api-scraper/src/extractor.ts
+// ../../../packages/proxmox-openapi/src/internal/api-scraper/extractor.ts
 var API_SCRIPT_REGEX = /const apiSchema = (\[.*?\])\s*;\s*let method2cmd/s;
 async function fetchApiScript(page, scriptPath = "apidoc.js") {
-  return await page.evaluate(async (path6) => {
-    const response = await fetch(path6);
+  return await page.evaluate(async (path7) => {
+    const response = await fetch(path7);
     if (!response.ok) {
-      throw new Error(`Unable to download ${path6}: ${response.status} ${response.statusText}`);
+      throw new Error(`Unable to download ${path7}: ${response.status} ${response.statusText}`);
     }
     return await response.text();
   }, scriptPath);
@@ -45472,17 +48465,80 @@ function countEndpoints(nodes) {
   }, 0);
 }
 
-// ../../../tools/api-scraper/src/codex-mock.ts
+// ../../../packages/proxmox-openapi/src/internal/api-scraper/codex-mock.ts
 var import_promises = require("fs/promises");
-var import_node_path = require("path");
-var MOCK_ROOT = (0, import_node_path.resolve)("tools/api-scraper/mocks");
-var MOCK_INDEX_PATH = (0, import_node_path.resolve)(MOCK_ROOT, "index.html");
-var MOCK_SNAPSHOT_PATH = (0, import_node_path.resolve)("tools/api-scraper/data/raw/proxmox-openapi-schema.json");
+var import_node_path3 = require("path");
+
+// ../../../packages/proxmox-openapi/src/internal/shared/paths.ts
+var import_node_path2 = __toESM(require("path"), 1);
+var import_node_process = __toESM(require("process"), 1);
+
+// ../../../packages/proxmox-openapi/src/internal/shared/module-paths.ts
+var import_node_path = __toESM(require("path"), 1);
+var import_node_url = require("url");
+function normalizeImportMeta(metaOrUrl) {
+  if (typeof metaOrUrl === "string") {
+    if (metaOrUrl.startsWith("file:")) {
+      return metaOrUrl;
+    }
+    return (0, import_node_url.pathToFileURL)(metaOrUrl).toString();
+  }
+  return metaOrUrl.url;
+}
+function toModulePath(metaOrUrl) {
+  return (0, import_node_url.fileURLToPath)(normalizeImportMeta(metaOrUrl));
+}
+function toModuleDirname(metaOrUrl) {
+  return import_node_path.default.dirname(toModulePath(metaOrUrl));
+}
+function resolveFromModule(metaOrUrl, ...segments) {
+  return import_node_path.default.join(toModuleDirname(metaOrUrl), ...segments);
+}
+
+// ../../../packages/proxmox-openapi/src/internal/shared/paths.ts
+var moduleDirname;
+try {
+  const moduleUrl = new Function("return import.meta.url")();
+  if (typeof moduleUrl === "string") {
+    moduleDirname = toModuleDirname(moduleUrl);
+  }
+} catch {
+  moduleDirname = void 0;
+}
+var workspaceRoot = import_node_process.default.env.GITHUB_WORKSPACE ?? import_node_process.default.cwd();
+var REPO_ROOT = moduleDirname !== void 0 ? import_node_path2.default.resolve(moduleDirname, "..", "..") : workspaceRoot;
+var VAR_DIR = import_node_path2.default.join(REPO_ROOT, "var");
+var CACHE_ROOT = import_node_path2.default.join(VAR_DIR, "cache");
+var OPENAPI_ARTIFACT_DIR = import_node_path2.default.join(VAR_DIR, "openapi");
+var OPENAPI_BASENAME = "proxmox-ve";
+var OPENAPI_JSON_PATH = import_node_path2.default.join(OPENAPI_ARTIFACT_DIR, `${OPENAPI_BASENAME}.json`);
+var OPENAPI_YAML_PATH = import_node_path2.default.join(OPENAPI_ARTIFACT_DIR, `${OPENAPI_BASENAME}.yaml`);
+var DATA_DIR = CACHE_ROOT;
+var RAW_SNAPSHOT_CACHE_PATH = import_node_path2.default.join(DATA_DIR, "api-scraper", "raw", "proxmox-openapi-schema.json");
+var NORMALIZED_IR_CACHE_PATH = import_node_path2.default.join(DATA_DIR, "api-normalizer", "ir", "proxmox-openapi-ir.json");
+
+// ../../../packages/proxmox-openapi/src/internal/api-scraper/codex-mock.ts
+var moduleReference = typeof __dirname === "string" ? __dirname : resolveModuleDirname();
+var MOCK_ROOT = resolveFromModule(moduleReference ?? process.cwd(), "mocks");
+var MOCK_INDEX_PATH = (0, import_node_path3.resolve)(MOCK_ROOT, "index.html");
+var MOCK_SNAPSHOT_PATH = RAW_SNAPSHOT_CACHE_PATH;
 var MOCK_TARGET_PATTERN = /pve\.proxmox\.com\/pve-docs\/api-viewer/i;
 var cachedAssets;
 var loadPromise;
 var cachedScript;
 var scriptPromise;
+function resolveModuleDirname() {
+  try {
+    const moduleUrl = new Function(
+      "return typeof import !== 'undefined' && import.meta && import.meta.url ? import.meta.url : undefined;"
+    )();
+    if (typeof moduleUrl === "string") {
+      return toModuleDirname(moduleUrl);
+    }
+  } catch {
+  }
+  return void 0;
+}
 function isTruthy(value) {
   if (!value) {
     return false;
@@ -45653,21 +48709,21 @@ async function registerCodexMock(context, baseUrl) {
   return true;
 }
 
-// ../../../tools/api-scraper/src/persistence.ts
+// ../../../packages/proxmox-openapi/src/internal/api-scraper/persistence.ts
 var import_node_fs = require("fs");
-var import_node_path2 = __toESM(require("path"), 1);
+var import_node_path4 = __toESM(require("path"), 1);
 async function persistSnapshot(snapshot, options) {
   const { outputDir, fileName = "proxmox-openapi-schema.json" } = options;
-  const resolvedDir = import_node_path2.default.resolve(outputDir);
+  const resolvedDir = import_node_path4.default.resolve(outputDir);
   await import_node_fs.promises.mkdir(resolvedDir, { recursive: true });
-  const filePath = import_node_path2.default.join(resolvedDir, fileName);
+  const filePath = import_node_path4.default.join(resolvedDir, fileName);
   const serialized = `${JSON.stringify(snapshot, null, 2)}
 `;
   await import_node_fs.promises.writeFile(filePath, serialized, "utf8");
   return filePath;
 }
 
-// ../../../tools/api-scraper/src/scraper.ts
+// ../../../packages/proxmox-openapi/src/internal/api-scraper/scraper.ts
 var DEFAULT_BASE_URL = "https://pve.proxmox.com/pve-docs/api-viewer/";
 async function scrapeApiDocumentation(options = {}) {
   const baseUrl = options.baseUrl ?? DEFAULT_BASE_URL;
@@ -45704,13 +48760,13 @@ async function scrapeApiDocumentation(options = {}) {
   }
 }
 
-// ../../../tools/api-normalizer/src/normalizer.ts
+// ../../../packages/proxmox-openapi/src/internal/api-normalizer/normalizer.ts
 var import_node_crypto = require("crypto");
 
-// ../../../tools/api-normalizer/src/types.ts
+// ../../../packages/proxmox-openapi/src/internal/api-normalizer/types.ts
 var IR_VERSION = "1.0.0";
 
-// ../../../tools/api-normalizer/src/normalizer.ts
+// ../../../packages/proxmox-openapi/src/internal/api-normalizer/normalizer.ts
 var HTTP_METHOD_WHITELIST = /* @__PURE__ */ new Set([
   "GET",
   "POST",
@@ -45754,15 +48810,15 @@ function normalizeGroup(node) {
     children: node.children.map((child) => normalizeGroup(child))
   };
 }
-function normalizeEndpoint(path6, method) {
+function normalizeEndpoint(path7, method) {
   const httpMethod = toHttpMethod(method.httpMethod);
-  const operationId = buildOperationId(httpMethod, path6);
+  const operationId = buildOperationId(httpMethod, path7);
   const request = normalizeRequest(method.parameters);
   const responses = normalizeResponses(method.returns);
   return {
     id: operationId,
     operationId,
-    path: path6,
+    path: path7,
     httpMethod,
     name: method.name,
     description: method.description,
@@ -45995,20 +49051,20 @@ function toHttpMethod(method) {
   const upper = method.toUpperCase();
   return HTTP_METHOD_WHITELIST.has(upper) ? upper : "UNKNOWN";
 }
-function toSlug(path6) {
-  if (!path6) {
+function toSlug(path7) {
+  if (!path7) {
     return "root";
   }
-  const normalized = path6.replace(/^\/+/, "");
+  const normalized = path7.replace(/^\/+/, "");
   const slug = normalized.replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase();
   return slug || "root";
 }
-function buildOperationId(method, path6) {
-  const slug = toSlug(path6);
+function buildOperationId(method, path7) {
+  const slug = toSlug(path7);
   return `${method.toLowerCase()}-${slug}`;
 }
 
-// ../../../tools/openapi-generator/src/generator.ts
+// ../../../packages/proxmox-openapi/src/internal/openapi-generator/generator.ts
 var PRIMARY_TAG_GROUP_ORDER = ["access", "cluster", "nodes", "storage", "pools", "version"];
 var SEGMENT_DISPLAY_OVERRIDES = /* @__PURE__ */ new Map([
   ["acl", "ACL"],
@@ -46070,8 +49126,8 @@ var SECURITY_SCHEMES = {
 function setExtension(target, key, value) {
   target[key] = value;
 }
-function deriveTagInfo(path6, depth = 2) {
-  const rawSegments = path6.split("/").filter((value) => Boolean(value) && !value.startsWith("{"));
+function deriveTagInfo(path7, depth = 2) {
+  const rawSegments = path7.split("/").filter((value) => Boolean(value) && !value.startsWith("{"));
   if (rawSegments.length === 0) {
     return {
       name: "general",
@@ -46423,8 +49479,8 @@ function coerceDefault(schema) {
   }
   return schema.defaultValue;
 }
-function extractPathParamNames(path6) {
-  const matches = path6.matchAll(/\{([^}]+)}/g);
+function extractPathParamNames(path7) {
+  const matches = path7.matchAll(/\{([^}]+)}/g);
   return new Set(Array.from(matches, (match) => match[1]));
 }
 function joinDescription(...parts) {
@@ -46465,213 +49521,23 @@ function buildTopLevelDescription(ir) {
   return lines.join("\n");
 }
 
-// ../../../tools/automation/src/regression/report.ts
-var import_node_process2 = __toESM(require("process"), 1);
-
-// ../../../tools/automation/src/regression/summary.ts
-var import_node_crypto2 = require("crypto");
+// ../../../packages/proxmox-openapi/src/internal/automation/pipeline.ts
 var import_node_fs2 = require("fs");
+var import_node_path5 = __toESM(require("path"), 1);
+var import_node_process2 = __toESM(require("process"), 1);
+var import_swagger_parser = __toESM(require_lib5(), 1);
 var import_yaml = __toESM(require_dist2(), 1);
-
-// ../../../tools/automation/data/regression/openapi.sha256.json
-var openapi_sha256_default = {
-  json: {
-    sha256: "ff318991702a1881adce58784c3cbf764975cc83af630178e4f90da1b2b0abdc"
-  },
-  yaml: {
-    sha256: "cd8442e675aab431774fd57c2c030b62b8e2f95fca6f91ce6d68e216961e5383"
-  },
-  generatedAt: "2025-10-19T20:14:13.536Z"
-};
-
-// ../../../tools/shared/paths.ts
-var import_node_path4 = __toESM(require("path"), 1);
-var import_node_process = __toESM(require("process"), 1);
-
-// ../../../tools/shared/module-paths.ts
-var import_node_path3 = __toESM(require("path"), 1);
-var import_node_url = require("url");
-function normalizeImportMeta(metaOrUrl) {
-  if (typeof metaOrUrl === "string") {
-    return metaOrUrl;
-  }
-  return metaOrUrl.url;
-}
-function toModulePath(metaOrUrl) {
-  return (0, import_node_url.fileURLToPath)(normalizeImportMeta(metaOrUrl));
-}
-function toModuleDirname(metaOrUrl) {
-  return import_node_path3.default.dirname(toModulePath(metaOrUrl));
-}
-
-// ../../../tools/shared/paths.ts
-var moduleDirname;
-try {
-  const moduleUrl = new Function("return import.meta.url")();
-  if (typeof moduleUrl === "string") {
-    moduleDirname = toModuleDirname(moduleUrl);
-  }
-} catch {
-  moduleDirname = void 0;
-}
-var workspaceRoot = import_node_process.default.env.GITHUB_WORKSPACE ?? import_node_process.default.cwd();
-var REPO_ROOT = moduleDirname !== void 0 ? import_node_path4.default.resolve(moduleDirname, "..", "..") : workspaceRoot;
-var VAR_DIR = import_node_path4.default.join(REPO_ROOT, "var");
-var OPENAPI_ARTIFACT_DIR = import_node_path4.default.join(VAR_DIR, "openapi");
-var OPENAPI_BASENAME = "proxmox-ve";
-var OPENAPI_JSON_PATH = import_node_path4.default.join(OPENAPI_ARTIFACT_DIR, `${OPENAPI_BASENAME}.json`);
-var OPENAPI_YAML_PATH = import_node_path4.default.join(OPENAPI_ARTIFACT_DIR, `${OPENAPI_BASENAME}.yaml`);
-function resolveFromRoot(relativePath) {
-  return import_node_path4.default.join(REPO_ROOT, relativePath);
-}
-
-// ../../../tools/automation/src/regression/baselines.ts
-var ARTIFACT_BASELINES = [
-  {
-    id: "raw-snapshot",
-    label: "Raw API snapshot",
-    description: "Cached payload scraped from the Proxmox API viewer.",
-    path: resolveFromRoot("tools/api-scraper/data/raw/proxmox-openapi-schema.json"),
-    sha256: "be8b5b0faf483b521b8ac698467a2e406117dff7d044d85375c113002f558201"
-  },
-  {
-    id: "normalized-ir",
-    label: "Normalized intermediate representation",
-    description: "Structured document produced by the normalization pipeline.",
-    path: resolveFromRoot("tools/api-normalizer/data/ir/proxmox-openapi-ir.json"),
-    sha256: "d74175b22b3346df9af533fcd84689f9e1256ec88fdc13a431d1698d54cb9c60"
-  },
-  {
-    id: "openapi-json",
-    label: "OpenAPI JSON document",
-    description: "Generated OpenAPI 3.1 specification (JSON).",
-    path: OPENAPI_JSON_PATH,
-    sha256: openapi_sha256_default.json.sha256
-  },
-  {
-    id: "openapi-yaml",
-    label: "OpenAPI YAML document",
-    description: "Generated OpenAPI 3.1 specification (YAML).",
-    path: OPENAPI_YAML_PATH,
-    sha256: openapi_sha256_default.yaml.sha256
-  }
-];
-
-// ../../../tools/automation/src/regression/summary.ts
-function computeRegressionSummary() {
-  const artifacts = ARTIFACT_BASELINES.map((baseline) => computeArtifactState(baseline));
-  const rawSnapshot = readRawSnapshot();
-  const normalized = readNormalizedDocument();
-  const openApiJson = generateOpenApiDocument(normalized);
-  const openApiYaml = (0, import_yaml.parse)((0, import_yaml.stringify)(openApiJson));
-  const operationCount = countOperations(openApiJson);
-  const yamlOperationCount = countOperations(openApiYaml);
-  return {
-    artifacts,
-    snapshotStats: rawSnapshot.stats,
-    normalizedSummary: normalized.summary,
-    openApiOperationCount: operationCount,
-    tagCount: openApiJson.tags?.length ?? 0,
-    parity: {
-      jsonMatchesYaml: deepEquals(openApiJson, openApiYaml),
-      methodCountMatches: operationCount === normalized.summary.methodCount && operationCount === yamlOperationCount
-    }
-  };
-}
-function computeArtifactState(baseline) {
-  const payload = (0, import_node_fs2.readFileSync)(baseline.path);
-  const hash = (0, import_node_crypto2.createHash)("sha256").update(payload).digest("hex");
-  return {
-    baseline,
-    actualSha256: hash,
-    matches: hash === baseline.sha256,
-    byteLength: payload.byteLength
-  };
-}
-function readRawSnapshot() {
-  const payload = (0, import_node_fs2.readFileSync)(resolveBaselinePath("raw-snapshot"), "utf8");
-  return JSON.parse(payload);
-}
-function readNormalizedDocument() {
-  const payload = (0, import_node_fs2.readFileSync)(resolveBaselinePath("normalized-ir"), "utf8");
-  return JSON.parse(payload);
-}
-function resolveBaselinePath(id) {
-  const baseline = ARTIFACT_BASELINES.find((artifact) => artifact.id === id);
-  if (!baseline) {
-    throw new Error(`Unknown artifact baseline: ${id}`);
-  }
-  return baseline.path;
-}
-function countOperations(document) {
-  const methodNames = ["get", "put", "post", "delete", "options", "head", "patch", "trace"];
-  const methodSet = new Set(methodNames);
-  return Object.values(document.paths ?? {}).reduce((total, pathItem) => {
-    if (!pathItem) {
-      return total;
-    }
-    const methodCount = Object.entries(pathItem).reduce((count, [key, value]) => {
-      if (!methodSet.has(key) || !value) {
-        return count;
-      }
-      return count + 1;
-    }, 0);
-    return total + methodCount;
-  }, 0);
-}
-function deepEquals(a, b) {
-  return JSON.stringify(a) === JSON.stringify(b);
-}
-
-// ../../../tools/automation/src/regression/report.ts
-function logRegressionReport() {
-  const summary = computeRegressionSummary();
-  import_node_process2.default.stdout.write("\n=== QA regression summary ===\n");
-  for (const artifact of summary.artifacts) {
-    const status = artifact.matches ? "\u2705" : "\u274C";
-    import_node_process2.default.stdout.write(
-      `${status} ${artifact.baseline.label}: ${artifact.actualSha256}
-    Expected: ${artifact.baseline.sha256}
-    Size: ${artifact.byteLength.toLocaleString("en-US")} bytes
-`
-    );
-  }
-  import_node_process2.default.stdout.write("\n--- Coverage summary ---\n");
-  import_node_process2.default.stdout.write(
-    `Raw snapshot endpoints: ${summary.snapshotStats.endpointCount} (groups: ${summary.snapshotStats.rootGroupCount})
-`
-  );
-  import_node_process2.default.stdout.write(
-    `Normalized endpoints: ${summary.normalizedSummary.endpointCount}, methods: ${summary.normalizedSummary.methodCount}
-`
-  );
-  import_node_process2.default.stdout.write(`OpenAPI operations: ${summary.openApiOperationCount}, tags: ${summary.tagCount}
-`);
-  import_node_process2.default.stdout.write("\n--- Parity checks ---\n");
-  import_node_process2.default.stdout.write(
-    `${summary.parity.jsonMatchesYaml ? "\u2705" : "\u274C"} JSON and YAML OpenAPI documents are structurally identical
-`
-  );
-  import_node_process2.default.stdout.write(
-    `${summary.parity.methodCountMatches ? "\u2705" : "\u274C"} Operation counts match normalized method counts
-`
-  );
-}
-
-// ../../../tools/automation/src/pipeline.ts
 function resolveAutomationPipelineOptions(options = {}) {
   const mode = options.mode === "full" ? "full" : "ci";
-  const rawSnapshotPath = import_node_path5.default.resolve(
-    options.rawSnapshotPath ?? "tools/api-scraper/data/raw/proxmox-openapi-schema.json"
-  );
-  const irOutputPath = import_node_path5.default.resolve(options.irOutputPath ?? "tools/api-normalizer/data/ir/proxmox-openapi-ir.json");
+  const rawSnapshotPath = import_node_path5.default.resolve(options.rawSnapshotPath ?? RAW_SNAPSHOT_CACHE_PATH);
+  const irOutputPath = import_node_path5.default.resolve(options.irOutputPath ?? NORMALIZED_IR_CACHE_PATH);
   const openApiOutputDir = import_node_path5.default.resolve(options.openApiOutputDir ?? OPENAPI_ARTIFACT_DIR);
   const openApiBasename = options.openApiBasename ?? OPENAPI_BASENAME;
-  const offline = mode === "ci" ? true : options.offline === void 0 ? false : options.offline;
-  const fallbackToCache = mode === "ci" ? true : options.fallbackToCache === void 0 ? false : options.fallbackToCache;
+  const offline = options.offline === void 0 ? false : options.offline;
+  const fallbackToCache = options.fallbackToCache === void 0 ? mode === "ci" : options.fallbackToCache;
   return {
     mode,
-    baseUrl: options.baseUrl ?? import_node_process3.default.env.SCRAPER_BASE_URL ?? DEFAULT_BASE_URL,
+    baseUrl: options.baseUrl ?? import_node_process2.default.env.SCRAPER_BASE_URL ?? DEFAULT_BASE_URL,
     rawSnapshotPath,
     irOutputPath,
     openApiOutputDir,
@@ -46702,7 +49568,6 @@ async function runAutomationPipeline(options = {}, context = {}) {
 - ${relative(documentPaths.yaml)}`);
   await import_swagger_parser.default.validate(documentPaths.json);
   logger(`Validated OpenAPI document ${relative(documentPaths.json)}`);
-  logRegressionReport();
   const summary = {
     rawSnapshotPath: resolved.rawSnapshotPath,
     normalizedDocumentPath: resolved.irOutputPath,
@@ -46723,7 +49588,7 @@ async function obtainRawSnapshot(options, logger) {
     const snapshot = await readSnapshot(rawSnapshotPath);
     return { snapshot, sourcePath: rawSnapshotPath, fromCache: true };
   }
-  await import_node_fs3.promises.mkdir(import_node_path5.default.dirname(rawSnapshotPath), { recursive: true });
+  await import_node_fs2.promises.mkdir(import_node_path5.default.dirname(rawSnapshotPath), { recursive: true });
   try {
     logger(`Scraping API viewer at ${baseUrl}`);
     const result = await scrapeApiDocumentation({
@@ -46750,7 +49615,7 @@ async function obtainRawSnapshot(options, logger) {
 }
 async function readSnapshot(filePath) {
   try {
-    const payload = await import_node_fs3.promises.readFile(filePath, "utf8");
+    const payload = await import_node_fs2.promises.readFile(filePath, "utf8");
     return JSON.parse(payload);
   } catch (error2) {
     const message = error2 instanceof Error ? error2.message : String(error2);
@@ -46758,19 +49623,19 @@ async function readSnapshot(filePath) {
   }
 }
 async function buildNormalizedDocument(snapshot, outputPath, reuseExistingMetadata) {
-  const previous = reuseExistingMetadata ? await readNormalizedDocument2(outputPath) : void 0;
+  const previous = reuseExistingMetadata ? await readNormalizedDocument(outputPath) : void 0;
   const normalized = normalizeSnapshot(snapshot, {
     normalizedAt: previous?.normalizedAt,
     checksum: previous?.source.snapshotChecksum
   });
-  await import_node_fs3.promises.mkdir(import_node_path5.default.dirname(outputPath), { recursive: true });
-  await import_node_fs3.promises.writeFile(outputPath, `${JSON.stringify(normalized, null, 2)}
+  await import_node_fs2.promises.mkdir(import_node_path5.default.dirname(outputPath), { recursive: true });
+  await import_node_fs2.promises.writeFile(outputPath, `${JSON.stringify(normalized, null, 2)}
 `, "utf8");
   return normalized;
 }
-async function readNormalizedDocument2(filePath) {
+async function readNormalizedDocument(filePath) {
   try {
-    const payload = await import_node_fs3.promises.readFile(filePath, "utf8");
+    const payload = await import_node_fs2.promises.readFile(filePath, "utf8");
     return JSON.parse(payload);
   } catch (error2) {
     if (error2.code === "ENOENT") {
@@ -46784,15 +49649,15 @@ async function writeOpenApiDocuments(normalized, options) {
   const document = generateOpenApiDocument(normalized);
   const jsonPath = import_node_path5.default.join(options.openApiOutputDir, `${options.openApiBasename}.json`);
   const yamlPath = import_node_path5.default.join(options.openApiOutputDir, `${options.openApiBasename}.yaml`);
-  await import_node_fs3.promises.mkdir(options.openApiOutputDir, { recursive: true });
-  await import_node_fs3.promises.writeFile(jsonPath, `${JSON.stringify(document, null, 2)}
+  await import_node_fs2.promises.mkdir(options.openApiOutputDir, { recursive: true });
+  await import_node_fs2.promises.writeFile(jsonPath, `${JSON.stringify(document, null, 2)}
 `, "utf8");
-  await import_node_fs3.promises.writeFile(yamlPath, `${(0, import_yaml2.stringify)(document)}
+  await import_node_fs2.promises.writeFile(yamlPath, `${(0, import_yaml.stringify)(document)}
 `, "utf8");
   return { json: jsonPath, yaml: yamlPath };
 }
 function defaultLogger(message) {
-  import_node_process3.default.stdout.write(`${message}
+  import_node_process2.default.stdout.write(`${message}
 `);
 }
 function logHeading(logger, message) {
@@ -46800,13 +49665,38 @@ function logHeading(logger, message) {
 === ${message} ===`);
 }
 function relative(filePath) {
-  return import_node_path5.default.relative(import_node_process3.default.cwd(), filePath) || ".";
+  return import_node_path5.default.relative(import_node_process2.default.cwd(), filePath) || ".";
 }
 async function writeSummary(filePath, summary) {
-  await import_node_fs3.promises.mkdir(import_node_path5.default.dirname(filePath), { recursive: true });
-  await import_node_fs3.promises.writeFile(filePath, `${JSON.stringify(summary, null, 2)}
+  await import_node_fs2.promises.mkdir(import_node_path5.default.dirname(filePath), { recursive: true });
+  await import_node_fs2.promises.writeFile(filePath, `${JSON.stringify(summary, null, 2)}
 `, "utf8");
 }
+
+// ../../../packages/proxmox-openapi/src/run-cli.ts
+var import_node_fs3 = require("fs");
+var import_node_path6 = __toESM(require("path"), 1);
+var import_node_process3 = __toESM(require("process"), 1);
+
+// ../../../packages/proxmox-openapi/node_modules/commander/esm.mjs
+var import_index = __toESM(require_commander(), 1);
+var {
+  program,
+  createCommand,
+  createArgument,
+  createOption,
+  CommanderError,
+  InvalidArgumentError,
+  InvalidOptionArgumentError,
+  // deprecated old name
+  Command,
+  Argument,
+  Option,
+  Help
+} = import_index.default;
+
+// ../../../packages/proxmox-openapi/src/run-cli.ts
+var import_yaml2 = __toESM(require_dist2(), 1);
 
 // src/main.ts
 function coerceBoolean(input, defaultValue) {
@@ -46831,12 +49721,12 @@ function optionalString(name) {
   return value.trim() === "" ? void 0 : value;
 }
 async function ensureReportDirectory(reportPath) {
-  await import_node_fs4.promises.mkdir(import_node_path6.default.dirname(reportPath), { recursive: true });
+  await import_node_fs4.promises.mkdir(import_node_path7.default.dirname(reportPath), { recursive: true });
 }
 async function run() {
   try {
     const workingDirectoryInput = core.getInput("working-directory");
-    const workingDirectory = workingDirectoryInput ? import_node_path6.default.resolve(workingDirectoryInput) : process.cwd();
+    const workingDirectory = workingDirectoryInput ? import_node_path7.default.resolve(workingDirectoryInput) : process.cwd();
     const installCommand = core.getInput("install-command") || "npm ci";
     const shouldInstallPlaywright = coerceBoolean(core.getInput("install-playwright-browsers") || void 0, true);
     const nodeVersion = core.getInput("node-version");
@@ -46846,7 +49736,7 @@ async function run() {
       );
     }
     const reportPathInput = optionalString("report-path");
-    const summaryPath = reportPathInput ?? import_node_path6.default.join(await import_node_fs4.promises.mkdtemp(import_node_path6.default.join(import_node_os.default.tmpdir(), "proxmox-action-")), "summary.json");
+    const summaryPath = reportPathInput ?? import_node_path7.default.join(await import_node_fs4.promises.mkdtemp(import_node_path7.default.join(import_node_os.default.tmpdir(), "proxmox-action-")), "summary.json");
     if (reportPathInput) {
       await ensureReportDirectory(summaryPath);
     }
