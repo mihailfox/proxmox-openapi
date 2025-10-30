@@ -3,8 +3,8 @@
 Follow these steps when publishing `@mihailfox/proxmox-openapi` to GitHub Packages.
 
 1. **Pre-release validation**
-   - Run `npm run automation:pipeline -- --mode=ci --report var/automation-summary.json`.
-   - Ensure `npm run regression:test` and `npm run openapi:validate` pass.
+   - Run `npm run automation:pipeline -- --mode=full --report var/automation-summary.json`.
+   - Ensure `npm run openapi:validate` passes.
    - Update the changelog and documentation for the upcoming version.
 
 2. **Versioning & tagging**

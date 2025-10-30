@@ -30,17 +30,17 @@ The automation pipeline chains the following stages (implemented in `packages/pr
 1. **Scrape** – `@proxmox-openapi/api-scraper` launches Playwright, fetches `apidoc.js`, and persists a raw snapshot (JSON).
 2. **Normalize** – `@proxmox-openapi/api-normalizer` converts the raw tree into a versioned intermediate representation (IR).
 3. **Generate** – `@proxmox-openapi/openapi-generator` emits OpenAPI 3.1 JSON/YAML documents and enriches tags/metadata.
-4. **Validate & QA** – Swagger Parser validates the JSON output, and regression helpers compute checksum parity summaries.
+4. **Validate** – Swagger Parser validates the JSON output and persists a structured run summary.
 
 Run the end-to-end flow with `npx proxmox-openapi pipeline` (or `npm run automation:pipeline`, which proxies the same CLI).
 Pass `--mode=full` for a live scrape or `--no-fallback-to-cache` to fail fast when Proxmox endpoints are unreachable. The
-command writes a JSON summary to `var/automation-summary.json` when invoked with `--report <path>` and logs a regression
-digest (checksums, parity stats). Stage-specific commands (`scrape`, `normalize`, `generate`) mirror the library internals
-under `packages/proxmox-openapi/src/internal/` for targeted debugging.
+command writes a JSON summary to `var/automation-summary.json` when invoked with `--report <path>`. Stage-specific
+commands (`scrape`, `normalize`, `generate`) mirror the library internals under `packages/proxmox-openapi/src/internal/`
+for targeted debugging.
 
 ### Local Development Quickstart
 1. Install dependencies with `npm install`.
-2. Generate or refresh the OpenAPI artifacts (`npx proxmox-openapi pipeline --mode ci --report var/automation-summary.json`).
+2. Generate or refresh the OpenAPI artifacts (`npx proxmox-openapi pipeline --mode full --report var/automation-summary.json`).
 3. Start the SPA dev server (`npm run ui:dev`). The script copies the current artifacts and launches Vite at
    `http://127.0.0.1:5173`.
 4. When finished, stop the dev server with `Ctrl+C`. Regenerate artifacts whenever the API schema changes.
@@ -55,11 +55,9 @@ workflow can reconcile status changes. Use `packages/proxmox-openapi/scripts/aut
 - Check for broken links using a crawler such as `npx broken-link-checker https://mihailfox.github.io/proxmox-openapi/` before publishing.
 - Verify that the embedded Swagger UI loads the latest `openapi/proxmox-ve.json` bundle after every automation pipeline run.
 
-## Testing & Regression
-- `npm run test:all` executes unit suites for the scraper, normalizer, generator, automation helpers, and regression harness.
-- Regression specs (`tests/regression`) assert checksum baselines from `packages/proxmox-openapi/data/automation/assets/regression/openapi.sha256.json` and parity between JSON/YAML outputs.
+## Testing
+- `npm run test:all` executes unit suites for the scraper, normalizer, generator, and automation helpers.
 - Playwright suites cover scraper smoke tests (`packages/proxmox-openapi/tests/api-scraper/smoke.spec.ts`) and UI contrast/theme behaviour (`tests/ui/theme.spec.ts`).
-- Update baselines via `npm run regression:record` (which delegates to `packages/proxmox-openapi/scripts/automation/update-regression-baseline.ts`) after intentional schema shifts.
 
 ## GitHub Action Usage
 The bundled action in `.github/actions/proxmox-openapi-artifacts` runs the automation pipeline and ships with the
@@ -116,8 +114,8 @@ jobs:
 
   ```bash
   npm install @mihailfox/proxmox-openapi
-  npx proxmox-openapi pipeline --mode ci --report var/automation-summary.json
-  npx proxmox-openapi scrape --output var/raw/proxmox-openapi-schema.json
+  npx proxmox-openapi pipeline --mode full --report var/automation-summary.json
+  npx proxmox-openapi scrape --output var/cache/api-scraper/raw/proxmox-openapi-schema.json
   npx proxmox-openapi generate --output var/openapi --basename proxmox-ve
   ```
 
@@ -125,7 +123,7 @@ jobs:
 
 ## Schema Releases
 - Push tags matching `v*`, semantic versions, or prerelease suffixes (`-alpha.*`, `-beta.*`, `-rc.*`) to trigger `.github/workflows/openapi-release.yml`.
-- The workflow regenerates artifacts, runs `npm run regression:test` and `npm run openapi:validate`, and publishes assets via `softprops/action-gh-release@v2`.
+- The workflow regenerates artifacts, runs `npm run openapi:validate`, and publishes assets via `softprops/action-gh-release@v2`.
 - See [docs/releases.md](docs/releases.md) for download commands, checksum verification, and release metadata.
 
 ## Contributing
