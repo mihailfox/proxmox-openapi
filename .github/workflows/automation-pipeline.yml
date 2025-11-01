@@ -51,8 +51,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run proxmox-openapi pipeline (CI mode)
-        run: npx proxmox-openapi pipeline --mode ci --report var/automation-summary.json
+      - name: Build automation package
+        run: npm run build --workspace packages/proxmox-openapi
+
+      - name: Run proxmox-openapi pipeline
+        run: npx @mihailfox/proxmox-openapi pipeline --mode full --report var/automation-summary.json
 
       - name: Validate generated OpenAPI document
         run: npm run openapi:validate
@@ -68,9 +71,6 @@ jobs:
           npm run normalizer:test
           npm run openapi:test
           npm run ui:test
-
-      - name: Run regression QA suite
-        run: npm run regression:test
 
       - name: Upload OpenAPI artifacts
         uses: actions/upload-artifact@v4

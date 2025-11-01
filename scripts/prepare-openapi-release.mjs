@@ -13,13 +13,12 @@ async function main() {
   await fs.rm(stagingDir, { recursive: true, force: true });
   await fs.mkdir(stagingDir, { recursive: true });
 
-  const files = [
-    copyAsset("proxmox-ve.json"),
-    copyAsset("proxmox-ve.yaml"),
-  ];
+  const files = [copyAsset("proxmox-ve.json"), copyAsset("proxmox-ve.yaml")];
   await Promise.all(files);
 
-  const manifest = await buildChecksumManifest(["proxmox-ve.json", "proxmox-ve.yaml"].map((file) => path.join(stagingDir, file)));
+  const manifest = await buildChecksumManifest(
+    ["proxmox-ve.json", "proxmox-ve.yaml"].map((file) => path.join(stagingDir, file))
+  );
   await writeJson(path.join(stagingDir, "openapi.sha256.json"), manifest);
 
   const releaseNotes = await composeReleaseNotes(tagName);
@@ -75,9 +74,13 @@ async function composeReleaseNotes(tag) {
     lines.push(`## Changes since ${previousTag}`);
     lines.push("");
     lines.push(formatDelta("Groups", previous.normalized.summary.groupCount, current.normalized.summary.groupCount));
-    lines.push(formatDelta("Endpoints", previous.normalized.summary.endpointCount, current.normalized.summary.endpointCount));
+    lines.push(
+      formatDelta("Endpoints", previous.normalized.summary.endpointCount, current.normalized.summary.endpointCount)
+    );
     lines.push(formatDelta("Methods", previous.normalized.summary.methodCount, current.normalized.summary.methodCount));
-    lines.push(formatDelta("Raw snapshot endpoints", previous.snapshot.stats.endpointCount, current.snapshot.stats.endpointCount));
+    lines.push(
+      formatDelta("Raw snapshot endpoints", previous.snapshot.stats.endpointCount, current.snapshot.stats.endpointCount)
+    );
   } else {
     lines.push("## Changes");
     lines.push("");
@@ -101,33 +104,12 @@ function formatDelta(label, previous, current) {
 }
 
 async function readWorkingState() {
-  const normalized = JSON.parse(
-    await fs.readFile(
-      path.resolve(
-        "packages",
-        "proxmox-openapi",
-        "data",
-        "api-normalizer",
-        "cache",
-        "ir",
-        "proxmox-openapi-ir.json"
-      ),
-      "utf8"
-    )
-  );
-  const snapshot = JSON.parse(
-    await fs.readFile(
-      path.resolve(
-        "packages",
-        "proxmox-openapi",
-        "data",
-        "api-scraper",
-        "raw",
-        "proxmox-openapi-schema.json"
-      ),
-      "utf8"
-    )
-  );
+  const cacheRoot = path.resolve("var", "cache");
+  const normalizedPath = path.join(cacheRoot, "api-normalizer", "ir", "proxmox-openapi-ir.json");
+  const snapshotPath = path.join(cacheRoot, "api-scraper", "raw", "proxmox-openapi-schema.json");
+
+  const normalized = JSON.parse(await fs.readFile(normalizedPath, "utf8"));
+  const snapshot = JSON.parse(await fs.readFile(snapshotPath, "utf8"));
   const automation = await readAutomationSummary();
   return { normalized, snapshot, automation };
 }
@@ -163,11 +145,16 @@ function resolvePreviousTag(currentTag) {
 }
 
 async function readStateAtRef(ref) {
-  const normalized = JSON.parse(
-    runGitShow(ref, "packages/proxmox-openapi/data/api-normalizer/cache/ir/proxmox-openapi-ir.json")
-  );
-  const snapshot = JSON.parse(runGitShow(ref, "packages/proxmox-openapi/data/api-scraper/raw/proxmox-openapi-schema.json"));
-  return { normalized, snapshot };
+  try {
+    const normalized = JSON.parse(runGitShow(ref, "var/cache/api-normalizer/ir/proxmox-openapi-ir.json"));
+    const snapshot = JSON.parse(runGitShow(ref, "var/cache/api-scraper/raw/proxmox-openapi-schema.json"));
+    return { normalized, snapshot };
+  } catch (error) {
+    console.warn(
+      `[openapi-release] Unable to load cached state for ${ref}: ${error instanceof Error ? error.message : error}`
+    );
+    return null;
+  }
 }
 
 function runGitShow(ref, file) {
@@ -179,6 +166,6 @@ async function writeJson(filePath, payload) {
 }
 
 main().catch((error) => {
-  console.error(`[openapi-release] ${error instanceof Error ? error.stack ?? error.message : error}`);
+  console.error(`[openapi-release] ${error instanceof Error ? (error.stack ?? error.message) : error}`);
   process.exitCode = 1;
 });

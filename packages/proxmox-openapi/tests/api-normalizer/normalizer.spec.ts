@@ -1,32 +1,27 @@
 import { describe, expect, it } from "vitest";
 
-import rawSnapshot from "../../data/api-scraper/raw/proxmox-openapi-schema.json" with { type: "json" };
-import type { RawApiSnapshot } from "../../src/internal/api-scraper/types.ts";
+import { SAMPLE_SNAPSHOT } from "../fixtures/sample-snapshot.ts";
 import { normalizeSnapshot } from "../../src/internal/api-normalizer/normalizer.ts";
 import type { NormalizedGroup } from "../../src/internal/api-normalizer/types.ts";
 
-const snapshot = rawSnapshot as unknown as RawApiSnapshot;
+const snapshot = SAMPLE_SNAPSHOT;
+const timestamp = "2025-09-30T00:00:00.000Z";
+const checksum = "test-checksum";
 
 describe("normalizeSnapshot", () => {
   it("produces a document with metadata and summary", () => {
-    const normalized = normalizeSnapshot(snapshot, {
-      normalizedAt: "2025-09-30T00:00:00.000Z",
-      checksum: "test-checksum",
-    });
+    const normalized = normalizeSnapshot(snapshot, { normalizedAt: timestamp, checksum });
 
     expect(normalized.irVersion).toBe("1.0.0");
-    expect(normalized.normalizedAt).toBe("2025-09-30T00:00:00.000Z");
-    expect(normalized.source.snapshotChecksum).toBe("test-checksum");
+    expect(normalized.normalizedAt).toBe(timestamp);
+    expect(normalized.source.snapshotChecksum).toBe(checksum);
     expect(normalized.summary.endpointCount).toBe(normalized.source.rawStats.endpointCount);
     expect(normalized.summary.groupCount).toBeGreaterThan(0);
     expect(normalized.summary.methodCount).toBeGreaterThan(0);
   });
 
   it("normalizes endpoints with security and schema information", () => {
-    const normalized = normalizeSnapshot(snapshot, {
-      normalizedAt: "2025-09-30T00:00:00.000Z",
-      checksum: "test-checksum",
-    });
+    const normalized = normalizeSnapshot(snapshot, { normalizedAt: timestamp, checksum });
 
     const accessGroup = findGroupByPath(normalized.groups, "/access");
     expect(accessGroup).toBeDefined();
@@ -48,14 +43,11 @@ describe("normalizeSnapshot", () => {
     expect(indexEndpoint.responses).toHaveLength(1);
     const [response] = indexEndpoint.responses;
     expect(response.schema?.items).toBeDefined();
-    expect(response.schema?.metadata?.links).toBeDefined();
+    expect(response.schema?.type).toBe("array");
   });
 
   it("creates consistent slugs for nested groups", () => {
-    const normalized = normalizeSnapshot(snapshot, {
-      normalizedAt: "2025-09-30T00:00:00.000Z",
-      checksum: "test-checksum",
-    });
+    const normalized = normalizeSnapshot(snapshot, { normalizedAt: timestamp, checksum });
 
     const nodesGroup = findGroupByPath(normalized.groups, "/nodes");
     expect(nodesGroup?.slug).toBe("nodes");

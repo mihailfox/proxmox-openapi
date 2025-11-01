@@ -9,7 +9,6 @@ import type { RawApiSnapshot } from "../api-scraper/types.ts";
 import { normalizeSnapshot } from "../api-normalizer/normalizer.ts";
 import type { NormalizedApiDocument } from "../api-normalizer/types.ts";
 import { generateOpenApiDocument } from "../openapi-generator/generator.ts";
-import { logRegressionReport } from "./regression/report.ts";
 import {
   NORMALIZED_IR_CACHE_PATH,
   OPENAPI_ARTIFACT_DIR,
@@ -66,10 +65,8 @@ export function resolveAutomationPipelineOptions(options: AutomationPipelineRunO
   const openApiOutputDir = path.resolve(options.openApiOutputDir ?? OPENAPI_ARTIFACT_DIR);
   const openApiBasename = options.openApiBasename ?? OPENAPI_BASENAME;
 
-  const offline = mode === "ci" ? true : options.offline === undefined ? false : options.offline;
-
-  const fallbackToCache =
-    mode === "ci" ? true : options.fallbackToCache === undefined ? false : options.fallbackToCache;
+  const offline = options.offline === undefined ? false : options.offline;
+  const fallbackToCache = options.fallbackToCache === undefined ? mode === "ci" : options.fallbackToCache;
 
   return {
     mode,
@@ -111,8 +108,6 @@ export async function runAutomationPipeline(
 
   await SwaggerParser.validate(documentPaths.json);
   logger(`Validated OpenAPI document ${relative(documentPaths.json)}`);
-
-  logRegressionReport();
 
   const summary: AutomationPipelineResult = {
     rawSnapshotPath: resolved.rawSnapshotPath,

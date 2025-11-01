@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=scripts/common.sh
+source "${SCRIPTS_DIR}/../scripts/common.sh"
+
+if ! command -v npx >/dev/null 2>&1; then
+  log "npx not found; skipping Biome formatting." >&2
+  exit 0
+fi
+
+if ! npm ls --depth=0 @biomejs/biome >/dev/null 2>&1; then
+  log "@biomejs/biome not installed; skipping Biome formatting." >&2
+  exit 0
+fi
+
+if git status --short | grep --quiet '^MM'; then
+  err '%s\n' "ERROR: Some staged files have unstaged changes" >&2
+  exit 1;
+fi
+
+npx @biomejs/biome check --write --staged --files-ignore-unknown=true --no-errors-on-unmatched
+
+git update-index --again

@@ -13,19 +13,12 @@ This document describes the GitHub automation that keeps the Proxmox OpenAPI del
 - `npx proxmox-openapi pipeline` (aliased via `npm run automation:pipeline`) drives the scrape → normalize → generate flow
   implemented in `packages/proxmox-openapi/src/internal/automation/pipeline.ts`. Stage-specific commands (`proxmox-openapi scrape|normalize|generate`)
   mirror the dedicated scripts for troubleshooting individual phases.
-- **CI mode (`--mode=ci`)** is the default. It operates offline, reuses cached snapshots, and validates existing artifacts.
+- **CI mode (`--mode=ci`)** is the default. It performs a live scrape and will reuse cached snapshots only when scraping fails.
 - **Full mode (`--mode=full`)** performs a live scrape using Playwright and honours `--offline`/`--fallback-to-cache` overrides:
   - `--fallback-to-cache` / `--no-fallback-to-cache` control whether cached snapshots are reused when scraping fails.
   - `--offline` forces cache usage even in full mode (useful for air-gapped runners).
 - All stages respect optional output paths: `--raw-output`, `--ir-output`, `--openapi-dir`, and `--basename`.
 - Pass `--report <path>` to emit an automation summary (see `var/automation-summary.json`). The summary feeds status updates and PR notes.
-
-### Regression Summary & Reporting
-- The pipeline logs a QA digest via `logRegressionReport()`—checksum comparisons against `packages/proxmox-openapi/data/automation/assets/regression/openapi.sha256.json`,
-  normalization counts, and JSON↔YAML parity checks.
-- Convert summary JSON into Markdown using `tsx packages/proxmox-openapi/scripts/automation/format-summary.ts --input var/automation-summary.json`.
-- Refresh baseline hashes after intentional schema changes with `npm run regression:record` (wraps `packages/proxmox-openapi/scripts/automation/update-regression-baseline.ts`).
-- Regression Vitest specs (`tests/regression`) gate merges on checksum parity, tag counts, and repo hygiene (no generated artifacts in `docs/openapi/`).
 
 ## Manual Overrides
 If automation is paused or lacks access, update Stage manually for affected items:
@@ -44,8 +37,8 @@ If automation is paused or lacks access, update Stage manually for affected item
 Use this checklist when tagging a new release:
 
 1. **Prepare artifacts**
-   - Run `npm run automation:pipeline -- --mode=ci --report var/automation-summary.json` locally or in CI.
-   - Confirm `npm run regression:test` and `npm run openapi:validate` succeed.
+   - Run `npm run automation:pipeline -- --mode=full --report var/automation-summary.json` locally or in CI.
+   - Confirm `npm run openapi:validate` succeeds.
    - Stage schema bundles with `npm run openapi:release:prepare -- <tag>` if you need to preview release notes.
 
 2. **Tag and push**

@@ -1,5 +1,6 @@
 import process from "node:process";
 import { parseArgs } from "node:util";
+import { pathToFileURL } from "node:url";
 
 import { runAutomationPipeline, type AutomationPipelineRunOptions } from "./pipeline.ts";
 import { normalizeBooleanFlagArguments } from "./cli-arg-utils.ts";
@@ -39,9 +40,11 @@ async function main(): Promise<void> {
   await runAutomationPipeline(options);
 }
 
-void main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
+  void main().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
+}
 
 export { parseCliOptions };

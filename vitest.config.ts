@@ -11,7 +11,7 @@ export default defineConfig({
     globals: true,
     include: ["app/**/*.test.{ts,tsx}"],
     coverage: {
-      provider: "v8",
+      provider: "istanbul",
       reporter: ["text", "html"],
       reportsDirectory: path.resolve(currentDir, "coverage/ui"),
     },

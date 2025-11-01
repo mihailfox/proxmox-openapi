@@ -19,7 +19,7 @@ To generate the same artifact locally (useful for debugging or preview builds):
 
 ```bash
 npm install
-npm run automation:pipeline -- --mode=ci --report var/automation-summary.json
+npm run automation:pipeline -- --mode=full --report var/automation-summary.json
 npm run pages:build
 ```
 
@@ -30,8 +30,8 @@ The packaged site will be available under `var/pages/`. You can inspect it local
 
 - The Pages workflow is the source of truth and runs automatically on every `main` push that touches SPA or schema
   inputs.
-- Feature branches should rely on the preview provided by `npm run ui:dev`. Only merge once the regression suite and
-  UI e2e tests pass locally.
+- Feature branches should rely on the preview provided by `npm run ui:dev`. Only merge once the targeted unit suites and
+  UI end-to-end tests pass locally.
 - Schedule a manual dispatch before major releases if automation has been paused or when a regenerated schema needs to
   ship independently of code changes.
 

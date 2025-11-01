@@ -9,9 +9,5 @@
     "emitDeclarationOnly": false,
     "composite": true
   },
-  "include": [
-    "src",
-    "scripts/**/*.ts",
-    "data/**/*.json"
-  ]
+  "include": ["src", "scripts/**/*.ts"]
 }

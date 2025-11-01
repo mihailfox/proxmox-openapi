@@ -63,7 +63,7 @@
         "terminal.integrated.sendKeybindingsToShell": true,
         "vitest.maximumConfigs": 99,
         "window.titleBarStyle": "custom",
-        "biome.configurationPath": "./biome.json",
+        "biome.configurationPath": "biome.jsonc",
         "biome.enabled": true
       }
     }
