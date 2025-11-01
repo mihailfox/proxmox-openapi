@@ -9,9 +9,9 @@ The workspace is built on `mcr.microsoft.com/devcontainers/typescript-node:24-bo
 
 - Docker outside of Docker
 - GitHub CLI
-- Facebook's `dotslash`
-- Local `cli-tools` bundle (ripgrep, fd, bat, lsd, git-delta, helix, jq, yq, gojq, fzf, shellcheck, shfmt, lynx)
+- Local `cli-tools` bundle (ripgrep, fd, bat, lsd, git-delta, helix, jq, yq, gojq, fzf, shellcheck, shfmt, lynx, zstd)
 - Devcontainers CLI
+- Host configuration passthrough for Codex and Claude (`~/.codex`, `~/.claude`, `~/.claude.json`) with automatic creation
 
 ### Custom CLI Feature
 
@@ -34,6 +34,9 @@ and supports per-tool overrides. Example configuration:
 - `*Tag` — explicit Git tag (takes precedence over version).
 
 When no overrides are provided, the installer fetches the latest GitHub release (or uses the package manager).
+
+- Zstd archives are now first-class citizens: enabling the `zstd` option installs the system package, and the common
+  installer handles `.zst` / `.tar.zst` payloads via `unzstd`.
 
 ### Default Behavior
 
@@ -61,4 +64,4 @@ Shared logic (logging, devcontainer JSON helpers, package installers) lives in `
 
 The Devcontainer exposes the host's `GH_PAT`/`GH_TOKEN`/`GITHUB_TOKEN` via `containerEnv`. When authenticated, the CLI
 feature prefers GitHub's GraphQL/REST APIs (via `gh`) for release resolution, falling back to anonymous requests if
-needed.
+needed. `GITHUB_PERSONAL_ACCESS_TOKEN` is also forwarded for workflows that expect that specific variable name.
