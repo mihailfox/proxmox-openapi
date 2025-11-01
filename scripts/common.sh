@@ -239,11 +239,25 @@ download_and_install_package(){
     *.zip)
       _install_from_archive "$package" "$version" "$url" "zip"
       ;;
+    *.zst)
+     _install_from_archive "$package" "$version" "$url" "zst"
+     ;;
+    *.tar.zst)
+     _install_from_archive "$package" "$version" "$url" "tar.zst"
+     ;;
     *)
       err "Unsupported package format for ${package}: ${url}"
       return 1
       ;;
   esac
+}
+
+ensure_unzstd_available(){
+  if command -v unzstd >/dev/null 2>&1; then
+    return 0
+  fi
+  err "unzstd command not found; install zstd package to continue."
+  return 1
 }
 
 _install_from_deb(){
@@ -302,6 +316,33 @@ _install_from_archive(){
         return 1
       fi
       unzip -q "$archive_path" -d "$extract_dir"
+      ;;
+    zst)
+      if ! ensure_unzstd_available; then
+        rm -rf "$tmp_dir"
+        return 1
+      fi
+      local output_name="${archive_name%.zst}"
+      if [[ -z "$output_name" || "$output_name" == "$archive_name" ]]; then
+        output_name="${package}"
+      fi
+      local output_path="${extract_dir}/${output_name}"
+      if ! unzstd -c "$archive_path" >"$output_path"; then
+        rm -rf "$tmp_dir"
+        err "Failed to decompress ${archive_name} with unzstd."
+        return 1
+      fi
+      ;;
+    tar.zst)
+      if ! ensure_unzstd_available; then
+        rm -rf "$tmp_dir"
+        return 1
+      fi
+      if ! tar --use-compress-program=unzstd -xf "$archive_path" -C "$extract_dir"; then
+        rm -rf "$tmp_dir"
+        err "Failed to extract ${archive_name} with tar/uzstd."
+        return 1
+      fi
       ;;
     *)
       rm -rf "$tmp_dir"
