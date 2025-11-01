@@ -37,6 +37,8 @@ jobs:
         run: npm install
       - name: Build automation package
         run: npm run build --workspace packages/proxmox-openapi
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
       # Generate the raw snapshot, normalized IR, and OpenAPI bundles consumed by the SPA.
       - name: Generate OpenAPI artifacts
         run: node packages/proxmox-openapi/dist/cli.cjs pipeline --mode=ci --report var/automation-summary.json
