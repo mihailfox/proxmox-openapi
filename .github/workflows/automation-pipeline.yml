@@ -58,7 +58,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run proxmox-openapi pipeline
-        run: npx @mihailfox/proxmox-openapi pipeline --mode full --report var/automation-summary.json
+        run: node packages/proxmox-openapi/dist/cli.cjs pipeline --mode full --report var/automation-summary.json
 
       - name: Validate generated OpenAPI document
         run: npm run openapi:validate
