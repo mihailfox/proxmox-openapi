@@ -69,7 +69,7 @@ jobs:
         with:
           mode: ci
           install-command: ""
-          install-playwright-browsers: false
+          install-playwright-browsers: true
           report-path: var/automation-summary.json
       - name: Inspect outputs
         shell: bash
