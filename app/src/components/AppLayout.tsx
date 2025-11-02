@@ -23,9 +23,7 @@ export function AppLayout() {
                   key={to}
                   to={to}
                   end={end}
-                  className={({ isActive }) =>
-                    isActive ? "app-nav__link app-nav__link--active" : "app-nav__link"
-                  }
+                  className={({ isActive }) => (isActive ? "app-nav__link app-nav__link--active" : "app-nav__link")}
                 >
                   {label}
                 </NavLink>

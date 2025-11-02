@@ -56,8 +56,8 @@ export function HomePage() {
         <div className="cta__content">
           <h2 id={ctaHeadingId}>Ready to contribute?</h2>
           <p>
-            Start by reading the contributor guide, then open a pull request linked to the relevant issue. Automation will
-            guide you the rest of the way.
+            Start by reading the contributor guide, then open a pull request linked to the relevant issue. Automation
+            will guide you the rest of the way.
           </p>
         </div>
         <a

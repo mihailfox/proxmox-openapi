@@ -16,7 +16,8 @@ const documents = [
   },
   {
     title: "npm Package & CLI",
-    summary: "Run scrape, normalize, generate, or full automation flows via the consolidated @mihailfox/proxmox-openapi package.",
+    summary:
+      "Run scrape, normalize, generate, or full automation flows via the consolidated @mihailfox/proxmox-openapi package.",
     href: "https://github.com/mihailfox/proxmox-openapi/blob/main/docs/packages.md",
   },
 ];

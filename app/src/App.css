@@ -76,7 +76,10 @@ html[data-theme="light"] .brand__title {
   color: var(--color-muted);
   font-size: 0.95rem;
   font-weight: 500;
-  transition: color 160ms ease, border-color 160ms ease, background-color 160ms ease;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease;
 }
 
 html[data-theme="light"] .app-nav__link {
@@ -131,7 +134,10 @@ html[data-theme="light"] .app-nav__link:focus-visible {
   color: var(--color-text);
   font-size: 1.1rem;
   cursor: pointer;
-  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
 }
 
 .theme-toggle:hover,
@@ -233,7 +239,11 @@ html[data-theme="light"] .app-nav__link:focus-visible {
   color: var(--color-text);
   text-decoration: none;
   font-weight: 600;
-  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease, border-color 160ms ease;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease;
 }
 
 .button:hover,
@@ -286,7 +296,10 @@ html[data-theme="dark"] .page--explorer .button--primary:focus-visible {
   border-radius: 20px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
 }
 
 .feature-card:hover {

@@ -7,9 +7,7 @@
     "version": {
       "default": "latest",
       "description": "Select the version to install.",
-      "proposals": [
-        "latest"
-      ],
+      "proposals": ["latest"],
       "type": "string"
     }
   },
