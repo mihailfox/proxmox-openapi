@@ -6,7 +6,6 @@
 *.dylib
 # Generic build directories
 dist/
-!.github/actions/proxmox-openapi-artifacts/dist/
 build/
 
 # Test binary, built with `go test -c`

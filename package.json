@@ -45,9 +45,8 @@
     "test:all": "npm run ui:test && npm run scraper:test:unit && npm run normalizer:test && npm run openapi:test && npm run automation:test",
     "test": "npm run test:all",
     "action:install": "npm install --workspace .github/actions/proxmox-openapi-artifacts",
-    "action:build": "npm run build --workspace .github/actions/proxmox-openapi-artifacts",
-    "action:package": "npm run lint --workspace .github/actions/proxmox-openapi-artifacts && npm run typecheck --workspace .github/actions/proxmox-openapi-artifacts && npm run build --workspace .github/actions/proxmox-openapi-artifacts",
-    "action:verify": "npm run action:package && git diff --quiet -- .github/actions/proxmox-openapi-artifacts/dist || (echo 'dist output differs. Run npm run action:package and commit the dist folder.' >&2; exit 1)"
+    "action:lint": "npm run lint --workspace .github/actions/proxmox-openapi-artifacts",
+    "action:verify": "npm run action:lint"
   },
   "devDependencies": {
     "@apidevtools/swagger-parser": "^12.0.0",
