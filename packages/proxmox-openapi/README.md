@@ -3,6 +3,10 @@
 Generate Proxmox OpenAPI artifacts (raw snapshot, normalized IR, OpenAPI JSON/YAML) from the comfort of your own CI –
 now with dedicated commands for every stage of the pipeline.
 
+## Requirements
+- Node.js 24 or newer.
+- For installs from GitHub Packages, configure authentication as shown below.
+
 ## Installation
 
 ```bash
@@ -81,3 +85,7 @@ const document = generateOpenApiDocument(normalized);
 
 `AutomationPipelineRunOptions` mirrors the CLI flags, and additional helpers such as `DEFAULT_BASE_URL` and
 `scrapeApiDocumentation` expose the lower-level building blocks for custom pipelines.
+
+## Changelog and Releases
+- See the repository root `CHANGELOG.md` for user‑visible changes. The release workflow uses the “Unreleased” section for release notes.
+- Release artifacts include OpenAPI JSON/YAML, checksums, and an automation summary. Download examples are in `docs/releases.md`.
