@@ -3,6 +3,10 @@
 This JavaScript action runs the automation pipeline that scrapes, normalizes, and packages the Proxmox OpenAPI
 artifacts. It is bundled for Node.js 24 and can run in both GitHub-hosted and self-hosted environments.
 
+## Requirements
+- Node.js 24 runner image (GitHub-hosted `ubuntu-latest` is supported).
+- Network access to the Proxmox API viewer for live scrapes, unless `offline: true`.
+
 ## Inputs
 
 | Name | Description | Default |
@@ -78,3 +82,7 @@ jobs:
 - Run `npm install` from the repository root to install dependencies.
 - Rebuild the bundled dist output with `npm run action:package`.
 - Commit the updated `dist/` directory alongside any source changes.
+
+## Versioning
+- Action tags under the repository follow semantic versioning. Prereleases contain `-alpha.`, `-beta.`, or `-rc.`.
+- See the root `CHANGELOG.md` for user‑visible changes across the tooling and action.
