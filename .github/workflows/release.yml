@@ -125,7 +125,7 @@ jobs:
         run: npm install --workspaces --include-workspace-root
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+        run: npx playwright install chromium chromium-headless-shell --with-deps
 
       - name: Install published CLI
         env:
