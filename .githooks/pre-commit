@@ -22,4 +22,13 @@ fi
 
 npx @biomejs/biome check --write --staged --files-ignore-unknown=true --no-errors-on-unmatched
 
+# Link-check staged Markdown files
+if command -v node >/dev/null 2>&1; then
+  mapfile -t STAGED_MD < <(git diff --cached --name-only --diff-filter=ACMRT | grep -E '\.md$' || true)
+  if ((${#STAGED_MD[@]})); then
+    log "Checking Markdown links for staged files..."
+    node scripts/check-doc-links.mjs "${STAGED_MD[@]}"
+  fi
+fi
+
 git update-index --again

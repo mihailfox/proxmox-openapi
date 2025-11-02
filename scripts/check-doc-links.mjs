@@ -10,10 +10,17 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 
-const mdFiles = execSync('git ls-files -- "*.md"', { encoding: "utf8" })
-  .split("\n")
+const argFiles = process.argv
+  .slice(2)
   .map((s) => s.trim())
   .filter(Boolean);
+const mdFiles =
+  argFiles.length > 0
+    ? argFiles
+    : execSync('git ls-files -- "*.md"', { encoding: "utf8" })
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean);
 
 const linkRe = /\[([^\]]+)\]\(([^)]+)\)/g;
 
