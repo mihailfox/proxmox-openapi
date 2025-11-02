@@ -34,14 +34,16 @@ jobs:
           cache-dependency-path: package-lock.json
       # Install workspace dependencies (automation + SPA).
       - name: Install dependencies
-        run: npm install
-      - name: Build automation package
-        run: npm run build --workspace packages/proxmox-openapi
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+        run: npm install --workspaces --include-workspace-root
       # Generate the raw snapshot, normalized IR, and OpenAPI bundles consumed by the SPA.
       - name: Generate OpenAPI artifacts
-        run: node packages/proxmox-openapi/dist/cli.cjs pipeline --mode=ci --report var/automation-summary.json
+        uses: mihailfox/proxmox-openapi/.github/actions/proxmox-openapi-artifacts@v1
+        with:
+          mode: ci
+          install-command: ""
+          report-path: var/automation-summary.json
+          openapi-dir: var/openapi
+          fallback-to-cache: true
       # Build the static site and copy artifacts into the Vite output for GitHub Pages.
       - name: Build static site
         env:
