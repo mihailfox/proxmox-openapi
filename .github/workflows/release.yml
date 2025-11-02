@@ -40,7 +40,7 @@ jobs:
           echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
           echo "tag=v${VERSION}" >> "${GITHUB_OUTPUT}"
 
-  openapi:
+  build-npm:
     needs: prepare
     runs-on: ubuntu-latest
     env:
@@ -60,6 +60,39 @@ jobs:
 
       - name: Build CLI workspace
         run: npm run build --workspace packages/proxmox-openapi
+
+      - name: Upload CLI dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: proxmox-openapi-dist
+          path: packages/proxmox-openapi/dist
+          if-no-files-found: error
+
+  generate-openapi:
+    needs:
+      - prepare
+      - build-npm
+    runs-on: ubuntu-latest
+    env:
+      NPM_CONFIG_INSTALL_LINKS: "true"
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Restore CLI dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: proxmox-openapi-dist
+          path: packages/proxmox-openapi
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm install --workspaces --include-workspace-root
 
       - name: Verify CLI availability
         run: npm exec -- proxmox-openapi --help >/dev/null
@@ -97,13 +130,22 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  action:
+  build-action:
     needs:
       - prepare
-      - openapi
+      - build-npm
+      - generate-openapi
     runs-on: ubuntu-latest
+    env:
+      NPM_CONFIG_INSTALL_LINKS: "true"
     steps:
       - uses: actions/checkout@v5
+
+      - name: Restore CLI dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: proxmox-openapi-dist
+          path: packages/proxmox-openapi
 
       - name: Setup Node.js
         uses: actions/setup-node@v5
@@ -113,7 +155,7 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --workspaces --include-workspace-root
 
       - name: Build action bundle
         run: npm run action:package
@@ -143,11 +185,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  npm:
-    needs: prepare
+  publish-npm:
+    needs:
+      - prepare
+      - build-npm
     runs-on: ubuntu-latest
+    env:
+      NPM_CONFIG_INSTALL_LINKS: "true"
     steps:
       - uses: actions/checkout@v5
+
+      - name: Restore CLI dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: proxmox-openapi-dist
+          path: packages/proxmox-openapi
 
       - name: Setup Node.js
         uses: actions/setup-node@v5
@@ -175,10 +227,7 @@ jobs:
           npm version "${VERSION}" --workspace packages/proxmox-openapi --no-git-tag-version
 
       - name: Install dependencies
-        run: npm install
-
-      - name: Build package
-        run: npm run build --workspace packages/proxmox-openapi
+        run: npm install --workspaces --include-workspace-root
 
       - name: Publish package
         env:
