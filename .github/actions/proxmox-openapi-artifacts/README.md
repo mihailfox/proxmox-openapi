@@ -54,12 +54,13 @@ jobs:
 
 ### Self-Hosted Runners (Offline-Compatible)
 
-Download the release asset from the [v1.0.0](https://github.com/mihailfox/proxmox-openapi/releases/tag/v1.0.0)
-(or later) tag and unpack it under the same path our workflows use:
+Download the action bundle from the project [Releases](https://github.com/mihailfox/proxmox-openapi/releases)
+and unpack it under the same path our workflows use:
 
 ```bash
+TAG="<release tag>" # e.g., v0.2.9
 mkdir -p .github/actions/proxmox-openapi-artifacts
-curl -sSL https://github.com/mihailfox/proxmox-openapi/releases/download/v1.0.0/proxmox-openapi-artifacts-action-v1.0.0.tgz \
+curl -sSL "https://github.com/mihailfox/proxmox-openapi/releases/download/${TAG}/proxmox-openapi-artifacts-action-${TAG}.tgz" \
   | tar -xz -C .github/actions/proxmox-openapi-artifacts --strip-components=1 proxmox-openapi-artifacts-action
 ```
 
