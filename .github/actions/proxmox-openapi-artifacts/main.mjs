@@ -69,7 +69,9 @@ async function run() {
 
     if (shouldInstallPlaywright) {
       const playwrightArgs =
-        process.platform === "linux" ? ["playwright", "install", "--with-deps"] : ["playwright", "install"];
+        process.platform === "linux"
+          ? ["playwright", "install", "chromium", "--with-deps"]
+          : ["playwright", "install", "chromium"];
       core.startGroup("Installing Playwright browsers");
       const playwrightResult = await getExecOutput("npx", playwrightArgs, {
         cwd: workingDirectory,
