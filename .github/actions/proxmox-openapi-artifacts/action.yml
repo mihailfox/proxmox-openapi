@@ -64,8 +64,28 @@ outputs:
   summary-path:
     description: 'Path to the JSON summary describing the pipeline run.'
 runs:
-  using: 'node24'
-  main: 'dist/index.cjs'
+  using: "composite"
+  steps:
+    - name: Run Proxmox OpenAPI automation pipeline
+      shell: bash
+      env:
+        INPUT_MODE: ${{ inputs.mode }}
+        INPUT_BASE_URL: ${{ inputs.base-url }}
+        INPUT_RAW_SNAPSHOT_PATH: ${{ inputs.raw-snapshot-path }}
+        INPUT_IR_OUTPUT_PATH: ${{ inputs.ir-output-path }}
+        INPUT_OPENAPI_DIR: ${{ inputs.openapi-dir }}
+        INPUT_OPENAPI_BASENAME: ${{ inputs.openapi-basename }}
+        INPUT_FALLBACK_TO_CACHE: ${{ inputs.fallback-to-cache }}
+        INPUT_OFFLINE: ${{ inputs.offline }}
+        INPUT_INSTALL_COMMAND: ${{ inputs.install-command }}
+        INPUT_WORKING_DIRECTORY: ${{ inputs.working-directory }}
+        INPUT_INSTALL_PLAYWRIGHT_BROWSERS: ${{ inputs.install-playwright-browsers }}
+        INPUT_REPORT_PATH: ${{ inputs.report-path }}
+        INPUT_EXTRA_CLI_ARGS: ${{ inputs.extra-cli-args }}
+        INPUT_NODE_VERSION: ${{ inputs.node-version }}
+      run: |
+        set -euo pipefail
+        node .github/actions/proxmox-openapi-artifacts/main.mjs
 branding:
   icon: 'server'
   color: 'green'

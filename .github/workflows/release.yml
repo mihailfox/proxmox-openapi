@@ -210,8 +210,8 @@ jobs:
           npm uninstall --workspace .github/actions/proxmox-openapi-artifacts @mihailfox/proxmox-openapi || true
           npm install --workspace .github/actions/proxmox-openapi-artifacts "@mihailfox/proxmox-openapi@${RELEASE_VERSION}"
 
-      - name: Build action bundle
-        run: npm run action:package
+      - name: Lint action workspace
+        run: npm run action:lint
 
       - name: Package action artifacts
         env:
@@ -219,11 +219,11 @@ jobs:
         run: |
           set -euo pipefail
           STAGING_DIR="var/action-bundle/proxmox-openapi-artifacts-action"
-          mkdir -p "${STAGING_DIR}/dist"
+          mkdir -p "${STAGING_DIR}"
           cp .github/actions/proxmox-openapi-artifacts/action.yml "${STAGING_DIR}/action.yml"
           cp .github/actions/proxmox-openapi-artifacts/README.md "${STAGING_DIR}/README.md"
-          cp .github/actions/proxmox-openapi-artifacts/dist/index.cjs "${STAGING_DIR}/dist/index.cjs"
-          cp .github/actions/proxmox-openapi-artifacts/dist/index.cjs.map "${STAGING_DIR}/dist/index.cjs.map"
+          cp .github/actions/proxmox-openapi-artifacts/main.mjs "${STAGING_DIR}/main.mjs"
+          cp .github/actions/proxmox-openapi-artifacts/package.json "${STAGING_DIR}/package.json"
           (cd var/action-bundle && tar -czf "proxmox-openapi-artifacts-action-${RELEASE_TAG}.tgz" proxmox-openapi-artifacts-action)
           (cd var/action-bundle && zip -r "proxmox-openapi-artifacts-action-${RELEASE_TAG}.zip" proxmox-openapi-artifacts-action)
 

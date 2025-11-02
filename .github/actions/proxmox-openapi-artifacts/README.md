@@ -1,7 +1,7 @@
 # Proxmox OpenAPI Artifacts Action
 
-This JavaScript action runs the automation pipeline that scrapes, normalizes, and packages the Proxmox OpenAPI
-artifacts. It is bundled for Node.js 24 and can run in both GitHub-hosted and self-hosted environments.
+This composite action runs the automation pipeline that scrapes, normalizes, and packages the Proxmox OpenAPI
+artifacts. It executes with Node.js 24 and can run in both GitHub-hosted and self-hosted environments.
 
 ## Requirements
 - Node.js 24 runner image (GitHub-hosted `ubuntu-latest` is supported).
@@ -82,12 +82,11 @@ jobs:
 ## Development
 
 - Run `npm install` from the repository root to install dependencies.
-- Rebuild the bundled dist output with `npm run action:package`.
-- Commit the updated `dist/` directory alongside any source changes.
+- Lint the action workspace with `npm run action:lint` before committing changes.
 
 ## Versioning
 - Action tags under the repository follow semantic versioning. Prereleases contain `-alpha.`, `-beta.`, or `-rc.`.
 - See the root `CHANGELOG.md` for user‑visible changes across the tooling and action.
 
 ## Notes
-> The action runs on Node.js 24 (`using: node24`). Configure Node in your workflow with `actions/setup-node@v5` when you need a specific minor version.
+> The action shells out to `node .github/actions/proxmox-openapi-artifacts/main.mjs`. Configure Node in your workflow with `actions/setup-node@v5` when you need a specific minor version.

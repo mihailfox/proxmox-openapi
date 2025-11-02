@@ -25,8 +25,8 @@ on:
       - 'packages/proxmox-openapi/**'
 
 jobs:
-  dist:
-    name: Check committed dist
+  lint:
+    name: Lint action workspace
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -38,22 +38,12 @@ jobs:
           cache-dependency-path: package-lock.json
       - name: Install dependencies
         run: npm install
-      - name: Build automation package
-        run: npm run build --workspace packages/proxmox-openapi
-      - name: Rebuild action bundle
-        run: npm run action:package
-      - name: Detect dist drift
-        run: |
-          set -euo pipefail
-          if ! git diff --quiet -- .github/actions/proxmox-openapi-artifacts/dist; then
-            echo '::error::Bundled dist output is out of date. Run npm run action:package and commit the changes.'
-            git diff --stat -- .github/actions/proxmox-openapi-artifacts/dist
-            exit 1
-          fi
+      - name: Run action lint
+        run: npm run action:lint
 
   matrix-smoke:
     name: Smoke test (Node 24)
-    needs: dist
+    needs: lint
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -73,30 +63,19 @@ jobs:
       - name: Build automation package
         shell: bash
         run: npm run build --workspace packages/proxmox-openapi
-      - name: Build action bundle
-        shell: bash
-        run: npm run action:package
       - name: Run smoke test
+        id: pipeline
+        uses: ./.github/actions/proxmox-openapi-artifacts
+        with:
+          mode: ci
+          install-command: ""
+          install-playwright-browsers: true
+          report-path: var/automation-summary.json
+      - name: Inspect outputs
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf tmp
-          mkdir -p tmp/action-smoke tmp/action-work tmp/action-tools
-          cp -R .github/actions/proxmox-openapi-artifacts/dist tmp/action-smoke/dist
-          cp .github/actions/proxmox-openapi-artifacts/action.yml tmp/action-smoke/action.yml
-          export GITHUB_ACTION_PATH="$(realpath tmp/action-smoke)"
-          export GITHUB_WORKSPACE="$(pwd)"
-          export RUNNER_TEMP="$(pwd)/tmp/action-work"
-          export RUNNER_TOOL_CACHE="$(pwd)/tmp/action-tools"
-          export GITHUB_OUTPUT="$RUNNER_TEMP/output"
-          export GITHUB_STEP_SUMMARY="$RUNNER_TEMP/summary"
-          export INPUT_MODE=ci
-          export INPUT_OFFLINE=false
-          export INPUT_FALLBACK_TO_CACHE=true
-          export INPUT_INSTALL_COMMAND=
-          export INPUT_INSTALL_PLAYWRIGHT_BROWSERS=false
-          export INPUT_WORKING_DIRECTORY=.
-          export INPUT_REPORT_PATH="$RUNNER_TEMP/summary.json"
-          mkdir -p "$(dirname "$GITHUB_OUTPUT")" "$(dirname "$GITHUB_STEP_SUMMARY")"
-          touch "$GITHUB_OUTPUT" "$GITHUB_STEP_SUMMARY"
-          node tmp/action-smoke/dist/index.cjs
+          echo "Raw snapshot: ${{ steps.pipeline.outputs.raw-snapshot }}"
+          echo "Normalized document: ${{ steps.pipeline.outputs.normalized-document }}"
+          echo "OpenAPI JSON: ${{ steps.pipeline.outputs.openapi-json }}"
+          echo "OpenAPI YAML: ${{ steps.pipeline.outputs.openapi-yaml }}"
