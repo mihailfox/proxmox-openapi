@@ -11,7 +11,7 @@ The workspace is built on `mcr.microsoft.com/devcontainers/typescript-node:24-bo
 - GitHub CLI
 - Local `cli-tools` bundle (ripgrep, fd, bat, lsd, git-delta, helix, jq, yq, gojq, fzf, shellcheck, shfmt, lynx, zstd)
 - Devcontainers CLI
-- Host configuration passthrough for Codex and Claude (`~/.codex`, `~/.claude`, `~/.claude.json`) with automatic creation
+- Host configuration passthrough for Codex and Claude (`~/.codex`, `~/.claude`, `~/.claude.json`), pre-created via the host `initializeCommand`
 
 ### Custom CLI Feature
 
@@ -43,6 +43,12 @@ When no overrides are provided, the installer fetches the latest GitHub release 
 - GitHub-hosted tools install the newest published release when `*Version` and `*Tag` are omitted.
 - The feature prefers authenticated `gh` lookups and automatically falls back to anonymous REST calls.
 - APT-backed tools reuse the distro packages unless explicitly toggled to `gh-release`.
+
+## Host Initialization
+
+Before the container starts, `.devcontainer/scripts/initialize-host.sh` runs on the host to create bind mount targets
+such as `~/.codex`, `~/.claude`, and `~/.claude.json`. This prevents Docker from failing when optional configuration
+files are absent locally while still allowing host ↔ container synchronization.
 
 ## Lifecycle Scripts
 
