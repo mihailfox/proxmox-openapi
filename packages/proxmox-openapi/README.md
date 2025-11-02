@@ -39,7 +39,7 @@ npx @mihailfox/proxmox-openapi pipeline --mode full --report var/automation-summ
 | `--base-url <url>` | Override the Proxmox API viewer base URL. |
 | `--raw-output <path>` | Persist the raw snapshot JSON to a custom location. |
 | `--ir-output <path>` | Persist the normalized intermediate representation. |
-| `--openapi-dir <dir>` | Directory where OpenAPI JSON/YAML should be written. |
+| `--openapi-dir <dir>` | Directory where OpenAPI JSON/YAML is written. |
 | `--basename <name>` | Basename used for OpenAPI output files. |
 | `--report <path>` | Write the automation summary JSON to the specified path. |
 

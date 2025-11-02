@@ -2,8 +2,8 @@
 
 Utilities for scraping the official Proxmox API viewer, normalizing responses, and publishing OpenAPI specs plus a companion SPA.
 
-This toolkit underpins a broader goal: ship third-party automation for Proxmox VE, beginning with the ingredients required
-to deliver a full-featured Terraform provider and other infrastructure-as-code integrations.
+This toolkit provides third‑party automation building blocks for Proxmox VE. It supplies the ingredients required
+to deliver a full‑featured Terraform provider and other infrastructure‑as‑code integrations.
 
 ## Requirements
 - Node.js 24 or newer (`"engines": { "node": ">=24.0.0" }`).
@@ -150,6 +150,7 @@ jobs:
 - See [docs/releases.md](docs/releases.md) for download commands, checksum verification, and release metadata.
 
 ## Contributing
+0. Create a fork of the repo and clone it locally.
 1. Install dependencies with `npm install`.
 2. Run targeted checks (`npm run lint`, `npm run test:all`, etc.) before pushing.
 3. Reference the linked issue in branch names/PR bodies and document any automation impact.

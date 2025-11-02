@@ -15,7 +15,7 @@ This document describes the GitHub automation that keeps the Proxmox OpenAPI del
   mirror the dedicated scripts for troubleshooting individual phases. GitHub Actions rebuild the package (`npm run build --workspace packages/proxmox-openapi`)
   and install browsers (`npx playwright install --with-deps`) before executing `node packages/proxmox-openapi/dist/cli.cjs pipeline` so
   fresh CI runners don’t rely on cached artifacts.
-- **CI mode (`--mode=ci`)** is the default. It performs a live scrape and will reuse cached snapshots only when scraping fails.
+- **CI mode (`--mode=ci`)** is the default. It performs a live scrape and reuses cached snapshots only when scraping fails.
 - **Full mode (`--mode=full`)** performs a live scrape using Playwright and honours `--offline`/`--fallback-to-cache` overrides:
   - `--fallback-to-cache` / `--no-fallback-to-cache` control whether cached snapshots are reused when scraping fails.
   - `--offline` forces cache usage even in full mode (useful for air-gapped runners).
@@ -25,7 +25,7 @@ This document describes the GitHub automation that keeps the Proxmox OpenAPI del
 ## Manual Overrides
 If automation is paused or lacks access, update Stage manually for affected items:
 1. Open the project item in GitHub (Project #4, "Proxmox OpenAPI Delivery").
-2. Set the Status column to the desired value. When the workflow resumes, it will reconcile Stage automatically.
+2. Set the Status column to the desired value. When the workflow resumes, it reconciles Stage automatically.
 3. For urgent fixes, run the workflow manually (`Actions` → `Project Stage Sync` → `Run workflow`).
 4. Should an item need to bypass automation (e.g., experimental branches), pin the desired Stage and leave a comment on the issue explaining why; revisit once the condition clears.
 
