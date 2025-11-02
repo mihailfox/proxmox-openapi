@@ -47,8 +47,10 @@ When no overrides are provided, the installer fetches the latest GitHub release 
 ## Host Initialization
 
 Before the container starts, `.devcontainer/scripts/initialize-host.sh` runs on the host to create bind mount targets
-such as `~/.codex`, `~/.claude`, and `~/.claude.json`. This prevents Docker from failing when optional configuration
-files are absent locally while still allowing host ↔ container synchronization.
+such as `~/.codex`, `~/.claude`, and `~/.claude.json`. The script reuses `command_get_config` from `scripts/common.sh`
+to enumerate the `mounts` array in `devcontainer.json`, resolve `${localEnv:...}` placeholders, and pre-create the
+corresponding files or directories. This prevents Docker from failing when optional configuration files are absent
+locally while still allowing host ↔ container synchronization.
 
 ## Lifecycle Scripts
 
