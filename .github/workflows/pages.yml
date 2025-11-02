@@ -37,7 +37,7 @@ jobs:
         run: npm install --workspaces --include-workspace-root
       # Generate the raw snapshot, normalized IR, and OpenAPI bundles consumed by the SPA.
       - name: Generate OpenAPI artifacts
-        uses: mihailfox/proxmox-openapi/.github/actions/proxmox-openapi-artifacts
+        uses: ./.github/actions/proxmox-openapi-artifacts
         with:
           mode: ci
           install-command: ""
