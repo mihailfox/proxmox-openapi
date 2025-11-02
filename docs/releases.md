@@ -75,3 +75,6 @@ npm install --registry=https://npm.pkg.github.com/@mihailfox/proxmox-openapi
 - Tags containing prerelease suffixes are published as prereleases; stable tags are marked as latest.
 - Before tagging, ensure `npm run openapi:validate` passes so the bundle is ready for publication.
 - Use `npm run automation:summary -- --input var/automation-summary.json` to inspect the current artifact layout when preparing release notes.
+
+## Notes
+> The JSON OpenAPI document is the canonical artifact for automation. The YAML variant mirrors the JSON content and exists for convenience.

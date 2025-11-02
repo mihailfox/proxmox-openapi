@@ -24,17 +24,17 @@ npx proxmox-openapi pipeline --mode full --openapi-dir var/openapi --report var/
 
 ### Flags
 
-| Flag | Description |
-| ---- | ----------- |
-| `--mode <ci|full>` | Controls whether the pipeline runs in CI or full scrape mode (defaults to `ci`). |
-| `--base-url <url>` | Override the Proxmox API viewer base URL. |
-| `--raw-output <path>` | Persist the raw snapshot JSON to a custom path. |
-| `--ir-output <path>` | Persist the normalized intermediate representation. |
-| `--openapi-dir <dir>` | Directory for generated OpenAPI JSON/YAML (defaults to `var/openapi`). |
-| `--basename <name>` | Basename used for generated OpenAPI files. |
-| `--report <path>` | Write the automation summary JSON to the specified path. |
-| `--offline` | Skip the live scrape and rely on cached artifacts. |
-| `--fallback-to-cache` / `--no-fallback-to-cache` | Control whether cached snapshots are reused (defaults to reuse). |
+| Flag | Description | Default | Required |
+| ---- | ----------- | ------- | -------- |
+| `--mode <ci|full>` | Controls whether the pipeline runs in CI or full scrape mode. | `ci` | No |
+| `--base-url <url>` | Overrides the Proxmox API viewer base URL. | — | No |
+| `--raw-output <path>` | Persists the raw snapshot JSON to a custom path. | — | No |
+| `--ir-output <path>` | Persists the normalized intermediate representation. | — | No |
+| `--openapi-dir <dir>` | Directory for generated OpenAPI JSON/YAML. | `var/openapi` | No |
+| `--basename <name>` | Basename used for generated OpenAPI files. | `proxmox-ve` | No |
+| `--report <path>` | Writes the automation summary JSON to the specified path. | — | No |
+| `--offline` | Skips the live scrape and relies on cached artifacts. | `false` | No |
+| `--fallback-to-cache` / `--no-fallback-to-cache` | Controls whether cached snapshots are reused. | `true` | No |
 
 ### Stage Commands
 
@@ -79,3 +79,6 @@ into the internal workspace packages.
 - Packages are published to GitHub Packages (`npm.pkg.github.com`) alongside GitHub release tags.
 - Publication happens through `.github/workflows/npm-package.yml`, which rebuilds the workspace and issues `npm publish --provenance`.
 - Tags that include prerelease suffixes (`-alpha.*`, `-beta.*`, `-rc.*`) are also published, allowing consumers to opt-in to prerelease channels.
+
+## Notes
+> When installing in CI, set `NODE_AUTH_TOKEN` or include the token in `.npmrc`. Use a token with `read:packages` scope.

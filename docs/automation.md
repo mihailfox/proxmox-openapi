@@ -2,6 +2,9 @@
 
 This document describes the GitHub automation that keeps the Proxmox OpenAPI delivery board in sync, plus the fallback steps when human intervention is required.
 
+## Purpose
+Keep the delivery project fields in sync and define how the automation pipeline runs in CI and locally.
+
 ## Stage Sync Workflow
 - **Location:** `.github/workflows/project-stage-sync.yml`
 - **Purpose:** Align the "Stage" single-select on Project #4 with each item's Status so the board reflects real progress.
@@ -57,3 +60,6 @@ Use this checklist when tagging a new release:
 5. **Documentation updates**
    - Update `docs/releases.md` and `docs/packages.md` with any noteworthy changes.
    - Ensure the changelog entry captures schema diffs or CLI behaviour updates since the last release.
+
+## Notes
+> The automation pipeline emits `var/automation-summary.json` when `--report` is provided. Use `npm run automation:summary` to format a human‑readable summary.

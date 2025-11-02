@@ -9,20 +9,20 @@ artifacts. It is bundled for Node.js 24 and can run in both GitHub-hosted and se
 
 ## Inputs
 
-| Name | Description | Default |
-| ---- | ----------- | ------- |
-| `mode` | Pipeline mode (`ci` or `full`). | `ci` |
-| `base-url` | Override the Proxmox API viewer URL used by the scraper. | _none_ |
-| `raw-snapshot-path` | Path where the raw snapshot JSON should be written. | _none_ |
-| `ir-output-path` | Path for the normalized intermediate representation. | _none_ |
-| `openapi-dir` | Directory that will contain the OpenAPI JSON/YAML outputs. | _none_ |
-| `openapi-basename` | Basename for generated OpenAPI files. | _none_ |
-| `fallback-to-cache` | Reuse cached snapshots when the live scrape fails. | `true` |
-| `offline` | Force offline mode (skip live scrape). | `false` |
-| `install-command` | Command used to install dependencies before the pipeline runs. | `npm ci` |
-| `working-directory` | Repository subdirectory that contains the automation packages. | `.` |
-| `install-playwright-browsers` | Install Playwright dependencies before the pipeline runs. | `true` |
-| `report-path` | Location for an optional JSON summary report. | _none_ |
+| Name | Description | Default | Required |
+| ---- | ----------- | ------- | -------- |
+| `mode` | Pipeline mode (`ci` or `full`). | `ci` | No |
+| `base-url` | Override the Proxmox API viewer URL used by the scraper. | — | No |
+| `raw-snapshot-path` | Path where the raw snapshot JSON is written. | — | No |
+| `ir-output-path` | Path for the normalized intermediate representation. | — | No |
+| `openapi-dir` | Directory that contains the OpenAPI JSON/YAML outputs. | — | No |
+| `openapi-basename` | Basename for generated OpenAPI files. | — | No |
+| `fallback-to-cache` | Reuse cached snapshots when the live scrape fails. | `true` | No |
+| `offline` | Force offline mode (skip live scrape). | `false` | No |
+| `install-command` | Command used to install dependencies before the pipeline runs. | `npm ci` | No |
+| `working-directory` | Repository subdirectory that contains the automation packages. | `.` | No |
+| `install-playwright-browsers` | Install Playwright dependencies before the pipeline runs. | `true` | No |
+| `report-path` | Location for an optional JSON summary report. | — | No |
 
 ## Outputs
 
@@ -87,3 +87,6 @@ jobs:
 ## Versioning
 - Action tags under the repository follow semantic versioning. Prereleases contain `-alpha.`, `-beta.`, or `-rc.`.
 - See the root `CHANGELOG.md` for user‑visible changes across the tooling and action.
+
+## Notes
+> The action runs on Node.js 24 (`using: node24`). Configure Node in your workflow with `actions/setup-node@v5` when you need a specific minor version.
