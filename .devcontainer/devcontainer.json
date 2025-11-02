@@ -4,9 +4,11 @@
   "image": "mcr.microsoft.com/devcontainers/typescript-node:24-bookworm",
   "runArgs": ["--name", "${localWorkspaceFolderBasename}_devcontainer"],
   "features": {
-    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "moby": false // 'moby' requires socat package to be installed so it is dissabled to avoid dependecy install
+    },
     "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/facebook/devcontainers/features/dotslash:latest": {},
+    // "ghcr.io/facebook/devcontainers/features/dotslash:latest": {}, // dependecy cleanup, codex is installed using internall tools
     "./features/cli-tools": {},
     "./features/devcontainers-cli": {}
   },
@@ -27,7 +29,6 @@
         "vivaxy.vscode-conventional-commits"
       ],
       "settings": {
-        "biome.requireConfiguration": true,
         "editor.acceptSuggestionOnEnter": "smart",
         "editor.autoIndentOnPaste": true,
         "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
@@ -35,7 +36,6 @@
         "editor.cursorBlinking": "phase",
         "editor.cursorSmoothCaretAnimation": "on",
         "editor.cursorStyle": "block-outline",
-        "editor.fontFamily": "'JetBrainsMonoNL Nerd Font Mono', 'monospace'",
         "editor.fontLigatures": true,
         "editor.fontSize": 16,
         "editor.formatOnPaste": true,
@@ -63,8 +63,9 @@
         "terminal.integrated.sendKeybindingsToShell": true,
         "vitest.maximumConfigs": 99,
         "window.titleBarStyle": "custom",
+        "biome.enabled": true,
         "biome.configurationPath": "biome.jsonc",
-        "biome.enabled": true
+        "biome.requireConfiguration": true
       }
     }
   },
@@ -72,7 +73,8 @@
   "containerEnv": {
     "GH_PAT": "${localEnv:GH_PAT}",
     "GH_TOKEN": "${localEnv:GH_PAT}",
-    "GITHUB_TOKEN": "${localEnv:GH_PAT}"
+    "GITHUB_TOKEN": "${localEnv:GH_PAT}",
+    "GITHUB_PERSONAL_ACCESS_TOKEN": "${localEnv:GH_PAT}"
   },
   "remoteUser": "node",
   // here you can mount host files into container
@@ -80,7 +82,8 @@
   "mounts": [
     "source=${localEnv:HOME}/.bash_history,target=/home/node/.bash_history,type=bind,consistency=cached",
     "source=${localEnv:HOME}/.codex,target=/home/node/.codex,type=bind,consistency=cached",
-    //  "source=${localEnv:HOME}/.docker,target=/home/node/.docker,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.claude,target=/home/node/.claude,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.claude.json,target=/home/node/.claude.json,type=bind,consistency=cached",
     "source=${localEnv:HOME}/.git-credentials,target=/home/node/.git-credentials,type=bind,consistency=cached",
     "source=${localEnv:HOME}/.gitconfig,target=/home/node/.gitconfig,type=bind,consistency=cached"
   ]

@@ -243,6 +243,9 @@ install_tar_binary(){
     *.tar)
       tar_flags=(-xf)
       ;;
+    *.tar.zst)
+      tar_flags=(-I zstd -xf)
+      ;;
     *)
       err "Unsupported archive format for ${archive}"
       rm -rf "${tmp_dir}"
@@ -587,6 +590,12 @@ if feature_option_enabled "lynx" "true"; then
   ensure_apt_packages lynx
 else
   log "Skipping lynx installation."
+fi
+
+if feature_option_enabled "zstd" "true"; then
+  ensure_apt_packages zstd
+else
+  log "Skipping zstd installation."
 fi
 
 if declare -f apt_cleanup >/dev/null 2>&1; then

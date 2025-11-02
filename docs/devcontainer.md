@@ -9,9 +9,9 @@ The workspace is built on `mcr.microsoft.com/devcontainers/typescript-node:24-bo
 
 - Docker outside of Docker
 - GitHub CLI
-- Facebook's `dotslash`
-- Local `cli-tools` bundle (ripgrep, fd, bat, lsd, git-delta, helix, jq, yq, gojq, fzf, shellcheck, shfmt, lynx)
+- Local `cli-tools` bundle (ripgrep, fd, bat, lsd, git-delta, helix, jq, yq, gojq, fzf, shellcheck, shfmt, lynx, zstd)
 - Devcontainers CLI
+- Host configuration passthrough for Codex and Claude (`~/.codex`, `~/.claude`, `~/.claude.json`), pre-created via the host `initializeCommand`
 
 ### Custom CLI Feature
 
@@ -35,11 +35,22 @@ and supports per-tool overrides. Example configuration:
 
 When no overrides are provided, the installer fetches the latest GitHub release (or uses the package manager).
 
+- Zstd archives are now first-class citizens: enabling the `zstd` option installs the system package, and the common
+  installer handles `.zst` / `.tar.zst` payloads via `unzstd`.
+
 ### Default Behavior
 
 - GitHub-hosted tools install the newest published release when `*Version` and `*Tag` are omitted.
 - The feature prefers authenticated `gh` lookups and automatically falls back to anonymous REST calls.
 - APT-backed tools reuse the distro packages unless explicitly toggled to `gh-release`.
+
+## Host Initialization
+
+Before the container starts, `.devcontainer/scripts/initialize-host.sh` runs on the host to create bind mount targets
+such as `~/.codex`, `~/.claude`, and `~/.claude.json`. The script reuses `command_get_config` from `scripts/common.sh`
+to enumerate the `mounts` array in `devcontainer.json`, resolve `${localEnv:...}` placeholders, and pre-create the
+corresponding files or directories. This prevents Docker from failing when optional configuration files are absent
+locally while still allowing host ↔ container synchronization.
 
 ## Lifecycle Scripts
 
@@ -61,4 +72,4 @@ Shared logic (logging, devcontainer JSON helpers, package installers) lives in `
 
 The Devcontainer exposes the host's `GH_PAT`/`GH_TOKEN`/`GITHUB_TOKEN` via `containerEnv`. When authenticated, the CLI
 feature prefers GitHub's GraphQL/REST APIs (via `gh`) for release resolution, falling back to anonymous requests if
-needed.
+needed. `GITHUB_PERSONAL_ACCESS_TOKEN` is also forwarded for workflows that expect that specific variable name.

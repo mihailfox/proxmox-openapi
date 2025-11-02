@@ -2,7 +2,7 @@
   "id": "cli-tools",
   "name": "CLI tools",
   "version": "1.0.0",
-  "description": "Installs common CLI tooling (ripgrep, fd, bat, lsd, git-delta, helix, jq, yq, gojq, fzf, shellcheck, shfmt, lynx).",
+  "description": "Installs common CLI tooling (ripgrep, fd, bat, lsd, git-delta, helix, jq, yq, gojq, fzf, shellcheck, shfmt, lynx, zstd).",
   "options": {
     "fzf": {
       "type": "boolean",
@@ -86,10 +86,12 @@
       "type": "boolean",
       "default": true,
       "description": "Install lynx via apt."
+    },
+    "zstd": {
+      "type": "boolean",
+      "default": true,
+      "description": "Install zstd via apt"
     }
   },
-  "installsAfter": [
-    "ghcr.io/devcontainers/features/common-utils:2",
-    "ghcr.io/devcontainers/features/github-cli:1"
-  ]
+  "installsAfter": ["ghcr.io/devcontainers/features/common-utils:2", "ghcr.io/devcontainers/features/github-cli:1"]
 }
