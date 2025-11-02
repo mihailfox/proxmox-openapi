@@ -89,8 +89,9 @@ jobs:
           RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
         run: |
           set -euo pipefail
+          REGISTRY="https://npm.pkg.github.com"
           for attempt in {1..10}; do
-            if npm view "@mihailfox/proxmox-openapi@${RELEASE_VERSION}" version >/dev/null 2>&1; then
+            if npm view "@mihailfox/proxmox-openapi@${RELEASE_VERSION}" version --registry="${REGISTRY}" >/dev/null 2>&1; then
               exit 0
             fi
             sleep 10
