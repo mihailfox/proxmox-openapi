@@ -213,6 +213,70 @@ JQ
   printf '%s\n' "$jq_output"
 }
 
+usage_get_config(){
+  cat <<'EOF'
+Usage: command_get_config [options] <json.path> [file]
+
+Options:
+  -e|--envlines        Flatten objects into ENV-style lines
+  -p|--prefix <value>  Prefix generated keys (applies to -e and containerEnv)
+  -h|--help            Show this help
+
+Examples:
+  command_get_config remoteUser
+  command_get_config -e customizations.vscode.settings
+  command_get_config -e -p DEV_ customizations.vscode
+  DEVCONTAINER_JSON=/path/to/devcontainer.json command_get_config containerEnv
+EOF
+}
+
+command_get_config(){
+  local envlines=0 prefix=""
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -e|--env|--envlines) envlines=1; shift ;;
+      -p|--prefix)
+        if [[ $# -lt 2 ]]; then
+          echo "Missing value for --prefix" >&2
+          return 2
+        fi
+        prefix="$2"
+        shift 2
+        ;;
+      -h|--help)
+        usage_get_config
+        return 0
+        ;;
+      --)
+        shift
+        break
+        ;;
+      -*)
+        echo "unknown option: $1" >&2
+        return 2
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
+
+  local path="${1-}"
+  local file="${2:-${DEVCONTAINER_JSON:-.devcontainer/devcontainer.json}}"
+
+  if [[ -z "$path" ]]; then
+    echo "usage: command_get_config [-e] [-p PREFIX] <json.path> [file]" >&2
+    return 2
+  fi
+
+  local jq_output
+  if ! jq_output="$(devcontainer_get_config_value "$path" "$file" "$prefix" "$envlines")"; then
+    return 2
+  fi
+
+  printf '%s\n' "$jq_output"
+}
+
 APT_UPDATED=false
 
 download_and_install_package(){

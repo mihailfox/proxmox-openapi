@@ -30,25 +30,6 @@ Options:
 EOF
 }
 
-usage_get_config() {
-  cat <<'EOF'
-Usage: ./launcher.sh get_config [options]
-
-Options:
-  -e|--envlines Flatten objects into ENV-style lines
-  -p|--prefix STR Prefix for generated keys (applies to -e and containerEnv)
-
-Examples:
-  get_config remoteUser # => REMOTE_USER='node'
-  get_config -e customizations.vscode.settings # => CUSTOMIZATIONS_VSCODE_SETTINGS_EDITOR_FONTSIZE='16' ...
-  get_config -e -p DEV_ customizations.vscode # => DEV_CUSTOMIZATIONS_VSCODE_*
-  get_config containerEnv # => GH_PAT='...' ...
-  get_config -p DEV_ containerEnv # => DEV_GH_PAT='...' ...
-  get_config mounts # => MOUNTS=( ... )
-  DEVCONTAINER_JSON=/path/to/devcontainer.json get_config remoteUser
-EOF
-}
-
 require_file() {
   local path="$1"
   if [[ ! -f "$path" ]]; then
@@ -273,36 +254,6 @@ command_vscode() {
   local docker_command=(docker exec -it --user "$remote_user" -w "/workspaces/$base" "$container_id" bash)
   run_docker_command_interactive "${docker_command[@]}"
 }
-
-command_get_config() {
-  local envlines=0 prefix=""
-  while [[ $# -gt 0 ]]; do
-    case "$1" in
-      -e|--env|--envlines) envlines=1; shift ;;
-      -p|--prefix) prefix="$2"; shift 2 ;;
-      -h|--help) usage_get_config; return 0 ;; 
-      --) shift; break ;;
-      -*) echo "unknown option: $1" >&2; return 2 ;;
-      *) break ;;
-    esac
-  done
-
-  local path="${1-}"
-  local file="${2:-${DEVCONTAINER_JSON:-.devcontainer/devcontainer.json}}"
- 
-  if [[ -z "$path" ]]; then
-    echo "usage: get_config [-e] [-p PREFIX] <json.path> [file]" >&2
-    return 2
-  fi
-
-  local jq_output
-  if ! jq_output="$(devcontainer_get_config_value "$path" "$file" "$prefix" "$envlines")"; then
-    return 2
-  fi
-
-  printf '%s\n' "$jq_output"
-}
-
 
 main() {
   if [[ $# -eq 0 ]]; then
