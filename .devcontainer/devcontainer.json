@@ -13,7 +13,6 @@
     "./features/devcontainers-cli": {}
   },
   "forwardPorts": [5173, 4173],
-  "initializeCommand": ".devcontainer/scripts/initialize-host.sh",
   "onCreateCommand": ".devcontainer/scripts/on-create.sh",
   "updateContentCommand": ".devcontainer/scripts/update-content.sh",
   "postCreateCommand": ".devcontainer/scripts/post-create.sh",
