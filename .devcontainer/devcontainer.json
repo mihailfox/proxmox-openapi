@@ -13,6 +13,7 @@
     "./features/devcontainers-cli": {}
   },
   "forwardPorts": [5173, 4173],
+  "initializeCommand": ".devcontainer/scripts/initialize-host.sh",
   "onCreateCommand": ".devcontainer/scripts/on-create.sh",
   "updateContentCommand": ".devcontainer/scripts/update-content.sh",
   "postCreateCommand": ".devcontainer/scripts/post-create.sh",
@@ -80,12 +81,12 @@
   // here you can mount host files into container
   // target/container path ca not be dynamic
   "mounts": [
-    "source=${localEnv:HOME}/.bash_history,target=/home/node/.bash_history,type=bind,consistency=cached,create=true",
-    "source=${localEnv:HOME}/.codex,target=/home/node/.codex,type=bind,consistency=cached,create=true",
-    "source=${localEnv:HOME}/.claude,target=/home/node/.claude,type=bind,consistency=cached,create=true",
-    "source=${localEnv:HOME}/.claude.json,target=/home/node/.claude.json,type=bind,consistency=cached,create=true",
-    //  "source=${localEnv:HOME}/.docker,target=/home/node/.docker,type=bind,consistency=cached,create=true",
-    "source=${localEnv:HOME}/.git-credentials,target=/home/node/.git-credentials,type=bind,consistency=cached,create=true",
-    "source=${localEnv:HOME}/.gitconfig,target=/home/node/.gitconfig,type=bind,consistency=cached,create=true"
+    "source=${localEnv:HOME}/.bash_history,target=/home/node/.bash_history,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.codex,target=/home/node/.codex,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.claude,target=/home/node/.claude,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.claude.json,target=/home/node/.claude.json,type=bind,consistency=cached",
+    //  "source=${localEnv:HOME}/.docker,target=/home/node/.docker,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.git-credentials,target=/home/node/.git-credentials,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.gitconfig,target=/home/node/.gitconfig,type=bind,consistency=cached"
   ]
 }
