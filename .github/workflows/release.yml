@@ -43,6 +43,8 @@ jobs:
   publish-package:
     needs: prepare
     runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.RELEASE }}
     steps:
       - uses: actions/checkout@v5
 
@@ -60,8 +62,6 @@ jobs:
           //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
           @mihailfox:registry=https://npm.pkg.github.com
           RC
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Remove deprecated npm config flags
         run: npm config delete always-auth --location=user || true
@@ -80,8 +80,6 @@ jobs:
         run: npm run build --workspace packages/proxmox-openapi
 
       - name: Publish package
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm publish --workspace packages/proxmox-openapi --provenance --access public
 
       - name: Wait for package availability
@@ -91,7 +89,7 @@ jobs:
           set -euo pipefail
           REGISTRY="https://npm.pkg.github.com"
           for attempt in {1..10}; do
-            if npm view "@mihailfox/proxmox-openapi@${RELEASE_VERSION}" version --registry="${REGISTRY}" >/dev/null 2>&1; then
+            if npm view "@mihailfox/proxmox-openapi@${RELEASE_VERSION}" version --registry="${REGISTRY}"; then
               exit 0
             fi
             sleep 10
@@ -104,6 +102,8 @@ jobs:
       - prepare
       - publish-package
     runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.RELEASE }}
     steps:
       - uses: actions/checkout@v5
 
@@ -121,9 +121,6 @@ jobs:
           //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
           @mihailfox:registry=https://npm.pkg.github.com
           RC
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Install dependencies
         run: npm install --workspaces --include-workspace-root
 
@@ -174,6 +171,8 @@ jobs:
       - publish-package
       - generate-openapi
     runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.RELEASE }}
     steps:
       - uses: actions/checkout@v5
 
@@ -191,9 +190,6 @@ jobs:
           //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
           @mihailfox:registry=https://npm.pkg.github.com
           RC
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Install dependencies
         run: npm install --workspaces --include-workspace-root
 
