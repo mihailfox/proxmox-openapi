@@ -14,6 +14,9 @@ Pushing tags that match any of the following patterns kicks off `.github/workflo
 
 Tags that include `-alpha.`, `-beta.`, or `-rc.` are published as prereleases. All other tags are considered stable.
 
+> Note
+> The workflow uses the top “Unreleased” section from `CHANGELOG.md` as the GitHub Release body. Keep that section up‑to‑date before tagging.
+
 ## Artifact Inventory
 
 Each GitHub release publishes the following files:

@@ -5,6 +5,11 @@ Utilities for scraping the official Proxmox API viewer, normalizing responses, a
 This toolkit underpins a broader goal: ship third-party automation for Proxmox VE, beginning with the ingredients required
 to deliver a full-featured Terraform provider and other infrastructure-as-code integrations.
 
+## Requirements
+- Node.js 24 or newer (`"engines": { "node": ">=24.0.0" }`).
+- macOS, Linux, or Windows for local development. CI runs on Ubuntu.
+- For npm installs from GitHub Packages, configure an auth token (see package README).
+
 ## Project Vision
 - Deliver first-party quality building blocks that unblock a Terraform provider and future IaC integrations for Proxmox VE.
 - Keep schema generation reproducible so external tooling can track upstream releases with confidence.
@@ -148,4 +153,6 @@ jobs:
 1. Install dependencies with `npm install`.
 2. Run targeted checks (`npm run lint`, `npm run test:all`, etc.) before pushing.
 3. Reference the linked issue in branch names/PR bodies and document any automation impact.
-4. See [docs/automation.md](docs/automation.md) for expectations around project updates and troubleshooting.
+4. Keep `CHANGELOG.md` current. Our release workflow reads the top “Unreleased” section and uses it as the body for the next GitHub Release. Log user‑visible changes under the Common Changelog categories (Added, Changed, Deprecated, Removed, Fixed, Security).
+5. Prefer conventional commits (e.g. `feat:`, `fix(ci):`, `docs(action):`) and small, focused pull requests.
+6. See [docs/automation.md](docs/automation.md) for expectations around project updates and troubleshooting.

@@ -6,6 +6,7 @@ Follow these steps when publishing `@mihailfox/proxmox-openapi` to GitHub Packag
    - Run `npm run automation:pipeline -- --mode=full --report var/automation-summary.json`.
    - Ensure `npm run openapi:validate` passes.
    - Update the changelog and documentation for the upcoming version.
+   - Ensure the top “Unreleased” section in `CHANGELOG.md` accurately summarizes user‑visible changes (it becomes the release body).
 
 2. **Versioning & tagging**
    - Bump the package version in `packages/proxmox-openapi/package.json`.
