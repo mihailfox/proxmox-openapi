@@ -43,6 +43,8 @@ jobs:
   openapi:
     needs: prepare
     runs-on: ubuntu-latest
+    env:
+      NPM_CONFIG_INSTALL_LINKS: "true"
     steps:
       - uses: actions/checkout@v5
 
@@ -54,13 +56,16 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --workspaces --include-workspace-root
 
       - name: Build CLI workspace
         run: npm run build --workspace packages/proxmox-openapi
 
+      - name: Verify CLI availability
+        run: npm exec -- proxmox-openapi --help >/dev/null
+
       - name: Generate OpenAPI artifacts
-        run: npm run automation:pipeline -- --mode=full --report var/automation-summary.json
+        run: npm exec -- proxmox-openapi pipeline --mode=full --report var/automation-summary.json
 
       - name: Validate OpenAPI document
         run: npm run openapi:validate
