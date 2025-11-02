@@ -2,6 +2,9 @@
 
 This document describes the GitHub automation that keeps the Proxmox OpenAPI delivery board in sync, plus the fallback steps when human intervention is required.
 
+## Purpose
+Keep the delivery project fields in sync and define how the automation pipeline runs in CI and locally.
+
 ## Stage Sync Workflow
 - **Location:** `.github/workflows/project-stage-sync.yml`
 - **Purpose:** Align the "Stage" single-select on Project #4 with each item's Status so the board reflects real progress.
@@ -15,7 +18,7 @@ This document describes the GitHub automation that keeps the Proxmox OpenAPI del
   mirror the dedicated scripts for troubleshooting individual phases. GitHub Actions rebuild the package (`npm run build --workspace packages/proxmox-openapi`)
   and install browsers (`npx playwright install --with-deps`) before executing `node packages/proxmox-openapi/dist/cli.cjs pipeline` so
   fresh CI runners don’t rely on cached artifacts.
-- **CI mode (`--mode=ci`)** is the default. It performs a live scrape and will reuse cached snapshots only when scraping fails.
+- **CI mode (`--mode=ci`)** is the default. It performs a live scrape and reuses cached snapshots only when scraping fails.
 - **Full mode (`--mode=full`)** performs a live scrape using Playwright and honours `--offline`/`--fallback-to-cache` overrides:
   - `--fallback-to-cache` / `--no-fallback-to-cache` control whether cached snapshots are reused when scraping fails.
   - `--offline` forces cache usage even in full mode (useful for air-gapped runners).
@@ -25,7 +28,7 @@ This document describes the GitHub automation that keeps the Proxmox OpenAPI del
 ## Manual Overrides
 If automation is paused or lacks access, update Stage manually for affected items:
 1. Open the project item in GitHub (Project #4, "Proxmox OpenAPI Delivery").
-2. Set the Status column to the desired value. When the workflow resumes, it will reconcile Stage automatically.
+2. Set the Status column to the desired value. When the workflow resumes, it reconciles Stage automatically.
 3. For urgent fixes, run the workflow manually (`Actions` → `Project Stage Sync` → `Run workflow`).
 4. Should an item need to bypass automation (e.g., experimental branches), pin the desired Stage and leave a comment on the issue explaining why; revisit once the condition clears.
 
@@ -48,8 +51,7 @@ Use this checklist when tagging a new release:
    - Push the tag (`git push origin v1.2.0`).
 
 3. **Automated workflows**
-   - `.github/workflows/openapi-release.yml` regenerates artifacts, writes release notes, and publishes assets via `softprops/action-gh-release@v2`.
-   - `.github/workflows/npm-package.yml` builds and publishes `@mihailfox/proxmox-openapi` to GitHub Packages with provenance.
+   - Publishing a GitHub Release triggers `.github/workflows/release.yml`, which regenerates artifacts, writes release notes, and publishes assets via `softprops/action-gh-release@v2`. It also builds and publishes `@mihailfox/proxmox-openapi` to GitHub Packages with provenance.
 
 4. **Post-publish validation**
    - Download archives from the GitHub release and verify checksums (`openapi.sha256.json`).
@@ -58,3 +60,6 @@ Use this checklist when tagging a new release:
 5. **Documentation updates**
    - Update `docs/releases.md` and `docs/packages.md` with any noteworthy changes.
    - Ensure the changelog entry captures schema diffs or CLI behaviour updates since the last release.
+
+## Notes
+> The automation pipeline emits `var/automation-summary.json` when `--report` is provided. Use `npm run automation:summary` to format a human‑readable summary.

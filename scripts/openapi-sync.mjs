@@ -21,9 +21,7 @@ async function main() {
   await fs.mkdir(destinationDir, { recursive: true });
   await fs.cp(sourceDir, destinationDir, { recursive: true });
 
-  console.log(
-    `[openapi-sync] Copied OpenAPI artifacts to ${path.relative(process.cwd(), destinationDir)}.`
-  );
+  console.log(`[openapi-sync] Copied OpenAPI artifacts to ${path.relative(process.cwd(), destinationDir)}.`);
 }
 
 main().catch((error) => {

@@ -20,13 +20,7 @@
       "react-dom/client": ["types/react-dom-client.d.ts"]
     }
   },
-  "include": [
-    "app/**/*.ts",
-    "app/**/*.tsx",
-    "packages/proxmox-openapi/**/*.ts",
-    "tests/**/*.ts",
-    "types/**/*.d.ts"
-  ],
+  "include": ["app/**/*.ts", "app/**/*.tsx", "packages/proxmox-openapi/**/*.ts", "tests/**/*.ts", "types/**/*.d.ts"],
   "exclude": [
     "node_modules",
     "**/dist",

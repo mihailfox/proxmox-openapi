@@ -1,9 +1,9 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from "@playwright/test";
 
 function parseColor(value: string) {
   const match = value.match(/rgba?\(([^)]+)\)/);
   if (!match) return { r: 0, g: 0, b: 0 };
-  const [r, g, b] = match[1].split(',').map((part) => parseFloat(part.trim()));
+  const [r, g, b] = match[1].split(",").map((part) => parseFloat(part.trim()));
   return { r, g, b };
 }
 
@@ -35,10 +35,10 @@ async function getContrast(page, selector) {
 
     const resolveBackground = (element) => {
       if (!element) {
-        return 'rgb(255, 255, 255)';
+        return "rgb(255, 255, 255)";
       }
       const bg = getComputedStyle(element).backgroundColor;
-      if (bg && !bg.startsWith('rgba(0, 0, 0, 0') && bg !== 'transparent') {
+      if (bg && !bg.startsWith("rgba(0, 0, 0, 0") && bg !== "transparent") {
         return bg;
       }
       return resolveBackground(element.parentElement);
@@ -51,13 +51,13 @@ async function getContrast(page, selector) {
   }, selector);
 }
 
-test.describe('theme toggle', () => {
-  test('switches between light and dark while keeping adequate contrast', async ({ page }) => {
+test.describe("theme toggle", () => {
+  test("switches between light and dark while keeping adequate contrast", async ({ page }) => {
     await page.addInitScript(() => {
-      window.localStorage.removeItem('proxmox-openapi.theme');
+      window.localStorage.removeItem("proxmox-openapi.theme");
     });
 
-    await page.goto('/');
+    await page.goto("/");
 
     const getBodyColors = () =>
       page.evaluate(() => {
@@ -68,37 +68,37 @@ test.describe('theme toggle', () => {
         };
       });
 
-    const initialTheme = await page.evaluate(() => document.documentElement.dataset.theme ?? 'dark');
+    const initialTheme = await page.evaluate(() => document.documentElement.dataset.theme ?? "dark");
     const initialColors = await getBodyColors();
     expect(contrastRatio(initialColors.color, initialColors.background)).toBeGreaterThan(4.5);
 
-    await page.locator('.theme-toggle').click();
+    await page.locator(".theme-toggle").click();
     await page.waitForFunction(
       (expected) => document.documentElement.dataset.theme === expected,
-      initialTheme === 'dark' ? 'light' : 'dark'
+      initialTheme === "dark" ? "light" : "dark"
     );
 
     const nextColors = await getBodyColors();
     expect(contrastRatio(nextColors.color, nextColors.background)).toBeGreaterThan(4.5);
   });
 
-  test('swagger explorer contrast meets expectations', async ({ page }) => {
+  test("swagger explorer contrast meets expectations", async ({ page }) => {
     await page.addInitScript(() => {
-      window.localStorage.setItem('proxmox-openapi.theme', 'light');
+      window.localStorage.setItem("proxmox-openapi.theme", "light");
     });
 
-    await page.goto('/explorer');
-    await page.getByRole('button', { name: /load api explorer/i }).click();
-    await page.locator('.swagger-ui').first().waitFor();
+    await page.goto("/explorer");
+    await page.getByRole("button", { name: /load api explorer/i }).click();
+    await page.locator(".swagger-ui").first().waitFor();
 
     const contrastTargets: Array<{ selector: string; minimum: number }> = [
-      { selector: '.swagger-container', minimum: 4.5 },
-      { selector: '.swagger-ui .servers-title', minimum: 4.5 },
-      { selector: '.swagger-ui .servers', minimum: 4.5 },
+      { selector: ".swagger-container", minimum: 4.5 },
+      { selector: ".swagger-ui .servers-title", minimum: 4.5 },
+      { selector: ".swagger-ui .servers", minimum: 4.5 },
       { selector: '.swagger-ui .servers input[data-variable="host"]', minimum: 4.5 },
       { selector: '.swagger-ui .servers input[data-variable="port"]', minimum: 4.5 },
-      { selector: '.swagger-ui .computed-url', minimum: 4.5 },
-      { selector: '.swagger-ui .btn.authorize', minimum: 2.0 },
+      { selector: ".swagger-ui .computed-url", minimum: 4.5 },
+      { selector: ".swagger-ui .btn.authorize", minimum: 2.0 },
     ];
 
     for (const { selector, minimum } of contrastTargets) {
@@ -109,14 +109,14 @@ test.describe('theme toggle', () => {
       expect(ratio, `Contrast for ${selector} (${ratio.toFixed(2)})`).toBeGreaterThan(minimum);
     }
 
-    await page.locator('.theme-toggle').click();
-    await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
+    await page.locator(".theme-toggle").click();
+    await page.waitForFunction(() => document.documentElement.dataset.theme === "dark");
 
     const swaggerFilter = await page.evaluate(() => {
       const target = document.querySelector('[data-swagger-root="true"]');
       return target ? getComputedStyle(target).filter : null;
     });
-    expect(swaggerFilter, 'Expected swagger container to apply dark-mode filter').toMatch(/invert\((?:88%|0\.88)\)/);
+    expect(swaggerFilter, "Expected swagger container to apply dark-mode filter").toMatch(/invert\((?:88%|0\.88)\)/);
 
     const microlightFilter = await page.evaluate(() => {
       const target = document.querySelector('[data-swagger-root="true"] .microlight');

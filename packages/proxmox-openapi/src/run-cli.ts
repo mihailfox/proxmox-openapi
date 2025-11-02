@@ -4,27 +4,23 @@ import process from "node:process";
 
 import { Command, Option } from "commander";
 import { stringify as stringifyYaml } from "yaml";
-
-import { DEFAULT_BASE_URL, scrapeApiDocumentation } from "./internal/api-scraper/scraper.ts";
-import type { RawApiSnapshot } from "./internal/api-scraper/types.ts";
 import { normalizeSnapshot } from "./internal/api-normalizer/normalizer.ts";
 import type { NormalizedApiDocument } from "./internal/api-normalizer/types.ts";
+import { DEFAULT_BASE_URL, scrapeApiDocumentation } from "./internal/api-scraper/scraper.ts";
+import type { RawApiSnapshot } from "./internal/api-scraper/types.ts";
 import {
-  generateOpenApiDocument,
-  type GenerateOpenApiOptions,
-} from "./internal/openapi-generator/generator.ts";
+  type AutomationPipelineResult,
+  type AutomationPipelineRunOptions,
+  resolveAutomationPipelineOptions,
+  runAutomationPipeline,
+} from "./internal/automation/pipeline.ts";
+import { type GenerateOpenApiOptions, generateOpenApiDocument } from "./internal/openapi-generator/generator.ts";
 import {
   NORMALIZED_IR_CACHE_PATH,
   OPENAPI_ARTIFACT_DIR,
   OPENAPI_BASENAME,
   RAW_SNAPSHOT_CACHE_PATH,
 } from "./internal/shared/paths.ts";
-import {
-  runAutomationPipeline,
-  resolveAutomationPipelineOptions,
-  type AutomationPipelineRunOptions,
-  type AutomationPipelineResult,
-} from "./internal/automation/pipeline.ts";
 
 export interface CliContext {
   readonly command: Command;

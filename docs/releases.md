@@ -2,9 +2,9 @@
 
 This guide describes how schema bundles are produced, what each artifact contains, and how to consume the published assets.
 
-## Triggering Releases
+## How Releases Trigger
 
-Pushing tags that match any of the following patterns kicks off `.github/workflows/openapi-release.yml`:
+Publishing a GitHub Release (type: published) triggers `.github/workflows/release.yml`. Use semantic tags such as:
 
 - `v*`
 - `v*.*.*`
@@ -13,6 +13,9 @@ Pushing tags that match any of the following patterns kicks off `.github/workflo
 - `v*.*.*-rc.*`
 
 Tags that include `-alpha.`, `-beta.`, or `-rc.` are published as prereleases. All other tags are considered stable.
+
+> Note
+> Keep the top “Unreleased” section in `CHANGELOG.md` up‑to‑date before drafting the release. We use it as the release body.
 
 ## Artifact Inventory
 
@@ -68,8 +71,10 @@ npm install --registry=https://npm.pkg.github.com/@mihailfox/proxmox-openapi
 
 ## Release Cadence
 
-- The workflow `.github/workflows/openapi-release.yml` rebuilds the schema, runs validation (`npm run openapi:validate`), and uploads archives via `softprops/action-gh-release@v2`.
-- `.github/workflows/npm-package.yml` publishes `@mihailfox/proxmox-openapi` to GitHub Packages for every release tag (including prereleases).
+- The workflow `.github/workflows/release.yml` rebuilds the schema, validates outputs, publishes the npm package, and uploads archives via `softprops/action-gh-release@v2`.
 - Tags containing prerelease suffixes are published as prereleases; stable tags are marked as latest.
 - Before tagging, ensure `npm run openapi:validate` passes so the bundle is ready for publication.
 - Use `npm run automation:summary -- --input var/automation-summary.json` to inspect the current artifact layout when preparing release notes.
+
+## Notes
+> The JSON OpenAPI document is the canonical artifact for automation. The YAML variant mirrors the JSON content and exists for convenience.

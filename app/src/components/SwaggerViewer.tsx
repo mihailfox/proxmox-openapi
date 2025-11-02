@@ -12,9 +12,7 @@ function sanitizeSpecDocument<T>(input: T): T {
   }
 
   const clone =
-    typeof structuredClone === "function"
-      ? structuredClone(input)
-      : (JSON.parse(JSON.stringify(input)) as T);
+    typeof structuredClone === "function" ? structuredClone(input) : (JSON.parse(JSON.stringify(input)) as T);
 
   const queue: unknown[] = [clone];
 
@@ -160,9 +158,7 @@ export function SwaggerViewer({ specUrl }: SwaggerViewerProps) {
     return (
       <div className="swagger-fallback swagger-fallback--error">
         <p>Unable to load the OpenAPI explorer. {error}</p>
-        <p>
-          Try refreshing the page or downloading the schema directly from the links above.
-        </p>
+        <p>Try refreshing the page or downloading the schema directly from the links above.</p>
       </div>
     );
   }

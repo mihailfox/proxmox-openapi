@@ -3,6 +3,16 @@
 Generate Proxmox OpenAPI artifacts (raw snapshot, normalized IR, OpenAPI JSON/YAML) from the comfort of your own CI –
 now with dedicated commands for every stage of the pipeline.
 
+## At a Glance
+```bash
+npm install @mihailfox/proxmox-openapi --registry=https://npm.pkg.github.com
+npx proxmox-openapi pipeline --mode full --report var/automation-summary.json
+```
+
+## Requirements
+- Node.js 24 or newer.
+- For installs from GitHub Packages, configure authentication as shown below.
+
 ## Installation
 
 ```bash
@@ -27,17 +37,17 @@ npm install @mihailfox/proxmox-openapi --registry=https://npm.pkg.github.com
 npx @mihailfox/proxmox-openapi pipeline --mode full --report var/automation-summary.json
 ```
 
-| Flag | Description |
-| ---- | ----------- |
-| `--mode <ci|full>` | Select the automation mode (defaults to `ci`). |
-| `--offline` | Skip network scraping and reuse cached artifacts. |
-| `--fallback-to-cache` / `--no-fallback-to-cache` | Allow or disable cached snapshot reuse (defaults to allow). |
-| `--base-url <url>` | Override the Proxmox API viewer base URL. |
-| `--raw-output <path>` | Persist the raw snapshot JSON to a custom location. |
-| `--ir-output <path>` | Persist the normalized intermediate representation. |
-| `--openapi-dir <dir>` | Directory where OpenAPI JSON/YAML should be written. |
-| `--basename <name>` | Basename used for OpenAPI output files. |
-| `--report <path>` | Write the automation summary JSON to the specified path. |
+| Flag | Description | Default | Required |
+| ---- | ----------- | ------- | -------- |
+| `--mode <ci|full>` | Selects the automation mode. | `ci` | No |
+| `--offline` | Skips network scraping and reuses cached artifacts. | `false` | No |
+| `--fallback-to-cache` / `--no-fallback-to-cache` | Controls cached snapshot reuse. | `true` | No |
+| `--base-url <url>` | Overrides the Proxmox API viewer base URL. | — | No |
+| `--raw-output <path>` | Writes the raw snapshot JSON to a path. | — | No |
+| `--ir-output <path>` | Writes the normalized intermediate representation. | — | No |
+| `--openapi-dir <dir>` | Directory where OpenAPI JSON/YAML is written. | `var/openapi` | No |
+| `--basename <name>` | Basename used for OpenAPI output files. | `proxmox-ve` | No |
+| `--report <path>` | Writes the automation summary JSON to the specified path. | — | No |
 
 ### Stage Commands
 
@@ -81,3 +91,10 @@ const document = generateOpenApiDocument(normalized);
 
 `AutomationPipelineRunOptions` mirrors the CLI flags, and additional helpers such as `DEFAULT_BASE_URL` and
 `scrapeApiDocumentation` expose the lower-level building blocks for custom pipelines.
+
+## Changelog and Releases
+- See the repository root `CHANGELOG.md` for user‑visible changes. The release workflow uses the “Unreleased” section for release notes.
+- Release artifacts include OpenAPI JSON/YAML, checksums, and an automation summary. Download examples are in `docs/releases.md`.
+
+## Notes
+> Configure an `.npmrc` entry for GitHub Packages access when installing from CI.

@@ -23,16 +23,16 @@ npm run automation:pipeline -- --mode=full --report var/automation-summary.json
 npm run pages:build
 ```
 
-The packaged site will be available under `var/pages/`. You can inspect it locally with a static server, e.g.
+The packaged site is available under `var/pages/`. Inspect it locally with a static server, e.g.
 `npx serve var/pages`.
 
 ## Publishing Cadence
 
 - The Pages workflow is the source of truth and runs automatically on every `main` push that touches SPA or schema
   inputs.
-- Feature branches should rely on the preview provided by `npm run ui:dev`. Only merge once the targeted unit suites and
+- Feature branches rely on the preview provided by `npm run ui:dev`. Merge after the targeted unit suites and
   UI end-to-end tests pass locally.
-- Schedule a manual dispatch before major releases if automation has been paused or when a regenerated schema needs to
+- Schedule a manual dispatch before major releases if automation pauses or when a regenerated schema needs to
   ship independently of code changes.
 
 ## API Explorer Responsiveness
@@ -51,7 +51,7 @@ The packaged site will be available under `var/pages/`. You can inspect it local
 1. Identify the previous good commit SHA from the `main` history.
 2. Create a hotfix branch and revert the offending changes (`git revert <sha>`), or cherry-pick the last known-good SPA
    commit onto a new branch.
-3. Merge the fix into `main`; the Pages workflow will redeploy automatically with the restored assets.
+3. Merge the fix into `main`; the Pages workflow redeploys automatically with the restored assets.
 4. If an immediate revert is not possible, re-run the Pages workflow using the "Run workflow" button and specify the
    earlier commit via the workflow dispatch input.
 

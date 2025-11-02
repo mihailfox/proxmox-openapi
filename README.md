@@ -2,8 +2,38 @@
 
 Utilities for scraping the official Proxmox API viewer, normalizing responses, and publishing OpenAPI specs plus a companion SPA.
 
-This toolkit underpins a broader goal: ship third-party automation for Proxmox VE, beginning with the ingredients required
-to deliver a full-featured Terraform provider and other infrastructure-as-code integrations.
+This toolkit provides third‑party automation building blocks for Proxmox VE. It supplies the ingredients required
+to deliver a full‑featured Terraform provider and other infrastructure‑as‑code integrations.
+
+## At a Glance
+- Install and run the pipeline
+  ```bash
+  npm install @mihailfox/proxmox-openapi --registry=https://npm.pkg.github.com
+  npx proxmox-openapi pipeline --mode full --report var/automation-summary.json
+  ```
+- Build and preview the SPA
+  ```bash
+  npm install
+  npm run ui:dev
+  ```
+- Use the GitHub Action (CI)
+  ```yaml
+  jobs:
+    openapi:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v5
+        - name: Generate Proxmox OpenAPI artifacts
+          uses: ./.github/actions/proxmox-openapi-artifacts
+          with:
+            mode: ci
+            fallback-to-cache: true
+  ```
+
+## Requirements
+- Node.js 24 or newer (`"engines": { "node": ">=24.0.0" }`).
+- macOS, Linux, or Windows for local development. CI runs on Ubuntu.
+- For npm installs from GitHub Packages, configure an auth token (see package README).
 
 ## Project Vision
 - Deliver first-party quality building blocks that unblock a Terraform provider and future IaC integrations for Proxmox VE.
@@ -103,8 +133,9 @@ jobs:
 Download the release bundle and reference it locally:
 
 ```bash
+mkdir -p .github/actions/proxmox-openapi-artifacts
 curl -sSL https://github.com/mihailfox/proxmox-openapi/releases/download/v1.0.0/proxmox-openapi-artifacts-action-v1.0.0.tgz \
-  | tar -xz -C .github/actions --strip-components=1 proxmox-openapi-artifacts-action
+  | tar -xz -C .github/actions/proxmox-openapi-artifacts --strip-components=1 proxmox-openapi-artifacts-action
 ```
 
 ```yaml
@@ -114,7 +145,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Generate Proxmox OpenAPI artifacts
-        uses: ./proxmox-openapi-artifacts-action
+        uses: ./.github/actions/proxmox-openapi-artifacts
         with:
           mode: full
           offline: true
@@ -140,12 +171,19 @@ jobs:
 - See [docs/packages.md](docs/packages.md) for CLI flag reference, library usage, and release cadence details.
 
 ## Schema Releases
-- Push tags matching `v*`, semantic versions, or prerelease suffixes (`-alpha.*`, `-beta.*`, `-rc.*`) to trigger `.github/workflows/openapi-release.yml`.
-- The workflow regenerates artifacts, runs `npm run openapi:validate`, and publishes assets via `softprops/action-gh-release@v2`.
+- Publishing a GitHub Release triggers `.github/workflows/release.yml`. That workflow rebuilds artifacts, validates them, and uploads release assets. It also publishes the npm package (`@mihailfox/proxmox-openapi`) to GitHub Packages.
+- Use semantic tags (for example `v1.2.3`) and optional prerelease suffixes (`-alpha.*`, `-beta.*`, `-rc.*`) when drafting the release.
 - See [docs/releases.md](docs/releases.md) for download commands, checksum verification, and release metadata.
 
 ## Contributing
+0. Create a fork of the repo and clone it locally.
 1. Install dependencies with `npm install`.
 2. Run targeted checks (`npm run lint`, `npm run test:all`, etc.) before pushing.
 3. Reference the linked issue in branch names/PR bodies and document any automation impact.
-4. See [docs/automation.md](docs/automation.md) for expectations around project updates and troubleshooting.
+4. Keep `CHANGELOG.md` current. Our release workflow reads the top “Unreleased” section and uses it as the body for the next GitHub Release. Log user‑visible changes under the Common Changelog categories (Added, Changed, Deprecated, Removed, Fixed, Security).
+5. Prefer conventional commits (e.g. `feat:`, `fix(ci):`, `docs(action):`) and small, focused pull requests.
+6. See [docs/automation.md](docs/automation.md) for expectations around project updates and troubleshooting.
+7. See CONTRIBUTING.md for Documentation Style guidelines applied across this repository.
+
+## Notes
+> Git hooks run Biome on staged files via `.githooks/pre-commit`. Use `npm run format` for a full sweep across the repo.

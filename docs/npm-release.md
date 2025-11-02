@@ -1,11 +1,12 @@
-# npm Package Release Checklist
+# npm Package Release
 
-Follow these steps when publishing `@mihailfox/proxmox-openapi` to GitHub Packages.
+Follow these steps when publishing `@mihailfox/proxmox-openapi` to GitHub Packages. The GitHub Release workflow (`.github/workflows/release.yml`) runs on a “published” release and handles both npm and artifact publication.
 
 1. **Pre-release validation**
    - Run `npm run automation:pipeline -- --mode=full --report var/automation-summary.json`.
    - Ensure `npm run openapi:validate` passes.
    - Update the changelog and documentation for the upcoming version.
+   - Ensure the top “Unreleased” section in `CHANGELOG.md` accurately summarizes user‑visible changes (it becomes the release body).
 
 2. **Versioning & tagging**
    - Bump the package version in `packages/proxmox-openapi/package.json`.
@@ -13,7 +14,10 @@ Follow these steps when publishing `@mihailfox/proxmox-openapi` to GitHub Packag
    - Push the tag to origin.
 
 3. **Automated publish**
-   - The workflows `.github/workflows/openapi-release.yml` and `.github/workflows/npm-package.yml` rebuild and publish artifacts on tag push (GitHub release + npm package).
+   - The workflow `.github/workflows/release.yml` rebuilds, validates, and publishes both the GitHub Release assets and the npm package upon release publication.
+
+## Notes
+> The package publishes with provenance enabled. The registry is `https://npm.pkg.github.com` and requires authentication.
 
 4. **Post-publish verification**
    - Install the package using `npm install @mihailfox/proxmox-openapi --registry=https://npm.pkg.github.com` to confirm availability.
