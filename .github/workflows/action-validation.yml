@@ -23,7 +23,12 @@ on:
       - 'package-lock.json'
       - 'tsconfig.json'
       - 'packages/proxmox-openapi/**'
-
+  workflow_dispatch:
+    inputs:
+      include_extra_platforms:
+        description: 'Also run smoke test on macOS and Windows runners'
+        required: false
+        default: 'false'
 jobs:
   lint:
     name: Lint action workspace
@@ -40,15 +45,83 @@ jobs:
         run: npm install
       - name: Run action lint
         run: npm run action:lint
-
-  matrix-smoke:
-    name: Smoke test (Node 24)
+  smoke-linux:
+    name: Smoke test (Linux)
     needs: lint
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ubuntu-latest
+    if: github.event_name != 'workflow_dispatch' || github.event.inputs.run_linux == 'true'
+    steps:
+      - uses: actions/checkout@v5
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install dependencies
+        shell: bash
+        run: npm install
+      - name: Build automation package
+        shell: bash
+        run: npm run build --workspace packages/proxmox-openapi
+      - name: Run smoke test
+        id: pipeline
+        uses: ./.github/actions/proxmox-openapi-artifacts
+        with:
+          mode: ci
+          install-command: ""
+          install-playwright-browsers: true
+          report-path: var/automation-summary.json
+      - name: Inspect outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Raw snapshot: ${{ steps.pipeline.outputs.raw-snapshot }}"
+          echo "Normalized document: ${{ steps.pipeline.outputs.normalized-document }}"
+          echo "OpenAPI JSON: ${{ steps.pipeline.outputs.openapi-json }}"
+          echo "OpenAPI YAML: ${{ steps.pipeline.outputs.openapi-yaml }}"
+
+  smoke-macos:
+    name: Smoke test (macOS)
+    needs: lint
+    runs-on: macos-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.run_macos == 'true'
+    steps:
+      - uses: actions/checkout@v5
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install dependencies
+        shell: bash
+        run: npm install
+      - name: Build automation package
+        shell: bash
+        run: npm run build --workspace packages/proxmox-openapi
+      - name: Run smoke test
+        id: pipeline
+        uses: ./.github/actions/proxmox-openapi-artifacts
+        with:
+          mode: ci
+          install-command: ""
+          install-playwright-browsers: true
+          report-path: var/automation-summary.json
+      - name: Inspect outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Raw snapshot: ${{ steps.pipeline.outputs.raw-snapshot }}"
+          echo "Normalized document: ${{ steps.pipeline.outputs.normalized-document }}"
+          echo "OpenAPI JSON: ${{ steps.pipeline.outputs.openapi-json }}"
+          echo "OpenAPI YAML: ${{ steps.pipeline.outputs.openapi-yaml }}"
+
+  smoke-windows:
+    name: Smoke test (Windows)
+    needs: lint
+    runs-on: windows-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.run_windows == 'true'
     steps:
       - uses: actions/checkout@v5
       - name: Setup Node.js
