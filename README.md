@@ -108,10 +108,9 @@ workflow can reconcile status changes. Use `packages/proxmox-openapi/scripts/aut
 - Playwright suites cover scraper smoke tests (`packages/proxmox-openapi/tests/api-scraper/smoke.spec.ts`) and UI contrast/theme behaviour (`tests/ui/theme.spec.ts`).
 
 ## GitHub Action Usage
-The bundled action in `.github/actions/proxmox-openapi-artifacts` runs the automation pipeline and ships with the
-repository. It now delegates execution to the `@mihailfox/proxmox-openapi` package so GitHub Actions, local scripts, and
-downstream consumers rely on an identical code path. After cloning, rebuild the dist output with
-`npm run action:package` whenever the source changes.
+The bundled action in `.github/actions/proxmox-openapi-artifacts` runs the automation pipeline directly from source.
+It leverages the `@mihailfox/proxmox-openapi` package so GitHub Actions, local scripts, and downstream consumers rely on
+an identical code path. After cloning, lint updates with `npm run action:lint` to ensure the action workspace stays clean.
 
 ### GitHub-hosted runners
 
