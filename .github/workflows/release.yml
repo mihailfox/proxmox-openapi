@@ -40,11 +40,9 @@ jobs:
           echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
           echo "tag=v${VERSION}" >> "${GITHUB_OUTPUT}"
 
-  build-npm:
+  publish-package:
     needs: prepare
     runs-on: ubuntu-latest
-    env:
-      NPM_CONFIG_INSTALL_LINKS: "true"
     steps:
       - uses: actions/checkout@v5
 
@@ -54,6 +52,26 @@ jobs:
           node-version: 24
           cache: npm
           cache-dependency-path: package-lock.json
+          registry-url: https://npm.pkg.github.com
+
+      - name: Configure npm authentication
+        run: |
+          cat <<'RC' >> ~/.npmrc
+          //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+          @mihailfox:registry=https://npm.pkg.github.com
+          RC
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Remove deprecated npm config flags
+        run: npm config delete always-auth --location=user || true
+
+      - name: Align package version
+        env:
+          RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          set -euo pipefail
+          npm version "${RELEASE_VERSION}" --workspace packages/proxmox-openapi --no-git-tag-version
 
       - name: Install dependencies
         run: npm install --workspaces --include-workspace-root
@@ -61,28 +79,32 @@ jobs:
       - name: Build CLI workspace
         run: npm run build --workspace packages/proxmox-openapi
 
-      - name: Upload CLI dist artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: proxmox-openapi-dist
-          path: packages/proxmox-openapi/dist
-          if-no-files-found: error
+      - name: Publish package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm publish --workspace packages/proxmox-openapi --provenance --access public
+
+      - name: Wait for package availability
+        env:
+          RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          set -euo pipefail
+          for attempt in {1..10}; do
+            if npm view "@mihailfox/proxmox-openapi@${RELEASE_VERSION}" version >/dev/null 2>&1; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Package version ${RELEASE_VERSION} not visible yet" >&2
+          exit 1
 
   generate-openapi:
     needs:
       - prepare
-      - build-npm
+      - publish-package
     runs-on: ubuntu-latest
-    env:
-      NPM_CONFIG_INSTALL_LINKS: "true"
     steps:
       - uses: actions/checkout@v5
-
-      - name: Restore CLI dist artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: proxmox-openapi-dist
-          path: packages/proxmox-openapi
 
       - name: Setup Node.js
         uses: actions/setup-node@v5
@@ -90,15 +112,30 @@ jobs:
           node-version: 24
           cache: npm
           cache-dependency-path: package-lock.json
+          registry-url: https://npm.pkg.github.com
+
+      - name: Configure npm authentication
+        run: |
+          cat <<'RC' >> ~/.npmrc
+          //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+          @mihailfox:registry=https://npm.pkg.github.com
+          RC
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install dependencies
         run: npm install --workspaces --include-workspace-root
 
+      - name: Install published CLI
+        env:
+          RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
+        run: npm install --global "@mihailfox/proxmox-openapi@${RELEASE_VERSION}"
+
       - name: Verify CLI availability
-        run: npm exec -- proxmox-openapi --help >/dev/null
+        run: proxmox-openapi --help >/dev/null
 
       - name: Generate OpenAPI artifacts
-        run: npm exec -- proxmox-openapi pipeline --mode=full --report var/automation-summary.json
+        run: proxmox-openapi pipeline --mode=full --report var/automation-summary.json
 
       - name: Validate OpenAPI document
         run: npm run openapi:validate
@@ -133,19 +170,11 @@ jobs:
   build-action:
     needs:
       - prepare
-      - build-npm
+      - publish-package
       - generate-openapi
     runs-on: ubuntu-latest
-    env:
-      NPM_CONFIG_INSTALL_LINKS: "true"
     steps:
       - uses: actions/checkout@v5
-
-      - name: Restore CLI dist artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: proxmox-openapi-dist
-          path: packages/proxmox-openapi
 
       - name: Setup Node.js
         uses: actions/setup-node@v5
@@ -153,9 +182,27 @@ jobs:
           node-version: 24
           cache: npm
           cache-dependency-path: package-lock.json
+          registry-url: https://npm.pkg.github.com
+
+      - name: Configure npm authentication
+        run: |
+          cat <<'RC' >> ~/.npmrc
+          //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+          @mihailfox:registry=https://npm.pkg.github.com
+          RC
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install dependencies
         run: npm install --workspaces --include-workspace-root
+
+      - name: Use published CLI in action workspace
+        env:
+          RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          set -euo pipefail
+          npm uninstall --workspace .github/actions/proxmox-openapi-artifacts @mihailfox/proxmox-openapi || true
+          npm install --workspace .github/actions/proxmox-openapi-artifacts "@mihailfox/proxmox-openapi@${RELEASE_VERSION}"
 
       - name: Build action bundle
         run: npm run action:package
@@ -184,52 +231,3 @@ jobs:
           overwrite_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  publish-npm:
-    needs:
-      - prepare
-      - build-npm
-    runs-on: ubuntu-latest
-    env:
-      NPM_CONFIG_INSTALL_LINKS: "true"
-    steps:
-      - uses: actions/checkout@v5
-
-      - name: Restore CLI dist artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: proxmox-openapi-dist
-          path: packages/proxmox-openapi
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: npm
-          cache-dependency-path: package-lock.json
-          registry-url: https://npm.pkg.github.com
-
-      - name: Configure npm authentication
-        run: |
-          cat <<'RC' >> ~/.npmrc
-          //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
-          RC
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Remove deprecated npm config flags
-        run: npm config delete always-auth --location=user || true
-
-      - name: Align package version
-        run: |
-          set -euo pipefail
-          VERSION="${{ needs.prepare.outputs.version }}"
-          npm version "${VERSION}" --workspace packages/proxmox-openapi --no-git-tag-version
-
-      - name: Install dependencies
-        run: npm install --workspaces --include-workspace-root
-
-      - name: Publish package
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm publish --workspace packages/proxmox-openapi --provenance --access public
