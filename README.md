@@ -145,8 +145,8 @@ jobs:
 - See [docs/packages.md](docs/packages.md) for CLI flag reference, library usage, and release cadence details.
 
 ## Schema Releases
-- Push tags matching `v*`, semantic versions, or prerelease suffixes (`-alpha.*`, `-beta.*`, `-rc.*`) to trigger `.github/workflows/openapi-release.yml`.
-- The workflow regenerates artifacts, runs `npm run openapi:validate`, and publishes assets via `softprops/action-gh-release@v2`.
+- Publishing a GitHub Release triggers `.github/workflows/release.yml`. That workflow rebuilds artifacts, validates them, and uploads release assets. It also publishes the npm package (`@mihailfox/proxmox-openapi`) to GitHub Packages.
+- Use semantic tags (for example `v1.2.3`) and optional prerelease suffixes (`-alpha.*`, `-beta.*`, `-rc.*`) when drafting the release.
 - See [docs/releases.md](docs/releases.md) for download commands, checksum verification, and release metadata.
 
 ## Contributing

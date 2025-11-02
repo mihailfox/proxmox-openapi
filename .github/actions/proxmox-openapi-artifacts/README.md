@@ -52,14 +52,15 @@ jobs:
           fallback-to-cache: true
 ```
 
-### Self-hosted runners (offline-compatible)
+### Self-Hosted Runners (Offline-Compatible)
 
 Download the release asset from the [v1.0.0](https://github.com/mihailfox/proxmox-openapi/releases/tag/v1.0.0)
-(or later) tag and unpack it into `.github/actions/proxmox-openapi-artifacts/`:
+(or later) tag and unpack it under the same path our workflows use:
 
 ```bash
+mkdir -p .github/actions/proxmox-openapi-artifacts
 curl -sSL https://github.com/mihailfox/proxmox-openapi/releases/download/v1.0.0/proxmox-openapi-artifacts-action-v1.0.0.tgz \
-  | tar -xz -C .github/actions --strip-components=1 proxmox-openapi-artifacts-action
+  | tar -xz -C .github/actions/proxmox-openapi-artifacts --strip-components=1 proxmox-openapi-artifacts-action
 ```
 
 Then reference the local path in your workflow:
@@ -71,7 +72,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Generate Proxmox OpenAPI artifacts
-        uses: ./proxmox-openapi-artifacts-action
+        uses: ./.github/actions/proxmox-openapi-artifacts
         with:
           mode: full
           offline: true

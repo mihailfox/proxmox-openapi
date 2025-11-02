@@ -1,4 +1,4 @@
-# npm package: @mihailfox/proxmox-openapi
+# npm Package: @mihailfox/proxmox-openapi
 
 The npm distribution packages the automation pipeline so you can generate schema bundles directly from your own workflows.
 
