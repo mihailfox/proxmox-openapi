@@ -1,6 +1,6 @@
 {
   "name": "@mihailfox/proxmox-openapi",
-  "version": "0.2.8",
+  "version": "0.3.1",
   "description": "CLI and library for generating Proxmox OpenAPI artifacts.",
   "type": "module",
   "private": false,

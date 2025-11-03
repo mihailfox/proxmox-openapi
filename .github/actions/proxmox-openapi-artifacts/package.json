@@ -1,6 +1,6 @@
 {
   "name": "proxmox-openapi-artifacts-action",
-  "version": "0.2.8",
+  "version": "0.3.1",
   "private": false,
   "description": "GitHub Action that runs the Proxmox OpenAPI automation pipeline.",
   "type": "module",
@@ -10,6 +10,6 @@
   "dependencies": {
     "@actions/core": "^1.11.1",
     "@actions/exec": "^1.1.1",
-    "@mihailfox/proxmox-openapi": "^0.2.8"
+    "@mihailfox/proxmox-openapi": "^0.3.1"
   }
 }
