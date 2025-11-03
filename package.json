@@ -1,6 +1,6 @@
 {
   "name": "proxmox-openapi",
-  "version": "0.1.0",
+  "version": "0.2.8",
   "type": "module",
   "private": false,
   "workspaces": [
@@ -51,7 +51,7 @@
   },
   "devDependencies": {
     "@apidevtools/swagger-parser": "^12.0.0",
-    "@biomejs/biome": "^2.2.5",
+    "@biomejs/biome": "^2.3.2",
     "@playwright/test": "^1.55.1",
     "@types/node": "^24.0.0",
     "@types/react": "^19.0.0",
