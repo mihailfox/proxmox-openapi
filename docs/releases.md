@@ -78,6 +78,7 @@ npm install --registry=https://npm.pkg.github.com/@mihailfox/proxmox-openapi
 - Use `npm run automation:summary -- --input var/automation-summary.json` to inspect the current artifact layout when preparing release notes.
 - The release workflow aligns the root workspace, npm package, and GitHub Action versions with the tag (e.g., `v1.2.3` → `1.2.3`).
 - Each release records the upstream Proxmox VE version via `scripts/fetch_pve_docs_metadata.py` so consumers can map schema changes to PVE builds.
+- After all artifacts publish successfully, the workflow commits the version bump back to `main`, keeping package.json metadata in sync with the latest tag.
 
 ## Notes
 > The JSON OpenAPI document is the canonical artifact for automation. The YAML variant mirrors the JSON content and exists for convenience.
