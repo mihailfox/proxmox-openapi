@@ -35,6 +35,15 @@ jobs:
       # Install workspace dependencies (automation + SPA).
       - name: Install dependencies
         run: npm install --workspaces --include-workspace-root
+
+      - name: Configure npm for GitHub Packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cat <<RC >> ~/.npmrc
+          //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+          @mihailfox:registry=https://npm.pkg.github.com
+          RC
       # Generate the raw snapshot, normalized IR, and OpenAPI bundles consumed by the SPA.
       - name: Generate OpenAPI artifacts
         uses: ./.github/actions/proxmox-openapi-artifacts
