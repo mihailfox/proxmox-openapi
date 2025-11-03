@@ -47,6 +47,7 @@ to deliver a full‑featured Terraform provider and other infrastructure‑as‑
 - `.github/workflows/`: CI pipelines for validations, artifact generation, GitHub Pages, and project automation.
 - `.devcontainer/`: Containerized development environment configs. See [docs/devcontainer.md](docs/devcontainer.md).
 - `var/`: Workspace-local output directory (automation summaries, OpenAPI bundles, release staging, static site builds).
+  GitHub Pages installs the latest published CLI (`@mihailfox/proxmox-openapi@latest`) before running automation, and falls back to a local build if the package is unavailable.
 
 ### Git hooks & formatting
 - We pin Git’s hooks directory to `.githooks` (`git config core.hooksPath .githooks`) so every commit runs Biome on staged
@@ -173,7 +174,7 @@ jobs:
 - Publishing a GitHub Release triggers `.github/workflows/release.yml`. That workflow rebuilds artifacts, validates them, and uploads release assets. It also publishes the npm package (`@mihailfox/proxmox-openapi`) to GitHub Packages.
 - Use semantic tags (for example `v1.2.3`) and optional prerelease suffixes (`-alpha.*`, `-beta.*`, `-rc.*`) when drafting the release.
 - See [docs/releases.md](docs/releases.md) for download commands, checksum verification, and release metadata.
-- The release workflow aligns every `package.json` version with the tag and records the upstream Proxmox VE version scraped from the documentation index. Release notes and manifests include both values for traceability.
+- The release workflow aligns every `package.json` version with the tag, commits the bump back to `main`, and records the upstream Proxmox VE version scraped from the documentation index. Release notes and manifests include both values for traceability.
 
 ## Contributing
 0. Create a fork of the repo and clone it locally.

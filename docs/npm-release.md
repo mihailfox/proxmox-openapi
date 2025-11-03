@@ -13,7 +13,7 @@ Follow these steps when publishing `@mihailfox/proxmox-openapi` to GitHub Packag
    - Push the tag to origin.
 
 3. **Automated publish**
-   - The workflow `.github/workflows/release.yml` rebuilds, validates, and publishes both the GitHub Release assets and the npm package upon release publication. It also installs only the released `@mihailfox/proxmox-openapi@X.Y.Z` version inside the GitHub Action packaging step.
+   - The workflow `.github/workflows/release.yml` rebuilds, validates, publishes the npm package, commits the version bump back to `main`, and generates GitHub release assets. It also installs only the released `@mihailfox/proxmox-openapi@X.Y.Z` version inside the GitHub Action packaging step.
 
 ## Notes
 > The package publishes with provenance enabled. The registry is `https://npm.pkg.github.com` and requires authentication.
