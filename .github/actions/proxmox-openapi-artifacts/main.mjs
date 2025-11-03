@@ -2,10 +2,9 @@
 import { promises as fs } from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import * as core from "@actions/core";
 import { getExecOutput } from "@actions/exec";
-
-import { runAutomationPipeline } from "@mihailfox/proxmox-openapi";
 
 function readInput(name) {
   const key = `INPUT_${name}`;
@@ -114,6 +113,8 @@ async function run() {
       );
     }
 
+    const { runAutomationPipeline } = await loadCliModule(workingDirectory);
+
     core.startGroup("Running automation pipeline");
     const result = await runAutomationPipeline(pipelineOptions, {
       logger: (message) => core.info(message),
@@ -134,6 +135,41 @@ async function run() {
     } else {
       core.setFailed(`Unknown error: ${String(error)}`);
     }
+  }
+}
+
+async function loadCliModule(workingDirectory) {
+  try {
+    return await import("@mihailfox/proxmox-openapi");
+  } catch (error) {
+    if (error && typeof error === "object" && "code" in error && error.code === "ERR_MODULE_NOT_FOUND") {
+      const localDist = path.resolve(workingDirectory, "packages/proxmox-openapi/dist/index.js");
+      await ensureLocalCliBuild(localDist, workingDirectory);
+      return import(pathToFileURL(localDist).href);
+    }
+    throw error;
+  }
+}
+
+async function ensureLocalCliBuild(localDistPath, workingDirectory) {
+  try {
+    await fs.access(localDistPath);
+    return;
+  } catch {
+    core.startGroup("Building local proxmox-openapi workspace");
+    const buildResult = await getExecOutput("npm", ["run", "build", "--workspace", "packages/proxmox-openapi"], {
+      cwd: workingDirectory,
+      ignoreReturnCode: true,
+    });
+    if (buildResult.exitCode !== 0) {
+      core.error(buildResult.stderr);
+      throw new Error(`Building packages/proxmox-openapi failed with exit code ${buildResult.exitCode}.`);
+    }
+    if (buildResult.stdout.trim() !== "") {
+      core.info(buildResult.stdout);
+    }
+    core.endGroup();
+    await fs.access(localDistPath);
   }
 }
 
