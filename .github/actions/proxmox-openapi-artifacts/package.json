@@ -10,6 +10,6 @@
   "dependencies": {
     "@actions/core": "^1.11.1",
     "@actions/exec": "^1.1.1",
-    "@mihailfox/proxmox-openapi": "^2.2.5"
+    "@mihailfox/proxmox-openapi": "^0.2.8"
   }
 }
