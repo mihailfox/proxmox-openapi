@@ -18,6 +18,9 @@ jobs:
       tag: ${{ steps.normalize.outputs.tag }}
       pve_version: ${{ steps.docs.outputs.pve_version }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
       - name: Derive release version
         id: normalize
         env:
