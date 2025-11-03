@@ -262,6 +262,7 @@ jobs:
   sync-version:
     name: Sync version metadata
     needs:
+      - prepare
       - publish-package
       - generate-openapi
       - build-action
