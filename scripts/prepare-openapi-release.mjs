@@ -1,10 +1,11 @@
-import { createHash } from "node:crypto";
 import { execSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
 
 const [requestedTag] = process.argv.slice(2);
 const tagName = requestedTag ?? process.env.GITHUB_REF_NAME ?? "dev";
+const pveVersion = process.env.PVE_VERSION ?? "";
 const workspace = process.cwd();
 const artifactsDir = path.resolve("var", "openapi");
 const releaseRoot = path.resolve("var", "openapi-release");
@@ -19,9 +20,12 @@ async function main() {
   const manifest = await buildChecksumManifest(
     ["proxmox-ve.json", "proxmox-ve.yaml"].map((file) => path.join(stagingDir, file))
   );
+  if (pveVersion) {
+    manifest.proxmoxVersion = pveVersion;
+  }
   await writeJson(path.join(stagingDir, "openapi.sha256.json"), manifest);
 
-  const releaseNotes = await composeReleaseNotes(tagName);
+  const releaseNotes = await composeReleaseNotes(tagName, pveVersion);
   await fs.writeFile(path.join(releaseRoot, `RELEASE_NOTES-${tagName}.md`), releaseNotes, "utf8");
 
   console.log(`[openapi-release] Prepared bundle at ${path.relative(workspace, stagingDir)}.`);
@@ -57,7 +61,7 @@ async function buildChecksumManifest(assetPaths) {
   };
 }
 
-async function composeReleaseNotes(tag) {
+async function composeReleaseNotes(tag, proxmoxVersion) {
   const current = await readWorkingState();
   const previousTag = resolvePreviousTag(tag);
   const previous = previousTag ? await readStateAtRef(previousTag) : null;
@@ -68,6 +72,9 @@ async function composeReleaseNotes(tag) {
   lines.push(`- Normalized at: ${current.normalized.normalizedAt}`);
   lines.push(`- Raw snapshot scraped at: ${current.snapshot.scrapedAt ?? "unknown"}`);
   lines.push(`- Cache usage: ${current.automation?.usedCache ? "♻️ Reused cached snapshot" : "✨ Fresh scrape"}`);
+  if (proxmoxVersion) {
+    lines.push(`- Upstream Proxmox VE version: ${proxmoxVersion}`);
+  }
   lines.push("");
 
   if (previous) {

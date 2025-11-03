@@ -53,20 +53,27 @@ inputs:
 outputs:
   raw-snapshot:
     description: 'Absolute path to the raw snapshot JSON used by the pipeline.'
+    value: ${{ steps.run.outputs.raw-snapshot }}
   normalized-document:
     description: 'Absolute path to the normalized IR document.'
+    value: ${{ steps.run.outputs.normalized-document }}
   openapi-json:
     description: 'Absolute path to the generated OpenAPI JSON file.'
+    value: ${{ steps.run.outputs.openapi-json }}
   openapi-yaml:
     description: 'Absolute path to the generated OpenAPI YAML file.'
+    value: ${{ steps.run.outputs.openapi-yaml }}
   from-cache:
     description: 'Whether the pipeline reused an existing cached snapshot.'
+    value: ${{ steps.run.outputs.from-cache }}
   summary-path:
     description: 'Path to the JSON summary describing the pipeline run.'
+    value: ${{ steps.run.outputs.summary-path }}
 runs:
   using: "composite"
   steps:
     - name: Run Proxmox OpenAPI automation pipeline
+      id: run
       shell: bash
       env:
         INPUT_MODE: ${{ inputs.mode }}
