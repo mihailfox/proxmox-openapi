@@ -40,7 +40,7 @@ jobs:
         uses: ./.github/actions/proxmox-openapi-artifacts
         with:
           mode: ci
-          install-command: ""
+          install-command: npm install --no-save @mihailfox/proxmox-openapi@latest
           report-path: var/automation-summary.json
           openapi-dir: var/openapi
           fallback-to-cache: true
