@@ -51,7 +51,7 @@ Use this checklist when tagging a new release:
    - Push the tag (`git push origin v1.2.0`).
 
 3. **Automated workflows**
-   - Publishing a GitHub Release triggers `.github/workflows/release.yml`, which regenerates artifacts, writes release notes, and publishes assets via `softprops/action-gh-release@v2`. It also builds and publishes `@mihailfox/proxmox-openapi` to GitHub Packages with provenance.
+   - Publishing a GitHub Release triggers `.github/workflows/release.yml`, which aligns all package versions with the tag, scrapes the upstream Proxmox VE version, regenerates artifacts, writes release notes, and publishes assets via `softprops/action-gh-release@v2`. It also builds and publishes `@mihailfox/proxmox-openapi` to GitHub Packages with provenance.
 
 4. **Post-publish validation**
    - Download archives from the GitHub release and verify checksums (`openapi.sha256.json`).
