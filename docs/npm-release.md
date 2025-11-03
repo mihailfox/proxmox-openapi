@@ -9,12 +9,11 @@ Follow these steps when publishing `@mihailfox/proxmox-openapi` to GitHub Packag
    - Ensure the top “Unreleased” section in `CHANGELOG.md` accurately summarizes user‑visible changes (it becomes the release body).
 
 2. **Versioning & tagging**
-   - Bump the package version in `packages/proxmox-openapi/package.json`.
-   - Commit the change and tag it (`git tag -a vX.Y.Z -m "Proxmox OpenAPI npm vX.Y.Z"`).
+   - Tag the release (`git tag -a vX.Y.Z -m "Proxmox OpenAPI vX.Y.Z"`). The GitHub release workflow aligns every package.json (root, CLI, GitHub Action) to `X.Y.Z` using `scripts/set-release-version.mjs`.
    - Push the tag to origin.
 
 3. **Automated publish**
-   - The workflow `.github/workflows/release.yml` rebuilds, validates, and publishes both the GitHub Release assets and the npm package upon release publication.
+   - The workflow `.github/workflows/release.yml` rebuilds, validates, and publishes both the GitHub Release assets and the npm package upon release publication. It also installs only the released `@mihailfox/proxmox-openapi@X.Y.Z` version inside the GitHub Action packaging step.
 
 ## Notes
 > The package publishes with provenance enabled. The registry is `https://npm.pkg.github.com` and requires authentication.

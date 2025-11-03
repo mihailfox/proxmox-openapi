@@ -30,6 +30,7 @@ Each GitHub release publishes the following files:
 | `openapi.sha256.json` | SHA-256 checksums for the JSON/YAML payloads. |
 | `automation-summary.json` | Structured output from the automation pipeline run. |
 | `AUTOMATION_SUMMARY.md` | Human-readable summary of artifact locations. |
+| Metadata | Release notes list the upstream Proxmox VE version scraped from the docs index; the checksum manifest echoes the same `proxmoxVersion` value. |
 
 ## Download Examples
 
@@ -75,6 +76,8 @@ npm install --registry=https://npm.pkg.github.com/@mihailfox/proxmox-openapi
 - Tags containing prerelease suffixes are published as prereleases; stable tags are marked as latest.
 - Before tagging, ensure `npm run openapi:validate` passes so the bundle is ready for publication.
 - Use `npm run automation:summary -- --input var/automation-summary.json` to inspect the current artifact layout when preparing release notes.
+- The release workflow aligns the root workspace, npm package, and GitHub Action versions with the tag (e.g., `v1.2.3` → `1.2.3`).
+- Each release records the upstream Proxmox VE version via `scripts/fetch_pve_docs_metadata.py` so consumers can map schema changes to PVE builds.
 
 ## Notes
 > The JSON OpenAPI document is the canonical artifact for automation. The YAML variant mirrors the JSON content and exists for convenience.

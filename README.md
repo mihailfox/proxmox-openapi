@@ -173,6 +173,7 @@ jobs:
 - Publishing a GitHub Release triggers `.github/workflows/release.yml`. That workflow rebuilds artifacts, validates them, and uploads release assets. It also publishes the npm package (`@mihailfox/proxmox-openapi`) to GitHub Packages.
 - Use semantic tags (for example `v1.2.3`) and optional prerelease suffixes (`-alpha.*`, `-beta.*`, `-rc.*`) when drafting the release.
 - See [docs/releases.md](docs/releases.md) for download commands, checksum verification, and release metadata.
+- The release workflow aligns every `package.json` version with the tag and records the upstream Proxmox VE version scraped from the documentation index. Release notes and manifests include both values for traceability.
 
 ## Contributing
 0. Create a fork of the repo and clone it locally.
