@@ -38,7 +38,7 @@ jobs:
 
       - name: Configure npm for GitHub Packages
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.RELEASE }}
         run: |
           cat <<RC >> ~/.npmrc
           //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
