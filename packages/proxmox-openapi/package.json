@@ -5,6 +5,10 @@
   "type": "module",
   "private": false,
   "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mihailfox/proxmox-openapi.git"
+  },
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
