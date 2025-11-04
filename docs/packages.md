@@ -82,3 +82,4 @@ into the internal workspace packages.
 
 ## Notes
 > When installing in CI, set `NODE_AUTH_TOKEN` or include the token in `.npmrc`. Use a token with `read:packages` scope.
+> Use `npm install --no-save @mihailfox/proxmox-openapi@latest --registry=https://npm.pkg.github.com` when you always want the newest published CLI.

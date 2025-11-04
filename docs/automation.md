@@ -45,6 +45,7 @@ Use this checklist when tagging a new release:
    - Run `npm run automation:pipeline -- --mode=full --report var/automation-summary.json` locally or in CI.
    - Confirm `npm run openapi:validate` succeeds.
    - Stage schema bundles with `npm run openapi:release:prepare -- <tag>` if you need to preview release notes.
+   - Verify `.npmrc` is configured for GitHub Packages (`@mihailfox:registry=https://npm.pkg.github.com`) so the release workflow can publish and consume the CLI.
 
 2. **Tag and push**
    - Create an annotated tag (for example `git tag -a v1.2.0 -m "Proxmox OpenAPI v1.2.0"`).
