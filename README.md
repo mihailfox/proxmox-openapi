@@ -128,6 +128,16 @@ jobs:
           fallback-to-cache: true
 ```
 
+> **Note**
+> Workflows that install `@mihailfox/proxmox-openapi` must configure npm for GitHub Packages. For example:
+> 
+> ```bash
+> cat <<'RC' >> ~/.npmrc
+> //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
+> @mihailfox:registry=https://npm.pkg.github.com
+> RC
+> ```
+
 ### Self-hosted runners (offline-compatible)
 
 Download the release bundle and reference it locally:

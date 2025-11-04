@@ -11,11 +11,13 @@ Notes for maintainers:
 ## Unreleased
 
 ### Changed
-- CI/Pages: simplify GitHub Pages workflow to reduce steps.
+- CI/Pages: install the latest published CLI from GitHub Packages before automation runs.
+- Release workflow: push version bumps back to `main` after publishing.
 
 ### Fixed
 - CI/Actions: reference the local bundled action to avoid resolution issues (#74).
 - CI/Release: use generated action in release workflow for consistent behaviour (#73).
+- GitHub Action: build the local CLI workspace when the published package is unavailable.
 
 ## v0.2.9 — 2025-11-02
 
