@@ -16,8 +16,7 @@ Keep the delivery project fields in sync and define how the automation pipeline 
 - `npx proxmox-openapi pipeline` (aliased via `npm run automation:pipeline`) drives the scrape → normalize → generate flow
   implemented in `packages/proxmox-openapi/src/internal/automation/pipeline.ts`. Stage-specific commands (`proxmox-openapi scrape|normalize|generate`)
   mirror the dedicated scripts for troubleshooting individual phases. GitHub Actions rebuild the package (`npm run build --workspace packages/proxmox-openapi`)
-  and install browsers (`npx playwright install --with-deps`) before executing `node packages/proxmox-openapi/dist/cli.cjs pipeline` so
-  fresh CI runners don’t rely on cached artifacts.
+  and install browsers (`npx playwright install chromium --with-deps --only-shell`) before executing `node packages/proxmox-openapi/dist/cli.cjs pipeline` so fresh CI runners don’t rely on cached artifacts.
 - **CI mode (`--mode=ci`)** is the default. It performs a live scrape and reuses cached snapshots only when scraping fails.
 - **Full mode (`--mode=full`)** performs a live scrape using Playwright and honours `--offline`/`--fallback-to-cache` overrides:
   - `--fallback-to-cache` / `--no-fallback-to-cache` control whether cached snapshots are reused when scraping fails.
