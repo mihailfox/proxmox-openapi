@@ -25,7 +25,8 @@ async function main() {
   }
   await writeJson(path.join(stagingDir, "openapi.sha256.json"), manifest);
 
-  const releaseNotes = await composeReleaseNotes(tagName, pveVersion);
+  const changelogSection = await extractChangelogSection(tagName);
+  const releaseNotes = await composeReleaseNotes(tagName, pveVersion, changelogSection);
   await fs.writeFile(path.join(releaseRoot, `RELEASE_NOTES-${tagName}.md`), releaseNotes, "utf8");
 
   console.log(`[openapi-release] Prepared bundle at ${path.relative(workspace, stagingDir)}.`);
@@ -61,7 +62,7 @@ async function buildChecksumManifest(assetPaths) {
   };
 }
 
-async function composeReleaseNotes(tag, proxmoxVersion) {
+async function composeReleaseNotes(tag, proxmoxVersion, changelogSection) {
   const current = await readWorkingState();
   const previousTag = resolvePreviousTag(tag);
   const previous = previousTag ? await readStateAtRef(previousTag) : null;
@@ -100,6 +101,13 @@ async function composeReleaseNotes(tag, proxmoxVersion) {
   lines.push("- OpenAPI JSON: `proxmox-ve.json`");
   lines.push("- OpenAPI YAML: `proxmox-ve.yaml`");
   lines.push("- Checksums: `openapi.sha256.json`");
+
+  if (changelogSection && changelogSection.trim() !== "") {
+    lines.push("");
+    lines.push("## Changelog");
+    lines.push("");
+    lines.push(changelogSection.trim());
+  }
 
   return lines.join("\n");
 }
@@ -170,6 +178,42 @@ function runGitShow(ref, file) {
 
 async function writeJson(filePath, payload) {
   await fs.writeFile(filePath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
+}
+
+async function extractChangelogSection(tag) {
+  try {
+    const changelog = await fs.readFile(path.resolve("CHANGELOG.md"), "utf8");
+    const headingRegex = new RegExp(`^##\\s+${escapeRegExp(tag)}(?:\\s+—.*)?$`, "m");
+    const lines = changelog.split("\n");
+    let start = -1;
+    for (let i = 0; i < lines.length; i += 1) {
+      if (headingRegex.test(lines[i])) {
+        start = i + 1;
+        break;
+      }
+    }
+    if (start === -1) {
+      return "";
+    }
+    let end = lines.length;
+    for (let i = start; i < lines.length; i += 1) {
+      if (lines[i].startsWith("## ")) {
+        end = i;
+        break;
+      }
+    }
+    const sectionLines = lines.slice(start, end);
+    while (sectionLines.length && sectionLines[0].trim() === "") sectionLines.shift();
+    while (sectionLines.length && sectionLines[sectionLines.length - 1].trim() === "") sectionLines.pop();
+    return sectionLines.join("\n");
+  } catch (error) {
+    console.warn(`[openapi-release] Unable to read CHANGELOG: ${error instanceof Error ? error.message : error}`);
+    return "";
+  }
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 main().catch((error) => {
