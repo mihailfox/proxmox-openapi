@@ -6,6 +6,10 @@ on:
       - "**/*.md"
   workflow_dispatch: {}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -23,4 +27,3 @@ jobs:
           node-version: 24
       - name: Run link checker
         run: node scripts/check-doc-links.mjs
-

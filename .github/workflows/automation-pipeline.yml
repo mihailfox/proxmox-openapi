@@ -46,6 +46,10 @@ on:
         default: "false"
         required: false
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   pipeline:
     runs-on: ubuntu-latest
