@@ -176,7 +176,10 @@ Node-friendly shebang handling in the bundled `dist/cli.cjs`.
 - `scripts/prepare-openapi-release.mjs` reads cached IR and snapshot files,
   computes SHA-256 digests, inspects `CHANGELOG.md`, and writes both a staged
   directory (`var/openapi-release/proxmox-openapi-schema-<tag>`) and release
-  notes. It shells out to `git tag` to resolve previous versions.
+  notes. It shells out to `git tag` to resolve previous versions, fetches the
+  prior release notes when cached artifacts are unavailable, embeds an
+  `openapi-stats` marker for machine-readable baselines, and falls back to the
+  `## Unreleased` changelog section whenever the tagged entry is still pending.
 - `scripts/prepare-pages.mjs` verifies a Vite build exists, copies the OpenAPI
   bundle into `dist/openapi`, adds a `404.html` fallback, and mirrors the result
   into `var/pages/` for GitHub Pages deployment.
