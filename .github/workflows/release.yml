@@ -74,7 +74,7 @@ jobs:
           RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
         run: |
           set -euo pipefail
-          npm run set-version -- --version "${RELEASE_VERSION}"
+          npm run set-version -- --version "${RELEASE_VERSION}" -- --update-action-dependency
 
       - name: Configure npm authentication
         run: |
@@ -207,6 +207,13 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
           registry-url: https://npm.pkg.github.com
+
+      - name: Align package versions
+        env:
+          RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          set -euo pipefail
+          npm run set-version -- --version "${RELEASE_VERSION}" -- --update-action-dependency
 
       - name: Configure npm authentication
         run: |
