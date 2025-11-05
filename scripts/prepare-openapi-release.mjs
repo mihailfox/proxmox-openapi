@@ -115,18 +115,7 @@ async function composeReleaseNotes(tag, proxmoxVersion, changelogSection) {
     if (currentStats.snapshot.stats?.endpointCount != null) {
       lines.push(`- Raw snapshot endpoints: ${currentStats.snapshot.stats.endpointCount}`);
     }
-  } else {
-    lines.push("## Changes");
-    lines.push("");
-    lines.push("Initial tagged release of the schema bundle.");
   }
-
-  lines.push("");
-  lines.push("## Artifacts");
-  lines.push("");
-  lines.push("- OpenAPI JSON: `proxmox-ve.json`");
-  lines.push("- OpenAPI YAML: `proxmox-ve.yaml`");
-  lines.push("- Checksums: `openapi.sha256.json`");
 
   const content = changelogSection?.content?.trim();
   if (content) {
@@ -139,6 +128,13 @@ async function composeReleaseNotes(tag, proxmoxVersion, changelogSection) {
     lines.push("");
     lines.push(content);
   }
+
+  lines.push("");
+  lines.push("## Artifacts");
+  lines.push("");
+  lines.push("- OpenAPI JSON: `proxmox-ve.json`");
+  lines.push("- OpenAPI YAML: `proxmox-ve.yaml`");
+  lines.push("- Checksums: `openapi.sha256.json`");
 
   lines.push("");
   lines.push(renderStatsMarker(currentStats));

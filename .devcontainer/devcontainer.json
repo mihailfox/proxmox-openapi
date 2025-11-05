@@ -79,7 +79,7 @@
   // here you can mount host files into container
   // target/container path ca not be dynamic
   "mounts": [
-    "source=${localEnv:HOME}/.bash_history,target=/home/node/.bash_history,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.dev_con_bash_history,target=/home/node/.bash_history,type=bind,consistency=cached",
     "source=${localEnv:HOME}/.codex,target=/home/node/.codex,type=bind,consistency=cached",
     "source=${localEnv:HOME}/.git-credentials,target=/home/node/.git-credentials,type=bind,consistency=cached",
     "source=${localEnv:HOME}/.gitconfig,target=/home/node/.gitconfig,type=bind,consistency=cached"
