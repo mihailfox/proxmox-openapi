@@ -1,9 +1,9 @@
 import { chromium } from "playwright";
 
 import { countEndpoints, fetchApiScript, parseApiSchema, toRawTree } from "./extractor.ts";
-import { registerCodexMock } from "./codex-mock.ts";
-import { persistSnapshot, type PersistOptions } from "./persistence.ts";
+import { type PersistOptions, persistSnapshot } from "./persistence.ts";
 import type { RawApiSnapshot } from "./types.ts";
+import { registerViewerMock } from "./viewer-mock.ts";
 
 export interface ScrapeOptions {
   baseUrl?: string;
@@ -20,7 +20,7 @@ export async function scrapeApiDocumentation(options: ScrapeOptions = {}): Promi
   const baseUrl = options.baseUrl ?? DEFAULT_BASE_URL;
   const browser = await chromium.launch({ headless: options.headless ?? true });
   const context = await browser.newContext({ ignoreHTTPSErrors: true });
-  await registerCodexMock(context, baseUrl);
+  await registerViewerMock(context, baseUrl);
   const page = await context.newPage();
 
   try {

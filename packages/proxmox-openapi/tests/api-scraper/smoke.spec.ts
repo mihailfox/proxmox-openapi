@@ -1,13 +1,13 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 import { countEndpoints, fetchApiScript, parseApiSchema, toRawTree } from "../../src/internal/api-scraper/extractor.ts";
 import type { RawApiTreeNode } from "../../src/internal/api-scraper/types.ts";
-import { registerCodexMock } from "../../src/internal/api-scraper/codex-mock.ts";
+import { registerViewerMock } from "../../src/internal/api-scraper/viewer-mock.ts";
 
 test.describe("Proxmox API viewer smoke test", () => {
   test.beforeEach(async ({ page }, testInfo) => {
     const baseUrl = typeof testInfo.project.use.baseURL === "string" ? testInfo.project.use.baseURL : undefined;
-    await registerCodexMock(page.context(), baseUrl);
+    await registerViewerMock(page.context(), baseUrl);
   });
 
   test("loads documentation landing page", async ({ page }) => {

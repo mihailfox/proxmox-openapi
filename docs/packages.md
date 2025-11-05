@@ -26,7 +26,7 @@ npx proxmox-openapi pipeline --mode full --openapi-dir var/openapi --report var/
 
 | Flag | Description | Default | Required |
 | ---- | ----------- | ------- | -------- |
-| `--mode <ci|full>` | Controls whether the pipeline runs in CI or full scrape mode. | `ci` | No |
+| `--mode <ci or full>` | Controls whether the pipeline runs in CI or full scrape mode. | `ci` | No |
 | `--base-url <url>` | Overrides the Proxmox API viewer base URL. | — | No |
 | `--raw-output <path>` | Persists the raw snapshot JSON to a custom path. | — | No |
 | `--ir-output <path>` | Persists the normalized intermediate representation. | — | No |

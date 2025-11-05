@@ -25,4 +25,4 @@ log "Installing/updating project packages..."
 npm install --silent --quiet &>/dev/null
 
 log "Installing/updating Playwright dependencies in the background..."
-npx --yes playwright install --only-shell --with-deps chromium &>/dev/null &
+npx --yes playwright install --only-shell --with-deps chromium &>/dev/null
