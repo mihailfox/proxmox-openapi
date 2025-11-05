@@ -49,7 +49,9 @@ Before the container starts, `.devcontainer/scripts/initialize-host.sh` runs on 
 The script reuses `command_get_config` from `scripts/common.sh`
 to enumerate the `mounts` array in `devcontainer.json`, resolve `${localEnv:...}` placeholders, and pre-create the
 corresponding files or directories. This prevents Docker from failing when optional configuration files are absent
-locally while still allowing host ↔ container synchronization.
+locally while still allowing host ↔ container synchronization. The default Bash history mount now targets
+`${HOME}/.dev_con_bash_history`, avoiding conflicts with other Devcontainer workspaces that previously shared
+`~/.bash_history`.
 
 ## Lifecycle Scripts
 
@@ -57,7 +59,8 @@ locally while still allowing host ↔ container synchronization.
 
 - `on-create.sh` — runs on first container creation (npm updates, shell configuration).
 - `update-content.sh` — refreshes project dependencies and Playwright artifacts.
-- `post-create.sh` — post-provision hooks (if any).
+- `post-create.sh` — installs MCP extensions (`@upstash/context7-mcp`, `@playwright/mcp`, `github-mcp-server`) and the
+  Codex CLI so the container exposes the tooling required by the automation scripts without relying on host binaries.
 
 Shared logic (logging, devcontainer JSON helpers, package installers) lives in `scripts/common.sh`.
 

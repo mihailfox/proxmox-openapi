@@ -12,13 +12,20 @@ Notes for maintainers:
 ## Unreleased
 
 ### Changed
+- CI: enforce GitHub concurrency groups across every workflow so superseded runs cancel automatically.
 - CI/Pages: install the latest published CLI from GitHub Packages before automation runs.
 - Release workflow: push version bumps back to `main` after publishing.
+- Release tooling: append the artifact inventory after changelog-driven release notes for consistent release bodies (#101).
+- Devcontainer: persist shell history via `${HOME}/.dev_con_bash_history` to isolate workspaces (#101).
 
 ### Fixed
+- Release tooling: stabilize changelog-driven release notes fallback logic (#100).
 - CI/Actions: reference the local bundled action to avoid resolution issues (#74).
 - CI/Release: use generated action in release workflow for consistent behaviour (#73).
 - GitHub Action: build the local CLI workspace when the published package is unavailable.
+
+### Removed
+- Devcontainer: drop the claude-code installer from post-create provisioning (#101).
 
 ## v0.2.9 — 2025-11-02
 

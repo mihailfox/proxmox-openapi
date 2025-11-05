@@ -11,6 +11,8 @@ Keep the delivery project fields in sync and define how the automation pipeline 
 - **Triggers:** Hourly cron, manual `workflow_dispatch`, issue activity, and `project_card` events (created/edited).
 - **Token usage:** The job requests `repository-projects: write`. It prefers the `PROJECT_AUTOMATION_TOKEN` secret for broader scopes and automatically falls back to the default `GITHUB_TOKEN` when the PAT is absent.
 - **Beta handling:** Issues attached to milestones containing "beta" are promoted to the Beta stage even if Status is still "In Progress".
+- **Concurrency:** The workflow runs under GitHub's `${{ github.workflow }}-${{ github.ref }}` group, cancelling older in-flight
+  runs whenever a new sync starts so the project board never flaps between duplicate updates.
 
 ### Pipeline Modes & Flags
 - `npx proxmox-openapi pipeline` (aliased via `npm run automation:pipeline`) drives the scrape → normalize → generate flow
@@ -52,6 +54,7 @@ Use this checklist when tagging a new release:
 
 3. **Automated workflows**
    - Publishing a GitHub Release triggers `.github/workflows/release.yml`, which aligns all package versions with the tag, scrapes the upstream Proxmox VE version, regenerates artifacts, writes release notes, publishes assets via `softprops/action-gh-release@v2`, and commits the version bump back to `main`. It also builds and publishes `@mihailfox/proxmox-openapi` to GitHub Packages with provenance.
+   - The release notes composer always appends the artifact inventory after the changelog content, even for first-time releases with no prior history.
 
 4. **Post-publish validation**
    - Download archives from the GitHub release and verify checksums (`openapi.sha256.json`).

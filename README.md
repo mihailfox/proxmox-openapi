@@ -87,6 +87,8 @@ for targeted debugging.
 ### Devcontainer & launcher helpers
 - The devcontainer definition lives under `.devcontainer/`; see [docs/devcontainer.md](docs/devcontainer.md) for the full
   image layout, helper scripts, and troubleshooting tips.
+- Shell history persists through the `${HOME}/.dev_con_bash_history` bind mount so multiple Devcontainer workspaces can
+  coexist without clobbering `~/.bash_history` on the host.
 - `./launcher.sh` wraps the most common devcontainer actions:
   - `./launcher.sh vscode --attach-shell` opens the repo in VS Code and waits for the container before spawning a shell.
   - `./launcher.sh get_config customizations.vscode.settings` queries arbitrary paths from `devcontainer.json` if you
@@ -98,6 +100,7 @@ for targeted debugging.
 The "Project Stage Sync" workflow keeps the delivery project up to date. Review the [automation runbook](docs/automation.md) for triggers,
 token requirements, CLI flags, and manual override instructions. When opening a pull request, ensure the relevant issue is linked so the
 workflow can reconcile status changes. Use `packages/proxmox-openapi/scripts/automation/format-summary.ts` to turn pipeline summaries into Markdown for PRs.
+CI workflows run under concurrency groups (`${{ github.workflow }}-${{ github.ref }}`) so any superseded run is cancelled before new work starts.
 
 ## Monitoring & Quality
 - Run a Lighthouse audit (Performance, Accessibility, Best Practices ≥ 90) against the deployed pages site after significant UI changes.
