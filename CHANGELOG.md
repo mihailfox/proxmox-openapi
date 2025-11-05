@@ -4,8 +4,9 @@ All notable changes to this project are documented here. The format follows
 Common Changelog with the sections: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 Notes for maintainers:
-- Keep the Unreleased section up-to-date. Our release workflow uses its
-  content as the body of the GitHub release notes for the next tag.
+- Keep the Unreleased section up-to-date. Our release workflow copies it into
+  the release notes whenever a tagged heading is missing, so remember to move
+  entries into the new version section right after publishing.
 - Dates use ISO format (YYYY-MM-DD). The project requires Node.js 24+.
 
 ## Unreleased

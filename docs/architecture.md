@@ -117,7 +117,11 @@ flowchart TD
   - `openapi-sync.mjs` copies generated artifacts into the SPA assets before dev
     or build steps.
   - `prepare-openapi-release.mjs` assembles release bundles, computes checksums,
-    compares against previous tags, and emits markdown notes.
+    compares against previous tags (even when cache files are absent by
+    reading the prior release notes), and emits markdown notes with an embedded
+    `openapi-stats` marker for future diffs. When the tagged changelog entry is
+    missing it falls back to `## Unreleased`, preserving the expected release
+    cadence.
   - `prepare-pages.mjs` stages the SPA build plus OpenAPI bundle in `var/pages/`
     with a `404.html` fallback for GitHub Pages.
 
