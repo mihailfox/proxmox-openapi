@@ -25,6 +25,9 @@ flowchart TD
         D2[cli.ts]
         D3[cli-arg-utils.ts]
     end
+    subgraph Release[release tooling]
+        F1[prepare-openapi-release.mjs]
+    end
     subgraph Shared[shared]
         E1[paths.ts]
         E2[module-paths.ts]
@@ -32,10 +35,14 @@ flowchart TD
     Scraper --> Normalizer
     Normalizer --> Generator
     Generator --> Automation
+    Automation --> Release
+    Normalizer --> Release
+    Generator --> Release
     Shared --> Scraper
     Shared --> Normalizer
     Shared --> Generator
     Shared --> Automation
+    Shared --> Release
 ```
 
 ### `api-scraper`
@@ -180,6 +187,9 @@ Node-friendly shebang handling in the bundled `dist/cli.cjs`.
   prior release notes when cached artifacts are unavailable, embeds an
   `openapi-stats` marker for machine-readable baselines, and falls back to the
   `## Unreleased` changelog section whenever the tagged entry is still pending.
+  The composer now always appends the artifact inventory after the changelog
+  excerpt so first-time releases and maintenance updates alike include the
+  canonical download hints without duplicating placeholder sections.
 - `scripts/prepare-pages.mjs` verifies a Vite build exists, copies the OpenAPI
   bundle into `dist/openapi`, adds a `404.html` fallback, and mirrors the result
   into `var/pages/` for GitHub Pages deployment.

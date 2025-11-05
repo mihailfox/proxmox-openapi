@@ -16,6 +16,8 @@ Tags that include `-alpha.`, `-beta.`, or `-rc.` are published as prereleases. A
 
 > Note
 > Keep the top “Unreleased” section in `CHANGELOG.md` up‑to‑date before drafting the release. We use it as the release body.
+> The composer automatically appends the artifact inventory after the changelog excerpt so first-time releases still
+> include canonical download links.
 
 ## Artifact Inventory
 
