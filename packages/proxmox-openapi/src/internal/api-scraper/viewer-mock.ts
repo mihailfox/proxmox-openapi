@@ -2,9 +2,8 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 import type { BrowserContext } from "playwright";
-
-import { RAW_SNAPSHOT_CACHE_PATH } from "../shared/paths.ts";
 import { resolveFromModule, toModuleDirname } from "../shared/module-paths.ts";
+import { RAW_SNAPSHOT_CACHE_PATH } from "../shared/paths.ts";
 import type { ApiSchemaMethod, ApiSchemaNode, RawApiMethod, RawApiTreeNode } from "./types.ts";
 
 const moduleReference = typeof __dirname === "string" ? __dirname : resolveModuleDirname();
@@ -55,8 +54,10 @@ function isTruthy(value: string | undefined): boolean {
   return normalized.length > 0;
 }
 
-export function isCodexEnvironment(): boolean {
-  return isTruthy(process.env.CODEX_ENV);
+const MOCK_ENV_FLAG = "PROXMOX_VIEWER_MOCK";
+
+export function isMockEnvironment(): boolean {
+  return isTruthy(process.env[MOCK_ENV_FLAG]);
 }
 
 async function loadMockAssets(): Promise<MockAssets> {
@@ -161,8 +162,8 @@ function toApiSchemaMethod(method: RawApiMethod): ApiSchemaMethod {
   return schemaMethod;
 }
 
-export async function registerCodexMock(context: BrowserContext, baseUrl: string | undefined): Promise<boolean> {
-  if (!isCodexEnvironment()) {
+export async function registerViewerMock(context: BrowserContext, baseUrl: string | undefined): Promise<boolean> {
+  if (!isMockEnvironment()) {
     return false;
   }
 

@@ -11,7 +11,6 @@ The workspace is built on `mcr.microsoft.com/devcontainers/typescript-node:24-bo
 - GitHub CLI
 - Local `cli-tools` bundle (ripgrep, fd, bat, lsd, git-delta, helix, jq, yq, gojq, fzf, shellcheck, shfmt, lynx, zstd)
 - Devcontainers CLI
-- Host configuration passthrough for Codex and Claude (`~/.codex`, `~/.claude`, `~/.claude.json`), pre-created via the host `initializeCommand`
 
 ### Custom CLI Feature
 
@@ -46,8 +45,8 @@ When no overrides are provided, the installer fetches the latest GitHub release 
 
 ## Host Initialization
 
-Before the container starts, `.devcontainer/scripts/initialize-host.sh` runs on the host to create bind mount targets
-such as `~/.codex`, `~/.claude`, and `~/.claude.json`. The script reuses `command_get_config` from `scripts/common.sh`
+Before the container starts, `.devcontainer/scripts/initialize-host.sh` runs on the host to create bind mount targets.
+The script reuses `command_get_config` from `scripts/common.sh`
 to enumerate the `mounts` array in `devcontainer.json`, resolve `${localEnv:...}` placeholders, and pre-create the
 corresponding files or directories. This prevents Docker from failing when optional configuration files are absent
 locally while still allowing host ↔ container synchronization.
