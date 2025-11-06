@@ -78,7 +78,6 @@ jobs:
         uses: actions/deploy-pages@v4
 
   performance:
-    name: Lighthouse performance testing
     needs: deploy
     if: ${{ needs.deploy.result == 'success' }}
     runs-on: ubuntu-latest
