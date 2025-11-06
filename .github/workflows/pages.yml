@@ -67,6 +67,8 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    outputs:
+      page_url: ${{ steps.deploy.outputs.page_url }}
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
@@ -74,3 +76,166 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deploy
         uses: actions/deploy-pages@v4
+
+  performance:
+    name: Lighthouse performance testing
+    needs: deploy
+    if: ${{ needs.deploy.result == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Install Lighthouse
+        run: npm install -g lighthouse
+
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare performance-reports branch
+        run: |
+          set -euo pipefail
+          git fetch origin performance-reports || true
+          if git show-ref --verify --quiet refs/remotes/origin/performance-reports; then
+            git switch --force-create performance-reports origin/performance-reports
+          else
+            git switch --orphan performance-reports
+            git rm -rf .
+          fi
+          rm -rf lighthouse-reports
+        shell: bash
+
+      - name: Capture deployment URL
+        id: deployment-url
+        run: echo "base_url=${{ needs.deploy.outputs.page_url }}" >> "$GITHUB_OUTPUT"
+
+      - name: Run Lighthouse audits
+        env:
+          BASE_URL: ${{ steps.deployment-url.outputs.base_url }}
+        run: |
+          set -euo pipefail
+          if [ -z "$BASE_URL" ]; then
+            echo "Deployment URL missing; cannot run Lighthouse." >&2
+            exit 1
+          fi
+
+          sanitized_base="${BASE_URL%/}"
+          mkdir -p lighthouse-reports
+
+          declare -a names=("home" "docs" "explorer")
+          declare -a paths=("" "docs/" "explorer/")
+
+          for i in "${!names[@]}"; do
+            name="${names[$i]}"
+            path="${paths[$i]}"
+
+            if [ -n "$path" ]; then
+              target="${sanitized_base}/${path}"
+            else
+              target="${sanitized_base}/"
+            fi
+
+            echo "Running Lighthouse for ${target}"
+            lighthouse "$target" \
+              --output=json \
+              --output-path="lighthouse-reports/${name}.json" \
+              --chrome-flags="--no-sandbox --disable-dev-shm-usage --disable-gpu --headless=new" \
+              --only-categories=performance,accessibility,best-practices,seo || {
+                echo "Lighthouse failed for ${target}" >&2
+                exit 1
+              }
+          done
+
+      - name: Generate performance summary
+        run: |
+          set -euo pipefail
+          mkdir -p lighthouse-reports
+          {
+            echo "# 🚀 Lighthouse Performance Report"
+            echo
+            echo "**Generated:** $(date -u +"%Y-%m-%d %H:%M UTC")"
+            echo "**Workflow Run:** ${{ github.run_number }}"
+            echo "**Triggered by:** ${{ github.actor }}"
+            echo
+            echo "## 📊 Performance Summary"
+            echo
+            echo "| Page | Performance | Accessibility | Best Practices | SEO |"
+            echo "|------|-------------|---------------|----------------|-----|"
+          } > lighthouse-reports/README.md
+
+          summarize() {
+            file="$1"
+            label="$2"
+            if [ -f "$file" ]; then
+              perf=$(jq -r '.categories.performance.score * 100 | round' "$file")
+              acc=$(jq -r '.categories.accessibility.score * 100 | round' "$file")
+              bp=$(jq -r '.categories."best-practices".score * 100 | round' "$file")
+              seo=$(jq -r '.categories.seo.score * 100 | round' "$file")
+              echo "| ${label} | ${perf}% | ${acc}% | ${bp}% | ${seo}% |" >> lighthouse-reports/README.md
+            fi
+          }
+
+          summarize lighthouse-reports/home.json "Home"
+          summarize lighthouse-reports/docs.json "Docs"
+          summarize lighthouse-reports/explorer.json "Explorer"
+
+          {
+            echo
+            echo "---"
+            echo "📊 **Performance Score**: Average of all pages"
+            echo "🔍 **Accessibility Score**: WCAG compliance"
+            echo "✅ **Best Practices**: Modern web standards"
+            echo "🎯 **SEO Score**: Search engine optimization"
+            echo
+            echo "## 📈 Performance Trends"
+            echo
+            echo "This report is automatically generated and committed to the repository."
+            echo "Previous reports can be found in the git history of the \`performance-reports\` branch."
+          } >> lighthouse-reports/README.md
+
+      - name: Performance threshold check
+        run: |
+          set -euo pipefail
+          echo "Checking performance scores..."
+          for file in lighthouse-reports/*.json; do
+            [ -e "$file" ] || continue
+            perf=$(jq -r '.categories.performance.score * 100' "$file")
+            page=$(basename "$file" .json)
+            if (( $(echo "$perf < 70" | bc -l) )); then
+              echo "⚠️  WARNING: ${page} has performance score of ${perf}% (below 70%)"
+              exit 1
+            else
+              echo "✅ ${page}: ${perf}% performance score"
+            fi
+          done
+
+      - name: Commit and push results
+        env:
+          GIT_AUTHOR_NAME: "github-actions[bot]"
+          GIT_AUTHOR_EMAIL: "github-actions[bot]@users.noreply.github.com"
+          GIT_COMMITTER_NAME: "github-actions[bot]"
+          GIT_COMMITTER_EMAIL: "github-actions[bot]@users.noreply.github.com"
+        run: |
+          set -euo pipefail
+          git add lighthouse-reports
+          if git diff --quiet --staged; then
+            echo "No Lighthouse report updates to commit."
+            exit 0
+          fi
+          git commit -m "📊 Performance Report - Run #${{ github.run_number }} - $(date -u +"%Y-%m-%d %H:%M UTC")"
+          git push origin HEAD:performance-reports
+
+      - name: Upload Lighthouse artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-results-${{ github.run_number }}
+          path: lighthouse-reports/
+          retention-days: 7
