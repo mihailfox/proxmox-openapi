@@ -111,6 +111,7 @@ flowchart TD
 - **Workflows** (`.github/workflows/`)
   - Pages builds consume the action, run `npm run pages:build`, and deploy the SPA
     with fresh schema bundles.
+  - The `deploy-pages` workflow finishes with a `lighthouse-performance` job that reuses the deployed site, audits `/`, `/docs`, and `/explorer`, and commits Lighthouse summaries to the `performance-reports` branch.
   - Release workflows re-run automation, package artifacts, publish the npm
     module, and upload GitHub release assets.
 - **Scripts** (`scripts/*.mjs`)

@@ -12,6 +12,9 @@ when needed. It complements the automation runbook and focuses on the assets tha
   compiled SPA inside `var/pages/` for deployment.
 - `actions/deploy-pages@v4` publishes the artifact to the `github-pages` environment. The `VITE_SITE_BASE` environment
   variable ensures the site is scoped to `/proxmox-openapi/`.
+- After deployment succeeds, the `lighthouse-performance` job audits `/`, `/docs`, and `/explorer`, writes JSON + markdown
+  summaries under `lighthouse-reports/`, and pushes them to the detached `performance-reports` branch for historical tracking.
+  Runs also upload a `lighthouse-results-<run>` artifact and fail if any audited page scores below 70% performance.
 
 ### Manual Publish
 
@@ -55,4 +58,5 @@ The packaged site is available under `var/pages/`. Inspect it locally with a sta
 4. If an immediate revert is not possible, re-run the Pages workflow using the "Run workflow" button and specify the
    earlier commit via the workflow dispatch input.
 
-Document the incident in the pull request or project tracker, including Lighthouse results and any remediation steps.
+Document the incident in the pull request or project tracker, referencing the matching `performance-reports` branch commit
+and any remediation steps.
