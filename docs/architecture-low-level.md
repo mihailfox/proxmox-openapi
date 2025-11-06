@@ -192,7 +192,10 @@ Node-friendly shebang handling in the bundled `dist/cli.cjs`.
   canonical download hints without duplicating placeholder sections.
 - `scripts/prepare-pages.mjs` verifies a Vite build exists, copies the OpenAPI
   bundle into `dist/openapi`, adds a `404.html` fallback, and mirrors the result
-  into `var/pages/` for GitHub Pages deployment.
+  into `var/pages/` for GitHub Pages deployment. The follow-up
+  `lighthouse-performance` job depends on this deployment and commits audits to
+  the `performance-reports` branch so performance regressions surface in git
+  history.
 - `scripts/common.sh` provides logging helpers, devcontainer JSON parsing, and
   utilities used across shell scripts (e.g., `DEVCONTAINER_JSON` preprocessing).
 

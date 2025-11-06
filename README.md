@@ -44,7 +44,7 @@ to deliver a full‑featured Terraform provider and other infrastructure‑as‑
 - `app/`: Vite-based SPA that surfaces the generated specifications and embeds Swagger UI with lazy loading.
 - `packages/proxmox-openapi/`: Consolidated source for scraping, normalization, OpenAPI generation, automation orchestration, and the published CLI (`@mihailfox/proxmox-openapi`).
 - `.github/actions/proxmox-openapi-artifacts/`: First-party GitHub Action wrapping the automation pipeline for CI.
-- `.github/workflows/`: CI pipelines for validations, artifact generation, GitHub Pages, and project automation.
+- `.github/workflows/`: CI pipelines for validations, artifact generation, GitHub Pages, and project automation. The `deploy-pages` workflow now includes a post-deploy `lighthouse-performance` job that audits key SPA routes and commits JSON/markdown reports to the `performance-reports` branch.
 - `.devcontainer/`: Containerized development environment configs. See [docs/devcontainer.md](docs/devcontainer.md).
 - `var/`: Workspace-local output directory (automation summaries, OpenAPI bundles, release staging, static site builds).
   GitHub Pages installs the latest published CLI (`@mihailfox/proxmox-openapi@latest`) before running automation, and falls back to a local build if the package is unavailable.

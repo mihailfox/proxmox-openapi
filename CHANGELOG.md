@@ -11,6 +11,9 @@ Notes for maintainers:
 
 ## Unreleased
 
+### Added
+- CI/Pages: run Lighthouse audits after deployment and commit reports to the `performance-reports` branch for historical tracking.
+
 ### Changed
 - CI: enforce GitHub concurrency groups across every workflow so superseded runs cancel automatically.
 - CI/Pages: install the latest published CLI from GitHub Packages before automation runs.
