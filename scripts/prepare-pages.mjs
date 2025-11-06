@@ -39,6 +39,22 @@ async function ensure404Fallback() {
   }
 }
 
+async function ensureSpaRouteFallbacks() {
+  const indexPath = path.join(distDir, "index.html");
+  const spaRoutes = ["docs", "explorer"];
+
+  await Promise.all(
+    spaRoutes.map(async (route) => {
+      const routeDir = path.join(distDir, route);
+      const routeIndexPath = path.join(routeDir, "index.html");
+
+      await fs.mkdir(routeDir, { recursive: true });
+      await fs.copyFile(indexPath, routeIndexPath);
+      console.log(`[pages] Created fallback for /${route}/ at ${path.relative(process.cwd(), routeIndexPath)}.`);
+    })
+  );
+}
+
 async function copyAutomationSummary() {
   const summaryPath = path.resolve("var", "automation-summary.json");
   try {
@@ -61,6 +77,7 @@ async function main() {
   await copyOpenApiArtifacts();
   await copyAutomationSummary();
   await ensure404Fallback();
+  await ensureSpaRouteFallbacks();
   await copyToPagesDir();
 }
 
